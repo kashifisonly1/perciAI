@@ -1,3 +1,5 @@
 # perciAI
 
-This repo will house the codebase for perci.AI – the data preprocessing notebooks, the finetuning notebooks and the datasets themselves. How will it interact with the VM I'm using? No idea.
+This repo will house the codebase for the perci.AI app– the flask app and  the various modules I need to build, and will serve as a record of the build process.
+
+Huzzah!
