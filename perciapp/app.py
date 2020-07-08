@@ -1,5 +1,6 @@
 from flask import Flask
 
+from perciapp.blueprints.page import page
 
 def create_app():
     """
@@ -12,13 +13,6 @@ def create_app():
     app.config.from_object('config.settings')
     app.config.from_pyfile('settings.py', silent=True)
 
-    @app.route('/')
-    def index():
-        """
-        Render a Hello World response.
-
-        :return: Flask response
-        """
-        return app.config['HELLO']
+    app.register_blueprint(page)
 
     return app
