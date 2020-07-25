@@ -7,9 +7,9 @@ Harness the power of AI writing for unique, optimized descriptions that are prov
 {% block body %}
   <div class="container lg-margin-top">
     <div class="row text-center lg-margin-bottom">
-      <h1>Product descriptions, done.</h1>
+      <h1>Descriptions, done.</h1>
       <h3 class="text-muted">
-        Create descriptions for your clothing store instantly with AI writing.
+        Create product descriptions for your fashion store instantly with AI writing.
       </h3>
     </div>
     <div class="row text-center">
@@ -29,15 +29,14 @@ Harness the power of AI writing for unique, optimized descriptions that are prov
       <div class="col-lg-4">
         <i class="fa fa-fw fa-4x fa-sitemap text-primary"></i>
         <h3>Specialized for fashion</h3>
-        <p class="text-muted">perci.AI is created and tuned specifically for online fashion. So you get authentic writing that speaks to your shoppers. </p>
+        <p class="text-muted">perci.AI is created and tuned specifically for online clothing and accessories. So you get authentic writing that speaks to your shoppers. </p>
       </div>
     </div>
     <div class="row text-center lg-margin-bottom">
-      <h1>
-        <a href="#" class="btn btn-primary btn-lg">Try it now</a>
-      </h1>
-      <p class="text-muted">Free Trial</p>
-      
+      <p class="text-muted">Sign up for a free trial.</p>
+      <p>
+        <a href="{{ url_for('user.signup') }}" class="btn btn-default">Sign up</a>
+      </p>   
     </div>
   </div>
 {% endblock %}

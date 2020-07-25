@@ -26,28 +26,11 @@
             crossorigin="anonymous"></script>
   </head>
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed"
-                  data-toggle="collapse" data-target="#navbar"
-                  aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="{{ url_for('page.home') }}">
-            <img src="{{ url_for('static', filename='images/perci_logo.jpg') }}"
-                 class="img-responsive"
-                 width="229" height="50" title="perci.AI" alt="perci.AI"/>
-          </a>
-        </div>
-      </div>
-    </nav>
-
+    {% block header %}{% endblock %}
+    
     <main class="container">
       {{ flash.render() }}
+
       <div class="md-margin-top">{% block heading %}{% endblock %}</div>
       {% block body %}{% endblock %}
     </main>
@@ -56,9 +39,7 @@
       <div class="container">
         <ul class="list-inline">
           <li class="text-muted">perci.AI &copy; 2020</li>
-          <li><a href="{{ url_for('contact.index') }}">Contact</a></li>
-          <li><a href="{{ url_for('page.privacy') }}">Privacy Policy</a></li>
-          <li><a href="{{ url_for('page.terms') }}">Terms of Service</a></li>
+          {% block footer %}{% endblock %}
         </ul>
       </div>
     </footer>
