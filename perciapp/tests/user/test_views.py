@@ -182,7 +182,7 @@ class TestSignup(ViewTestMixin):
                                     follow_redirects=True)
 
         assert_status_with_message(200, response,
-                                   'Sign up is complete, enjoy our services.')
+                                   "Sign up is complete, you're ready to go.")
 
     def test_welcome_with_existing_username(self, users):
         """ Create username failure due to username already existing. """

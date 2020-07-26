@@ -114,6 +114,49 @@ class User(UserMixin, ResourceMixin, db.Model):
 
         return u
 
+    @classmethod
+    def search(cls, query):
+        """
+        Search a resource by 1 or more fields.
+
+        :param query: Search query
+        :type query: str
+        :return: SQLAlchemy filter
+        """
+        if not query:
+            return ''
+
+        search_query = '%{0}%'.format(query)
+        search_chain = (User.email.ilike(search_query),
+                        User.username.ilike(search_query))
+
+        return or_(*search_chain)
+
+    @classmethod
+    def is_last_admin(cls, user, new_role, new_active):
+        """
+        Determine whether or not this user is the last admin account.
+
+        :param user: User being tested
+        :type user: User
+        :param new_role: New role being set
+        :type new_role: str
+        :param new_active: New active status being set
+        :type new_active: bool
+        :return: bool
+        """
+        is_changing_roles = user.role == 'admin' and new_role != 'admin'
+        is_changing_active = user.active is True and new_active is None
+
+        if is_changing_roles or is_changing_active:
+            admin_count = User.query.filter(User.role == 'admin').count()
+            active_count = User.query.filter(User.is_active is True).count()
+
+            if admin_count == 1 or active_count == 1:
+                return True
+
+        return False
+
     def is_active(self):
         """
         Return whether or not the user account is active, this satisfies
