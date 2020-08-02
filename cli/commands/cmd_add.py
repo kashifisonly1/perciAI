@@ -8,6 +8,7 @@ from faker import Faker
 from perciapp.app import create_app
 from perciapp.extensions import db
 from perciapp.blueprints.user.models import User
+from perciapp.blueprints.billing.models.invoice import Invoice
 
 # Create an app context for the database connection.
 app = create_app()
@@ -42,10 +43,13 @@ def _bulk_insert(model, data, label):
     :type data: list
     :param label: Label for the output
     :type label: str
+    :param skip_delete: Optionally delete previous records
+    :type skip_delete: bool
     :return: None
     """
     with app.app_context():
         model.query.delete()
+
         db.session.commit()
         db.engine.execute(model.__table__.insert(), data)
 
@@ -137,6 +141,62 @@ def users():
 
 
 @click.command()
+def invoices():
+    """
+    Generate random invoices.
+    """
+    data = []
+
+    users = db.session.query(User).all()
+
+    for user in users:
+        for i in range(0, random.randint(1, 12)):
+            # Create a fake unix timestamp in the future.
+            created_on = fake.date_time_between(
+                start_date='-1y', end_date='now').strftime('%s')
+            period_start_on = fake.date_time_between(
+                start_date='now', end_date='+1y').strftime('%s')
+            period_end_on = fake.date_time_between(
+                start_date=period_start_on, end_date='+14d').strftime('%s')
+            exp_date = fake.date_time_between(
+                start_date='now', end_date='+2y').strftime('%s')
+
+            created_on = datetime.utcfromtimestamp(
+                float(created_on)).strftime('%Y-%m-%dT%H:%M:%S Z')
+            period_start_on = datetime.utcfromtimestamp(
+                float(period_start_on)).strftime('%Y-%m-%d')
+            period_end_on = datetime.utcfromtimestamp(
+                float(period_end_on)).strftime('%Y-%m-%d')
+            exp_date = datetime.utcfromtimestamp(
+                float(exp_date)).strftime('%Y-%m-%d')
+
+            plans = ['BRONZE', 'GOLD', 'PLATINUM']
+            cards = ['Visa', 'Mastercard', 'AMEX',
+                     'J.C.B', "Diner's Club"]
+
+            params = {
+                'created_on': created_on,
+                'updated_on': created_on,
+                'user_id': user.id,
+                'receipt_number': fake.md5(),
+                'description': '{0} MONTHLY'.format(random.choice(plans)),
+                'period_start_on': period_start_on,
+                'period_end_on': period_end_on,
+                'currency': 'usd',
+                'tax': random.random() * 100,
+                'tax_percent': random.random() * 10,
+                'total': random.random() * 1000,
+                'brand': random.choice(cards),
+                'last4': random.randint(1000, 9000),
+                'exp_date': exp_date
+            }
+
+            data.append(params)
+
+    return _bulk_insert(Invoice, data, 'invoices')
+
+
+@click.command()
 @click.pass_context
 def all(ctx):
     """
@@ -146,9 +206,11 @@ def all(ctx):
     :return: None
     """
     ctx.invoke(users)
+    ctx.invoke(invoices)
 
     return None
 
 
 cli.add_command(users)
+cli.add_command(invoices)
 cli.add_command(all)

@@ -1,9 +1,27 @@
+import datetime
+
 import pytest
+import pytz
+from mock import Mock
 
 from config import settings
 from perciapp.app import create_app
+from lib.util_datetime import timedelta_months
 from perciapp.extensions import db as _db
 from perciapp.blueprints.user.models import User
+from perciapp.blueprints.billing.models.credit_card import CreditCard
+from perciapp.blueprints.billing.models.coupon import Coupon
+from perciapp.blueprints.billing.models.subscription import Subscription
+from perciapp.blueprints.billing.gateways.stripecom import \
+    Coupon as PaymentCoupon
+from perciapp.blueprints.billing.gateways.stripecom import \
+    Event as PaymentEvent
+from perciapp.blueprints.billing.gateways.stripecom import Card as PaymentCard
+from perciapp.blueprints.billing.gateways.stripecom import \
+    Subscription as PaymentSubscription
+from perciapp.blueprints.billing.gateways.stripecom import \
+    Invoice as PaymentInvoice
+
 
 @pytest.yield_fixture(scope='session')
 def app():
@@ -128,3 +146,219 @@ def users(db):
     db.session.commit()
 
     return db
+
+@pytest.fixture(scope='function')
+def credit_cards(db):
+    """
+    Create credit card fixtures.
+
+    :param db: Pytest fixture
+    :return: SQLAlchemy database session
+    """
+    db.session.query(CreditCard).delete()
+
+    may_29_2015 = datetime.date(2015, 5, 29)
+    june_29_2015 = datetime.datetime(2015, 6, 29, 0, 0, 0)
+    june_29_2015 = pytz.utc.localize(june_29_2015)
+
+    credit_cards = [
+        {
+            'user_id': 1,
+            'brand': 'Visa',
+            'last4': 4242,
+            'exp_date': june_29_2015
+        },
+        {
+            'user_id': 1,
+            'brand': 'Visa',
+            'last4': 4242,
+            'exp_date': timedelta_months(12, may_29_2015)
+        }
+    ]
+
+    for card in credit_cards:
+        db.session.add(CreditCard(**card))
+
+    db.session.commit()
+
+    return db
+
+
+@pytest.fixture(scope='function')
+def coupons(db):
+    """
+    Create coupon fixtures.
+
+    :param db: Pytest fixture
+    :return: SQLAlchemy database session
+    """
+    db.session.query(Coupon).delete()
+
+    may_29_2015 = datetime.datetime(2015, 5, 29, 0, 0, 0)
+    may_29_2015 = pytz.utc.localize(may_29_2015)
+
+    june_29_2015 = datetime.datetime(2015, 6, 29)
+    june_29_2015 = pytz.utc.localize(june_29_2015)
+
+    coupons = [
+        {
+            'amount_off': 1,
+            'redeem_by': may_29_2015
+        },
+        {
+            'amount_off': 1,
+            'redeem_by': june_29_2015
+        },
+        {
+            'amount_off': 1
+        }
+    ]
+
+    for coupon in coupons:
+        db.session.add(Coupon(**coupon))
+
+    db.session.commit()
+
+    return db
+
+
+@pytest.fixture(scope='function')
+def subscriptions(db):
+    """
+    Create subscription fixtures.
+
+    :param db: Pytest fixture
+    :return: SQLAlchemy database session
+    """
+    subscriber = User.find_by_identity('subscriber@local.host')
+    if subscriber:
+        subscriber.delete()
+    db.session.query(Subscription).delete()
+
+    params = {
+        'role': 'admin',
+        'email': 'subscriber@local.host',
+        'name': 'Subby',
+        'password': 'password',
+        'payment_id': 'cus_000'
+    }
+
+    subscriber = User(**params)
+
+    # The account needs to be commit before we can assign a subscription to it.
+    db.session.add(subscriber)
+    db.session.commit()
+
+    # Create a subscription.
+    params = {
+        'user_id': subscriber.id,
+        'plan': 'gold'
+    }
+    subscription = Subscription(**params)
+    db.session.add(subscription)
+
+    # Create a credit card.
+    params = {
+        'user_id': subscriber.id,
+        'brand': 'Visa',
+        'last4': '4242',
+        'exp_date': datetime.date(2015, 6, 1)
+    }
+    credit_card = CreditCard(**params)
+    db.session.add(credit_card)
+
+    db.session.commit()
+
+    return db
+
+
+@pytest.fixture(scope='session')
+def mock_stripe():
+    """
+    Mock all of the Stripe API calls.
+
+    :return:
+    """
+    PaymentCoupon.create = Mock(return_value={})
+    PaymentCoupon.delete = Mock(return_value={})
+    PaymentEvent.retrieve = Mock(return_value={})
+    PaymentCard.update = Mock(return_value={})
+    PaymentSubscription.create = Mock(return_value={})
+    PaymentSubscription.update = Mock(return_value={})
+    PaymentSubscription.cancel = Mock(return_value={})
+
+    upcoming_invoice_api = {
+        'date': 1433018770,
+        'id': 'in_000',
+        'period_start': 1433018770,
+        'period_end': 1433018770,
+        'lines': {
+            'data': [
+                {
+                    'id': 'sub_000',
+                    'object': 'line_item',
+                    'type': 'subscription',
+                    'livemode': True,
+                    'amount': 0,
+                    'currency': 'usd',
+                    'proration': False,
+                    'period': {
+                        'start': 1433161742,
+                        'end': 1434371342
+                    },
+                    'subscription': None,
+                    'quantity': 1,
+                    'plan': {
+                        'interval': 'month',
+                        'name': 'Gold',
+                        'created': 1424879591,
+                        'amount': 500,
+                        'currency': 'usd',
+                        'id': 'gold',
+                        'object': 'plan',
+                        'livemode': False,
+                        'interval_count': 1,
+                        'trial_period_days': 14,
+                        'metadata': {
+                        },
+                        'statement_descriptor': 'GOLD MONTHLY'
+                    },
+                    'description': None,
+                    'discountable': True,
+                    'metadata': {
+                    }
+                }
+            ],
+            'total_count': 1,
+            'object': 'list',
+            'url': '/v1/invoices/in_000/lines'
+        },
+        'subtotal': 0,
+        'total': 0,
+        'customer': 'cus_000',
+        'object': 'invoice',
+        'attempted': True,
+        'closed': True,
+        'forgiven': False,
+        'paid': True,
+        'livemode': False,
+        'attempt_count': 0,
+        'amount_due': 500,
+        'currency': 'usd',
+        'starting_balance': 0,
+        'ending_balance': 0,
+        'next_payment_attempt': None,
+        'webhooks_delivered_at': None,
+        'charge': None,
+        'discount': None,
+        'application_fee': None,
+        'subscription': 'sub_000',
+        'tax_percent': None,
+        'tax': None,
+        'metadata': {
+        },
+        'statement_descriptor': None,
+        'description': None,
+        'receipt_number': None
+    }
+    PaymentInvoice.upcoming = Mock(return_value=upcoming_invoice_api)

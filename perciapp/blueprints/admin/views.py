@@ -10,11 +10,17 @@ from sqlalchemy import text
 
 from perciapp.blueprints.admin.models import Dashboard
 from perciapp.blueprints.user.decorators import role_required
+from perciapp.blueprints.billing.decorators import handle_stripe_exceptions
+from perciapp.blueprints.billing.models.coupon import Coupon
+from perciapp.blueprints.billing.models.subscription import Subscription
+from perciapp.blueprints.billing.models.invoice import Invoice
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.admin.forms import (
     SearchForm,
     BulkDeleteForm,
-    UserForm
+    UserForm,
+    UserCancelSubscriptionForm,
+    CouponForm
 )
 
 admin = Blueprint('admin', __name__,
@@ -32,9 +38,13 @@ def before_request():
 # Dashboard -------------------------------------------------------------------
 @admin.route('')
 def dashboard():
+    group_and_count_plans = Dashboard.group_and_count_plans()
+    group_and_count_coupons = Dashboard.group_and_count_coupons()
     group_and_count_users = Dashboard.group_and_count_users()
 
     return render_template('admin/page/dashboard.html',
+                           group_and_count_plans=group_and_count_plans,
+                           group_and_count_coupons=group_and_count_coupons,
                            group_and_count_users=group_and_count_users)
 
 
@@ -64,6 +74,15 @@ def users_edit(id):
     user = User.query.get(id)
     form = UserForm(obj=user)
 
+    invoices = Invoice.billing_history(current_user)
+    if current_user.subscription:
+        upcoming = Invoice.upcoming(current_user.payment_id)
+        coupon = Coupon.query \
+            .filter(Coupon.code == current_user.subscription.coupon).first()
+    else:
+        upcoming = None
+        coupon = None
+
     if form.validate_on_submit():
         if User.is_last_admin(user,
                               request.form.get('role'),
@@ -81,7 +100,8 @@ def users_edit(id):
         flash('User has been saved successfully.', 'success')
         return redirect(url_for('admin.users'))
 
-    return render_template('admin/user/edit.html', form=form, user=user)
+    return render_template('admin/user/edit.html', form=form, user=user,
+                            invoices=invoices, upcoming=upcoming, coupon=coupon)
 
 
 @admin.route('/users/bulk_delete', methods=['POST'])
@@ -94,6 +114,9 @@ def users_bulk_delete():
                                        omit_ids=[current_user.id],
                                        query=request.args.get('q', ''))
 
+        # Prevent circular imports.
+        from perciapp.blueprints.billing.tasks import delete_users
+
         delete_count = User.bulk_delete(ids)
 
         flash('{0} user(s) were scheduled to be deleted.'.format(delete_count),
@@ -102,3 +125,91 @@ def users_bulk_delete():
         flash('No users were deleted, something went wrong.', 'error')
 
     return redirect(url_for('admin.users'))
+
+@admin.route('/users/cancel_subscription', methods=['POST'])
+def users_cancel_subscription():
+    form = UserCancelSubscriptionForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(request.form.get('id'))
+
+        if user:
+            subscription = Subscription()
+            if subscription.cancel(user):
+                flash('Subscription has been cancelled for {0}.'
+                      .format(user.name), 'success')
+        else:
+            flash('No subscription was cancelled, something went wrong.',
+                  'error')
+
+    return redirect(url_for('admin.users'))
+
+
+# Coupons ---------------------------------------------------------------------
+@admin.route('/coupons', defaults={'page': 1})
+@admin.route('/coupons/page/<int:page>')
+def coupons(page):
+    search_form = SearchForm()
+    bulk_form = BulkDeleteForm()
+
+    sort_by = Coupon.sort_by(request.args.get('sort', 'created_on'),
+                             request.args.get('direction', 'desc'))
+    order_values = '{0} {1}'.format(sort_by[0], sort_by[1])
+
+    paginated_coupons = Coupon.query \
+        .filter(Coupon.search(request.args.get('q', ''))) \
+        .order_by(text(order_values)) \
+        .paginate(page, 50, True)
+
+    return render_template('admin/coupon/index.html',
+                           form=search_form, bulk_form=bulk_form,
+                           coupons=paginated_coupons)
+
+
+@admin.route('/coupons/new', methods=['GET', 'POST'])
+@handle_stripe_exceptions
+def coupons_new():
+    coupon = Coupon()
+    form = CouponForm(obj=coupon)
+
+    if form.validate_on_submit():
+        form.populate_obj(coupon)
+
+        params = {
+            'code': coupon.code,
+            'duration': coupon.duration,
+            'percent_off': coupon.percent_off,
+            'amount_off': coupon.amount_off,
+            'currency': coupon.currency,
+            'redeem_by': coupon.redeem_by,
+            'max_redemptions': coupon.max_redemptions,
+            'duration_in_months': coupon.duration_in_months,
+        }
+
+        if Coupon.create(params):
+            flash('Coupon has been created successfully.', 'success')
+            return redirect(url_for('admin.coupons'))
+
+    return render_template('admin/coupon/new.html', form=form, coupon=coupon)
+
+
+@admin.route('/coupons/bulk_delete', methods=['POST'])
+def coupons_bulk_delete():
+    form = BulkDeleteForm()
+
+    if form.validate_on_submit():
+        ids = Coupon.get_bulk_action_ids(request.form.get('scope'),
+                                         request.form.getlist('bulk_ids'),
+                                         query=request.args.get('q', ''))
+
+        # Prevent circular imports.
+        from perciapp.blueprints.billing.tasks import delete_coupons
+
+        delete_coupons.delay(ids)
+
+        flash('{0} coupons(s) were scheduled to be deleted.'.format(len(ids)),
+              'success')
+    else:
+        flash('No coupons were deleted, something went wrong.', 'error')
+
+    return redirect(url_for('admin.coupons'))
