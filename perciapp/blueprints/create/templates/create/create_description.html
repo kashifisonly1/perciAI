@@ -1,0 +1,162 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Create Description{% endblock %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-md-4">
+      <form id="create_description" class="sm-margin-top">
+        <legend class="text-warning">
+          <strong id="user_credits">{{ current_user.credits }}</strong> credits left
+        </legend>
+        <div class="form-group">
+          <label for="title"><strong>Title</strong></label>
+          <input type="text" class="form-control" id="title"></input>
+        </div>
+        <div class="form-group">
+          <label for="gender"><strong>Gender</strong></label>
+            <select class="form-control" id="gender" name="gender"
+                    title="What gender is this item?">
+              <option value="women">Women</option>
+              <option value="men">Men</option>
+              <option value="unisex">Unisex</option>
+              <option value="girls">Girls</option>
+              <option value="boys">Boys</option>
+              <option value="baby">Baby</option>
+            </select>
+        </div>
+        <div class="form-group">
+          <label for="category"><strong>Category</strong></label>
+            <select class="form-control" id="category" name="category"
+                    title="What category is this item?">
+              <option value="clothing">Clothing</option>
+              <option value="shoes">Shoes</option>
+              <option value="accessories">Accessories</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="subcategory"><strong>Subcategory</strong></label>
+              <select class="form-control" id="subcategory" name="subcategory"
+                      title="What subcategory is this item?">
+              <option value="tops">Tops</option>
+              <option value="t-shirts & singlets">T-shirts & Singlets</option>
+              <option value="shirts & polos">Shirts & Polos</option>
+              <option value="dresses">Dresses</option>
+              <option value="skirts">Skirts</option>
+              <option value="pants">Pants</option>
+              <option value="jeans">Jeans</option>
+              <option value="shorts">Shorts</option>
+              <option value="swimwear">Swimwear</option>
+              <option value="sweats & hoodies">Sweats & Hoodies</option>
+              <option value="coats & jackets">Coats & Jackets</option>
+              <option value="suits & blazers">Suits & Blazers</option>
+              <option value="jumpers & cardigans">Sweaters</option>
+              <option value="lingerie">Lingerie</option>
+              <option value="sleepwear">Sleepwear</option>
+              <option value="underwear & socks">Underwear & Socks</option>
+              <option value="base layers">Base Layers</option>
+              <option value="jumpsuits & playsuits">Jumpsuits & Playsuits</option>
+              <option value="onesies">Onesies</option>
+              <option value="socks & tights">Tights</option>
+              </select>
+            </div>
+        <script>
+          let category_select = document.getElementById('category');
+          let subcategory_select = document.getElementById('subcategory');
+
+          category_select.onchange = function() {
+            category= category_select.value;
+            
+            fetch('create/subcategory/' + category).then(function(response)  {
+              
+              response.json().then(function(data) {
+                let optionHTML = '';
+
+                for (var key in data) {
+                // check if the property/key is defined in the object itself, not in parent
+                    if (data.hasOwnProperty(key)) {           
+                      console.log(key, data[key]);
+                    }
+                }
+
+                for(var key in data) {
+                  optionHTML += '<option value="' + key + '">' + data[key] + '</option>';
+                }
+
+                subcategory_select.innerHTML = optionHTML;
+              });
+            });
+          }
+        </script>
+        <div class="form-group">
+          <label for="details"><strong>Details</strong></label>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Enter 3-5 bullet points about your item.</span>
+          </div>
+          <input type="text" class="form-control" id="detail1"></input>
+          <input type="text" class="form-control" id="detail2"></input>
+          <input type="text" class="form-control" id="detail3"></input>
+          <input type="text" class="form-control" id="detail4"></input>
+          <input type="text" class="form-control" id="detail5"></input>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block sm-margin-top">
+          <img src="{{ url_for('static', filename='images/spinner.gif') }}"
+               class="spinner"
+               width="16" height="11" alt="Spinner"/>
+          Create Descriptions
+        </button>
+
+        <noscript>
+          <p class="alert alert-sm alert-warning text-center sm-margin-top">
+            You need to enable JavaScript to create descriptions.
+          </p>
+        </noscript>
+
+        <div id="dice" class="text-center"></div>
+        <div id="outcome" class="alert alert-sm text-center sm-margin-top"></div>
+
+        <hr/>
+
+        <div class="text-center">
+          <a href="#coming-soon"
+             class="btn btn-default">Buy credits</a>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-7 col-md-offset-1">
+      <div id="recent_bets">
+        <h2>Recent descriptions</h2>
+        {% if recent_descriptions.count() == 0 %}
+          <p>No descriptions found.</p>
+        {% else %}
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Title</th>
+              <th>Gender</th>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for bet in recent_bets %}
+              <tr>
+                <td>{{ bet.title }}</td>
+                <td>{{ bet.gender }}</td>
+                <td>{{ bet.category }}x</td>
+                <td>{{ bet.subcategory }}</td>
+                <td>{{ bet.description }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+        <a href="{{ url_for('create.history') }}">
+          <span class="btn btn-sm btn-default">View full description history</span>
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -279,10 +279,110 @@ var stripe = function () {
   });
 };
 
+// Placing bets.
+var create = function () {
+  var titleSelector = '#title';
+  var genderSelector = '#gender';
+  var categorySelector = '#category';
+  var subcategorySelector = '#subcategory';
+  var detail1Selector = '#detail1';
+  var detail2Selector = '#detail2';
+  var detail3Selector = '#detail3';
+  var detail4Selector = '#detail4';
+  var detail5Selector = '#detail5';
+  var recentDescriptionsSelector = '#recent_descriptions';
+  var $userCredits = $('#user_credits');
+  var $outcomeStatus = $('#outcome');
+  var $spinner = $('.spinner');
+  var $form = $('#place_bet');
+  
+  var createDescription = function (csrfToken) {
+    return $.ajax({
+      type: 'POST',
+      url: '/create/description',
+      data: {title: $(titleSelector).val(), gender: $(genderSelector).val(), category: $(categorySelector).val(),
+            subcategory: $(subcategorySelector).val(), detail1: $(detail1Selector).val(),
+            detail2: $(detail2Selector).val(), detail3: $(detail3Selector).val(),
+            detail4: $(detail4Selector).val(), detail5: $(detail5Selector).val()},
+      dataType: 'json',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+        return $outcomeStatus.text('')
+          .removeClass('alert-success alert-warning alert-error').hide();
+      }
+    }).done(function (data, status, xhr) {
+      var parsed_data = xhr.responseJSON.data;
+      var dice_entities = '';
+      var status_class = '';
+      var creditsLeft = parseInt($userCredits.text());
+
+      $userCredits.text(creditsLeft);
+
+      if (parsed_data.description) {
+        status_class = '<i class="fa fa-fw fa-smile-o"></i> Congrats, a new description!';
+        create_class = 'success';
+      }
+
+      $(recentDescriptionSelector).show();
+
+      var titleCol = '<td>' + parsed_data.title + '</td>';
+      var genderCol = '<td>' + parsed_data.gender + '</td>';
+      var categoryCol = '<td>' + parsed_data.category + '</td>';
+      var subcategoryCol = '<td>' + parsed_data.subcategory + '</td>';
+      var detail1Col = '<td>' + parsed_data.detail1 + '</td>';
+      var detail2Col = '<td>' + parsed_data.detail2 + '</td>';
+      var detail3Col = '<td>' + parsed_data.detail3 + '</td>';
+      var detail4Col = '<td>' + parsed_data.detail4 + '</td>';
+      var detail5Col = '<td>' + parsed_data.detail5 + '</td>';
+      var descriptionCol = '<td>' + parsed_data.description + '</td>';
+      var recentDescription = '<tr>' + titleCol + genderCol + categoryCol + subcategoryCol + descriptionCol + '</tr>';
+      var recentDescriptionCount = $(recentDescriptionSelector + ' tr').length;
+
+      $(recentDescriptionsSelector + ' tbody').prepend(recentDescription);
+      if (recentDescriptionCount > 10) {
+        $(recentDescriptionsSelector + ' tr:last').remove();
+      }
+
+      return $outcomeStatus.addClass('alert alert-info alert-small').html(status_class);
+    }).fail(function (xhr, status, error) {
+      var status_class = 'alert-error';
+      var error_status = 'You are out of credits. You should buy more.';
+
+      if (xhr.responseJSON) {
+        error_status = xhr.responseJSON.error;
+      } else if (error == 'TOO MANY REQUESTS') {
+        error_status = 'You have been temporarily rate limited.';
+      }
+
+      return $outcomeStatus.addClass(status_class).text(error_status);
+    }).always(function (xhr, status, error) {
+      $spinner.hide();
+      $form.find('button').prop('disabled', false);
+
+      $outcomeStatus.show();
+      return xhr;
+    });
+  };
+
+  jQuery(function ($) {
+    var csrfToken = $('meta[name=csrf-token]').attr('content');
+
+    $('body').on('submit', '#create_description', function () {
+      $spinner.show();
+      $form.find('button').prop('disabled', true);
+
+      createDescription(csrfToken);
+
+      return false;
+    });
+  });
+};
+
 // Initialize everything when the browser is ready.
 $(document).ready(function() {
   momentjsClasses();
   bulkDelete();
   coupons();
   stripe();
+  create();
 });

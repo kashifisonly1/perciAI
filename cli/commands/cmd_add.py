@@ -9,6 +9,7 @@ from perciapp.app import create_app
 from perciapp.extensions import db
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.invoice import Invoice
+from perciapp.blueprints.create.models.create import Create
 
 # Create an app context for the database connection.
 app = create_app()
@@ -105,8 +106,10 @@ def users():
         if random_percent >= 0.5:
             random_trail = str(int(round((random.random() * 1000))))
             username = fake.first_name() + random_trail
+            last_created_on = created_on
         else:
             username = None
+            last_created_on = None
 
         fake_datetime = fake.date_time_between(
             start_date='-1y', end_date='now').strftime('%s')
@@ -122,6 +125,8 @@ def users():
             'username': username,
             'password': User.encrypt_password('password'),
             'sign_in_count': random.random() * 100,
+            'credits': 100,
+            'last_created_on': last_created_on,
             'current_sign_in_on': current_sign_in_on,
             'current_sign_in_ip': fake.ipv4(),
             'last_sign_in_on': current_sign_in_on,
@@ -170,7 +175,7 @@ def invoices():
             exp_date = datetime.utcfromtimestamp(
                 float(exp_date)).strftime('%Y-%m-%d')
 
-            plans = ['BRONZE', 'GOLD', 'PLATINUM']
+            plans = ['PAY AS YOU GO','STANDARD', 'PRO', 'PLATINUM']
             cards = ['Visa', 'Mastercard', 'AMEX',
                      'J.C.B', "Diner's Club"]
 
@@ -197,6 +202,58 @@ def invoices():
 
 
 @click.command()
+def descriptions():
+    """
+    Generate random descriptions.
+    """
+    data = []
+
+    users = db.session.query(User).all()
+
+    for user in users:
+        for i in range(0, random.randint(10, 20)):
+            fake_datetime = fake.date_time_between(
+                start_date='-1y', end_date='now').strftime('%s')
+
+            created_on = datetime.utcfromtimestamp(
+                float(fake_datetime)).strftime('%Y-%m-%dT%H:%M:%S Z')
+
+            title = fake.text(22)
+            gender = random.choice(['men','women','unisex','boys','girls','baby'])
+            category = random.choice(['clothing','shoes','accessories'])
+            subcategories = ['tops', 't-shirts & singlets',
+            'shirts & polos','dresses','skirts',
+            'pants', 'jeans','shorts','swimwear','sweats & hoodies',
+            'coats & jackets', 'suits & blazers','sweaters & cardigans',
+            'sleepwear', 'underwear & socks', 'socks & tights', 
+            'base layers','onesies']
+            subcategory = random.choice(subcategories)
+            detail1 = fake.text(22)
+            detail2 = fake.text(22)
+            detail3 = fake.text(22)
+            detail4 = fake.text(22)
+            detail5 = fake.text(22)
+            description = fake.text(425)
+
+            params = {
+                'title': title,
+                'gender': gender,
+                'category': category,
+                'subcategory': subcategory,
+                'user_id': user.id,
+                'detail1': detail1,
+                'detail2': detail2,
+                'detail3': detail3,
+                'detail4': detail4,
+                'detail5': detail5,
+                'description': description
+            }
+
+            data.append(params)
+
+    return _bulk_insert(Create, data, 'descriptions')
+
+@click.command()
 @click.pass_context
 def all(ctx):
     """
@@ -207,6 +264,7 @@ def all(ctx):
     """
     ctx.invoke(users)
     ctx.invoke(invoices)
+    ctx.invoke(descriptions)
 
     return None
 

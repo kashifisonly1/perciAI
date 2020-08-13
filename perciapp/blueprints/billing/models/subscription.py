@@ -93,6 +93,12 @@ class Subscription(ResourceMixin, db.Model):
         # Update the user account.
         user.payment_id = customer.id
         user.name = name
+        user.previous_plan = plan
+        user.credits = add_subscription_credits(user.credits,
+                                            Subscription.get_plan_by_id(
+                                                user.previous_plan),
+                                            Subscription.get_plan_by_id(plan),
+                                            user.cancelled_subscription_on)
         user.cancelled_subscription_on = None
 
         # Set the subscription details.
@@ -130,7 +136,14 @@ class Subscription(ResourceMixin, db.Model):
         """
         PaymentSubscription.update(user.payment_id, coupon, plan)
 
+        user.previous_plan = user.subscription.plan
         user.subscription.plan = plan
+        user.credits = add_subscription_credits(user.credits,
+                                            Subscription.get_plan_by_id(
+                                                user.previous_plan),
+                                            Subscription.get_plan_by_id(plan),
+                                            user.cancelled_subscription_on)
+
         if coupon:
             user.subscription.coupon = coupon
             coupon = Coupon.query.filter(Coupon.code == coupon).first()
@@ -157,6 +170,7 @@ class Subscription(ResourceMixin, db.Model):
 
         user.payment_id = None
         user.cancelled_subscription_on = datetime.datetime.now(pytz.utc)
+        user.previous_plan = user.subscription.plan
 
         db.session.add(user)
         db.session.delete(user.subscription)

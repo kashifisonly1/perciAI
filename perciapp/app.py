@@ -15,6 +15,7 @@ from perciapp.blueprints.contact import contact
 from perciapp.blueprints.user import user
 from perciapp.blueprints.billing import billing
 from perciapp.blueprints.billing import stripe_webhook
+from perciapp.blueprints.create import create
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.template_processors import (
   format_currency,
@@ -25,7 +26,8 @@ from perciapp.extensions import (
     mail,
     csrf,
     db,
-    login_manager
+    login_manager,
+    limiter
 )
 
 CELERY_TASK_LIST = [
@@ -87,6 +89,7 @@ def create_app(settings_override=None):
     app.register_blueprint(user)
     app.register_blueprint(billing)
     app.register_blueprint(stripe_webhook)
+    app.register_blueprint(create)
     template_processors(app)
     extensions(app)
     authentication(app, User)
@@ -106,8 +109,10 @@ def extensions(app):
     csrf.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    limiter.init_app(app)
 
     return None
+
 
 def template_processors(app):
     """
@@ -120,6 +125,7 @@ def template_processors(app):
     app.jinja_env.globals.update(current_year=current_year)
 
     return app.jinja_env
+
 
 def authentication(app, user_model):
     """
@@ -145,6 +151,7 @@ def authentication(app, user_model):
         user_uid = data[0]
 
         return user_model.query.get(user_uid)
+
 
 def middleware(app):
     """
@@ -181,7 +188,7 @@ def error_templates(app):
         code = getattr(status, 'code', 500)
         return render_template('errors/{0}.html'.format(code)), code
 
-    for error in [404, 500]:
+    for error in [404, 429, 500]:
         app.errorhandler(error)(render_status)
 
     return None

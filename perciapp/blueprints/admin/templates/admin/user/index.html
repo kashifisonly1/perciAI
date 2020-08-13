@@ -33,7 +33,7 @@
               {{ items.sort('name') }}
             </th>
             <th class="col-header">
-              {{ items.sort('last_sign_in_on', 'Last seen') }}
+              {{ items.sort('last_created_on', 'Activity') }}
             </th>
             <th class="col-header">
               {{ items.sort('sign_in_count', 'Sign in count') }}
@@ -75,9 +75,18 @@
             </td>
             <td>
               {% if user.last_sign_in_on %}
+                Last seen: 
                 <time class="from-now"
                       data-datetime="{{ user.last_sign_in_on }}">
                   {{ user.last_sign_in_on }}
+                </time>
+              {% endif %}
+              {% if user.last_created_on %}
+                <br/>
+                Latest create:
+                <time class="from-now"
+                      data-datetime="{{ user.last_created_on }}">
+                  {{ user.last_created_on }}
                 </time>
               {% endif %}
             </td>

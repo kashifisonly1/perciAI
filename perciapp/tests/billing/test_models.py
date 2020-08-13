@@ -152,17 +152,17 @@ class TestInvoice(object):
                                 'quantity': 1,
                                 'plan': {
                                     'interval': 'month',
-                                    'name': 'Gold',
+                                    'name': 'Pro',
                                     'created': 1424879591,
                                     'amount': 500,
                                     'currency': 'usd',
-                                    'id': 'gold',
+                                    'id': 'pro',
                                     'object': 'plan',
                                     'livemode': False,
                                     'interval_count': 1,
                                     'trial_period_days': 14,
                                     'metadata': {},
-                                    'statement_descriptor': 'GOLD MONTHLY'
+                                    'statement_descriptor': 'PRO MONTHLY'
                                 },
                                 'description': None,
                                 'discountable': True,
@@ -206,9 +206,9 @@ class TestInvoice(object):
         parsed_payload = Invoice.parse_from_event(event_payload)
 
         assert parsed_payload['payment_id'] == 'cus_000'
-        assert parsed_payload['plan'] == 'Gold'
+        assert parsed_payload['plan'] == 'Pro'
         assert parsed_payload['receipt_number'] == '0009000'
-        assert parsed_payload['description'] == 'GOLD MONTHLY'
+        assert parsed_payload['description'] == 'PRO MONTHLY'
         assert parsed_payload['period_start_on'] == datetime.date(2015, 6, 1)
         assert parsed_payload['period_end_on'] == datetime.date(2015, 6, 15)
         assert parsed_payload['currency'] == 'usd'
@@ -222,8 +222,8 @@ class TestInvoice(object):
 
         next_bill_on = datetime.datetime(2015, 5, 30, 20, 46, 10)
 
-        assert parsed_payload['plan'] == 'Gold'
-        assert parsed_payload['description'] == 'GOLD MONTHLY'
+        assert parsed_payload['plan'] == 'Pro'
+        assert parsed_payload['description'] == 'PRO MONTHLY'
         assert parsed_payload['next_bill_on'] == next_bill_on
         assert parsed_payload['amount_due'] == 500
         assert parsed_payload['interval'] == 'month'

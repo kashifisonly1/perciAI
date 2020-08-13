@@ -41,6 +41,9 @@ class BulkDeleteForm(Form):
 class UserForm(ModelForm):
     username_message = 'Letters, numbers and underscores only please.'
 
+    credits = IntegerField('Credits', [DataRequired(),
+                                   NumberRange(min=1, max=2147483647)])
+
     username = StringField(validators=[
         Unique(
             User.username,

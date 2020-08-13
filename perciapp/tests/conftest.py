@@ -252,7 +252,7 @@ def subscriptions(db):
     # Create a subscription.
     params = {
         'user_id': subscriber.id,
-        'plan': 'gold'
+        'plan': 'pro'
     }
     subscription = Subscription(**params)
     db.session.add(subscription)
@@ -310,18 +310,18 @@ def mock_stripe():
                     'quantity': 1,
                     'plan': {
                         'interval': 'month',
-                        'name': 'Gold',
+                        'name': 'Pro',
                         'created': 1424879591,
                         'amount': 500,
                         'currency': 'usd',
-                        'id': 'gold',
+                        'id': 'pro',
                         'object': 'plan',
                         'livemode': False,
                         'interval_count': 1,
                         'trial_period_days': 14,
                         'metadata': {
                         },
-                        'statement_descriptor': 'GOLD MONTHLY'
+                        'statement_descriptor': 'PRO MONTHLY'
                     },
                     'description': None,
                     'discountable': True,

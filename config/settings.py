@@ -46,49 +46,67 @@ SEED_ADMIN_EMAIL = 'dev@local.host'
 SEED_ADMIN_PASSWORD = 'devpassword'
 REMEMBER_COOKIE_DURATION = timedelta(days=90)
 
+# Image display.
+IMAGE_UPLOADS = 'perciapp/perciapp/static/uploads/'
+ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF"]
+MAX_IMAGE_FILESIZE = 0.5 * 1024 * 1024
+
 # Billing.
 STRIPE_SECRET_KEY = None
 STRIPE_PUBLISHABLE_KEY = None
 STRIPE_API_VERSION = '2016-03-07'
 STRIPE_PLANS = {
     '0': {
-        'id': 'bronze',
-        'name': 'Bronze',
+        'id': 'pay as you go',
+        'name': 'Pay as You Go',
         'amount': 0,
         'currency': 'usd',
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
-        'statement_descriptor': 'PERCI.AI BRONZE',
+        'statement_descriptor': 'PERCI.AI PAY AS YOU GO',
         'metadata': {
-            'coins': 110
+            'credits': 0
         }
     },
     '1': {
-        'id': 'gold',
-        'name': 'Gold',
-        'amount': 25,
+        'id': 'standard',
+        'name': 'Standard',
+        'amount': 5000,
         'currency': 'usd',
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
-        'statement_descriptor': 'PERCI.AI GOLD',
+        'statement_descriptor': 'PERCI.AI STANDARD',
         'metadata': {
-            'coins': 25,
-            'recommended': True
+            'credits': 25
         }
     },
     '2': {
+        'id': 'pro',
+        'name': 'Pro',
+        'amount': 7500,
+        'currency': 'usd',
+        'interval': 'month',
+        'interval_count': 1,
+        'trial_period_days': 14,
+        'statement_descriptor': 'PERCI.AI PRO',
+        'metadata': {
+            'credits': 50,
+            'recommended': True
+        }
+    },
+    '3': {
         'id': 'platinum',
         'name': 'Platinum',
-        'amount': 100,
+        'amount': 10000,
         'currency': 'usd',
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
         'statement_descriptor': 'PERCI.AI PLATINUM',
         'metadata': {
-            'coins': 1500
+            'credits': 80
         }
     }
 }

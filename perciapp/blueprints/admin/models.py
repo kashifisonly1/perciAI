@@ -2,7 +2,7 @@ from sqlalchemy import func
 
 from perciapp.blueprints.user.models import db, User
 from perciapp.blueprints.billing.models.subscription import Subscription
-
+from perciapp.blueprints.create.models.create import Create
 
 class Dashboard(object):
     @classmethod
@@ -40,6 +40,25 @@ class Dashboard(object):
             percent = round((not_null / float(total)) * 100, 1)
 
         return not_null, total, percent
+
+    @classmethod
+    def group_and_count_categories(cls):
+        """
+        Perform a group by/count on all categories.
+
+        :return: dict
+        """
+        return Dashboard._group_and_count(Create, Create.category)
+
+    
+    @classmethod
+    def group_and_count_subcategories(cls):
+        """
+        Perform a group by/count on all categories.
+
+        :return: dict
+        """
+        return Dashboard._group_and_count(Create, Create.subcategory)
 
     @classmethod
     def _group_and_count(cls, model, field):

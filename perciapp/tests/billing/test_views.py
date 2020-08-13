@@ -76,7 +76,7 @@ class TestBilling(ViewTestMixin):
 
         params = {
             'stripe_key': 'cus_000',
-            'plan': 'gold',
+            'plan': 'pro',
             'name': 'Foobar Johnson'
         }
 
@@ -110,7 +110,7 @@ class TestBilling(ViewTestMixin):
         self.login(identity='subscriber@local.host')
 
         params = {
-            'submit_gold': ''
+            'submit_pro': ''
         }
 
         response = self.client.post(url_for('billing.update'),

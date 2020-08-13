@@ -4,6 +4,7 @@ from stripe.error import InvalidRequestError
 from lib.util_json import render_json
 from perciapp.extensions import csrf
 from perciapp.blueprints.billing.models.invoice import Invoice
+from perciapp.blueprints.billing.models.subscription import Subscription
 from perciapp.blueprints.billing.gateways.stripecom import \
     Event as PaymentEvent
 
@@ -24,7 +25,11 @@ def event():
         safe_event = PaymentEvent.retrieve(request.json.get('id'))
         parsed_event = Invoice.parse_from_event(safe_event)
 
-        Invoice.prepare_and_save(parsed_event)
+        user = Invoice.prepare_and_save(parsed_event)
+
+        if parsed_event.get('total') > 0:
+            plan = Subscription.get_plan_by_id(user.subscription.plan)
+            user.add_credits(plan)
     except InvalidRequestError as e:
         # We could not parse the event.
         return render_json(422, {'error': str(e)})

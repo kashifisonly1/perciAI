@@ -16,6 +16,7 @@ from lib.util_sqlalchemy import ResourceMixin, AwareDateTime
 from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.subscription import Subscription
 from perciapp.blueprints.billing.models.invoice import Invoice
+from perciapp.blueprints.create.models.create import Create
 from perciapp.extensions import db
 
 
@@ -34,6 +35,7 @@ class User(UserMixin, ResourceMixin, db.Model):
     subscription = db.relationship(Subscription, uselist=False,
                                    backref='users', passive_deletes=True)
     invoices = db.relationship(Invoice, backref='users', passive_deletes=True)
+    descriptions = db.relationship(Create, backref='descriptions', passive_deletes=True)
 
     # Authentication.
     role = db.Column(db.Enum(*ROLE, name='role_types', native_enum=False),
@@ -49,6 +51,11 @@ class User(UserMixin, ResourceMixin, db.Model):
     name = db.Column(db.String(128), index=True)
     payment_id = db.Column(db.String(128), index=True)
     cancelled_subscription_on = db.Column(AwareDateTime())
+    previous_plan = db.Column(db.String(128))
+
+    # Creating.
+    credits = db.Column(db.Integer())
+    last_created_on = db.Column(AwareDateTime())
 
     # Activity tracking.
     sign_in_count = db.Column(db.Integer, nullable=False, default=0)
@@ -62,7 +69,8 @@ class User(UserMixin, ResourceMixin, db.Model):
         super(User, self).__init__(**kwargs)
 
         self.password = User.encrypt_password(kwargs.get('password', ''))
-
+        self.credits = 20
+        
     @classmethod
     def find_by_identity(cls, identity):
         """
@@ -277,5 +285,17 @@ class User(UserMixin, ResourceMixin, db.Model):
 
         self.current_sign_in_on = datetime.datetime.now(pytz.utc)
         self.current_sign_in_ip = ip_address
+
+        return self.save()
+
+    def add_credits(self, plan):
+        """
+        Add an amount of credits to an existing user.
+
+        :param plan: Subscription plan
+        :type plan: str
+        :return: SQLAlchemy commit results
+        """
+        self.credits += plan['metadata']['credits']
 
         return self.save()
