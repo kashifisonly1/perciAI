@@ -55,12 +55,13 @@ MAX_IMAGE_FILESIZE = 0.5 * 1024 * 1024
 STRIPE_SECRET_KEY = None
 STRIPE_PUBLISHABLE_KEY = None
 STRIPE_API_VERSION = '2016-03-07'
+STRIPE_CURRENCY = 'usd'
 STRIPE_PLANS = {
     '0': {
         'id': 'pay as you go',
         'name': 'Pay as You Go',
         'amount': 0,
-        'currency': 'usd',
+        'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
@@ -73,7 +74,7 @@ STRIPE_PLANS = {
         'id': 'standard',
         'name': 'Standard',
         'amount': 5000,
-        'currency': 'usd',
+        'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
@@ -86,7 +87,7 @@ STRIPE_PLANS = {
         'id': 'pro',
         'name': 'Pro',
         'amount': 7500,
-        'currency': 'usd',
+        'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
@@ -100,7 +101,7 @@ STRIPE_PLANS = {
         'id': 'platinum',
         'name': 'Platinum',
         'amount': 10000,
-        'currency': 'usd',
+        'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
         'trial_period_days': 14,
@@ -110,6 +111,13 @@ STRIPE_PLANS = {
         }
     }
 }
+
+CREDIT_BUNDLES = [
+    {'credits': 5, 'price_in_cents': 1000, 'label': '5 for $10'},
+    {'credits': 25, 'price_in_cents': 4000, 'label': '25 for $40'},
+    {'credits': 100, 'price_in_cents': 15000, 'label': '100 for $150'},
+    {'credits': 500, 'price_in_cents': 50000, 'label': '500 for $500'},
+]
 
 RATELIMIT_STORAGE_URL = CELERY_BROKER_URL
 RATELIMIT_STRATEGY = 'fixed-window-elastic-expiry'

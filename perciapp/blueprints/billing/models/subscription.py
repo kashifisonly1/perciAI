@@ -9,7 +9,8 @@ from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.gateways.stripecom import Card as PaymentCard
 from perciapp.blueprints.billing.gateways.stripecom import \
-    Subscription as PaymentSubscription
+    Customer as PaymentCustomer, Subscription as PaymentSubscription
+from perciapp.blueprints.create.models.credit import add_subscription_credits
 
 
 class Subscription(ResourceMixin, db.Model):

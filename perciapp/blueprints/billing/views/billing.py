@@ -12,8 +12,8 @@ from flask_login import login_required, current_user
 
 from config import settings
 from lib.util_json import render_json
-from perciapp.blueprints.billing.forms import CreditCardForm, \
-    UpdateSubscriptionForm, CancelSubscriptionForm
+from perciapp.blueprints.billing.forms import SubscriptionForm, \
+    UpdateSubscriptionForm, CancelSubscriptionForm, PaymentForm
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.models.subscription import Subscription
 from perciapp.blueprints.billing.models.invoice import Invoice
@@ -67,7 +67,7 @@ def create():
         return redirect(url_for('billing.pricing'))
 
     stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
-    form = CreditCardForm(stripe_key=stripe_key, plan=plan)
+    form = SubscriptionForm(stripe_key=stripe_key, plan=plan)
 
     if form.validate_on_submit():
         subscription = Subscription()
@@ -158,7 +158,7 @@ def update_payment_method():
 
     card = current_user.credit_card
     stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
-    form = CreditCardForm(stripe_key=stripe_key,
+    form = SubscriptionForm(stripe_key=stripe_key,
                           plan=active_plan,
                           name=current_user.name)
 
@@ -182,11 +182,14 @@ def update_payment_method():
                            plan=active_plan, card_last4=str(card.last4))
 
 
-@billing.route('/billing_details')
+@billing.route('/billing_details', defaults={'page': 1})
+@billing.route('/billing_details/page/<int:page>')
 @handle_stripe_exceptions
 @login_required
-def billing_details():
-    invoices = Invoice.billing_history(current_user)
+def billing_details(page):
+    paginated_invoices = Invoice.query.filter(
+      Invoice.user_id == current_user.id) \
+        .order_by(Invoice.created_on.desc()).paginate(page, 12, True)
 
     if current_user.subscription:
         upcoming = Invoice.upcoming(current_user.payment_id)
@@ -197,4 +200,42 @@ def billing_details():
         coupon = None
 
     return render_template('billing/billing_details.html',
-                           invoices=invoices, upcoming=upcoming, coupon=coupon)
+                           paginated_invoices=paginated_invoices,
+                           upcoming=upcoming, coupon=coupon)
+
+
+@billing.route('/purchase_credits', methods=['GET', 'POST'])
+@login_required
+def purchase_credits():
+    stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
+    form = PaymentForm(stripe_key=stripe_key)
+
+    if form.validate_on_submit():
+        credit_bundles = current_app.config.get('CREDIT_BUNDLES')
+        credit_bundles_form = int(request.form.get('credit_bundles'))
+
+        bundle = next((item for item in credit_bundles if
+                       item['credits'] == credit_bundles_form), None)
+
+        if bundle is not None:
+            invoice = Invoice()
+            created = invoice.create(user=current_user,
+                                     currency=current_app.config.get(
+                                      'STRIPE_CURRENCY'),
+                                     amount=bundle.get('price_in_cents'),
+                                     credits=credit_bundles_form,
+                                     coupon=request.form.get('coupon_code'),
+                                     token=request.form.get('stripe_token'))
+
+            if created:
+                flash('{0} credits have been added to your account.'.format(
+                       credit_bundles_form),
+                      'success')
+            else:
+                flash('You must enable JavaScript for this request.',
+                      'warning')
+
+            return redirect(url_for('create.create_description'))
+
+    return render_template('billing/purchase_credits.html', form=form)
+

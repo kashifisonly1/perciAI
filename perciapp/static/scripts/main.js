@@ -116,10 +116,10 @@ var coupons = function () {
 };
 
 // Handling processing payments with Stripe.
-var stripe = function () {
+var stripe = function (form_id) {
   var couponCodeSelector = '#coupon_code';
   
-  var $form = $('#payment_form');
+  var $form = $(form_id);
   var $couponCode = $(couponCodeSelector);
   var $couponCodeStatus = $('#coupon_code_status');
   var $stripeKey = $('#stripe_key');
@@ -383,6 +383,7 @@ $(document).ready(function() {
   momentjsClasses();
   bulkDelete();
   coupons();
-  stripe();
+  stripe('#subscription_form');
+  stripe('#payment_form');
   create();
 });

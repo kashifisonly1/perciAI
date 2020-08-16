@@ -48,7 +48,7 @@ def create_description():
         detail4 = list(request.form.get('detail4'))
         detail5 = list(request.form.get('detail5'))
 
-        if current_user.credits > 1:
+        if current_user.credits < 1:
             error = 'You need more credits bub.'
             return render_json(400, {'error': error})
         
@@ -69,7 +69,6 @@ def create_description():
           'description': description
         }
 
-        #figure out what this is later - it's some form of model data that maps all the params to a bet.
         create = Create(**params)
         create.save_and_update_user(current_user)
 

@@ -18,6 +18,60 @@ class Event(object):
         return stripe.Event.retrieve(event_id)
 
 
+class Customer(object):
+    @classmethod
+    def create(cls, token=None, email=None, coupon=None, plan=None):
+        """
+        Create a new customer.
+
+        API Documentation:
+          https://stripe.com/docs/api#create_customer
+
+        :param token: Token returned by JavaScript
+        :type token: str
+        :param email: E-mail address of the customer
+        :type email: str
+        :param coupon: Coupon code
+        :type coupon: str
+        :param plan: Plan identifier
+        :type plan: str
+        :return: Stripe customer
+        """
+        params = {
+            'source': token,
+            'email': email
+        }
+
+        if plan:
+            params['plan'] = plan
+
+        if coupon:
+            params['coupon'] = coupon
+
+        return stripe.Customer.create(**params)
+
+
+class Charge(object):
+    @classmethod
+    def create(cls, customer_id=None, currency=None, amount=None):
+        """
+        Create a new charge.
+
+        :param customer_id: Stripe customer id
+        :type customer_id: int
+        :param amount: Stripe currency
+        :type amount: str
+        :param amount: Amount in cents
+        :type amount: int
+        :return: Stripe charge
+        """
+        return stripe.Charge.create(
+            amount=amount,
+            currency=currency,
+            customer=customer_id,
+            statement_descriptor='PERCI.AI CREDITS')
+            
+            
 class Coupon(object):
     @classmethod
     def create(cls, code=None, duration=None, amount_off=None,
@@ -108,35 +162,6 @@ class Invoice(object):
 
 
 class Subscription(object):
-    @classmethod
-    def create(cls, token=None, email=None, coupon=None, plan=None):
-        """
-        Create a new subscription.
-
-        API Documentation:
-          https://stripe.com/docs/api#create_subscription
-
-        :param token: Token returned by JavaScript
-        :type token: str
-        :param email: E-mail address of the customer
-        :type email: str
-        :param coupon: Coupon code
-        :type coupon: str
-        :param plan: Plan identifier
-        :type plan: str
-        :return: Stripe customer
-        """
-        params = {
-            'source': token,
-            'email': email,
-            'plan': plan
-        }
-
-        if coupon:
-            params['coupon'] = coupon
-
-        return stripe.Customer.create(**params)
-
     @classmethod
     def update(cls, customer_id=None, coupon=None, plan=None):
         """

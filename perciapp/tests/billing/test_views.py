@@ -183,3 +183,20 @@ class TestBilling(ViewTestMixin):
 
         assert_status_with_message(200, response,
                                    'Billing details and history')
+
+    def test_purchase_credits(self, users, mock_stripe):
+        """ Purchase credits requires JavaScript. """
+        self.login()
+
+        params = {
+            'stripe_key': 'cus_000',
+            'credit_bundles': '100',
+            'name': 'Foobar Johnson'
+        }
+
+        response = self.client.post(url_for('billing.purchase_credits'),
+                                    data=params, follow_redirects=True)
+
+        assert_status_with_message(200, response,
+                                   'You must enable JavaScript'
+                                   ' for this request.')

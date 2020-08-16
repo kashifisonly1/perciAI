@@ -78,13 +78,10 @@ def users_edit(id):
     user = User.query.get(id)
     form = UserForm(obj=user)
 
-    invoices = Invoice.billing_history(current_user)
     if current_user.subscription:
-        upcoming = Invoice.upcoming(current_user.payment_id)
         coupon = Coupon.query \
             .filter(Coupon.code == current_user.subscription.coupon).first()
     else:
-        upcoming = None
         coupon = None
 
     if form.validate_on_submit():
@@ -105,7 +102,7 @@ def users_edit(id):
         return redirect(url_for('admin.users'))
 
     return render_template('admin/user/edit.html', form=form, user=user,
-                            invoices=invoices, upcoming=upcoming, coupon=coupon)
+                           coupon=coupon)
 
 
 @admin.route('/users/bulk_delete', methods=['POST'])
@@ -217,3 +214,22 @@ def coupons_bulk_delete():
         flash('No coupons were deleted, something went wrong.', 'error')
 
     return redirect(url_for('admin.coupons'))
+
+
+# Invoices --------------------------------------------------------------------
+@admin.route('/invoices', defaults={'page': 1})
+@admin.route('/invoices/page/<int:page>')
+def invoices(page):
+    search_form = SearchForm()
+
+    sort_by = Invoice.sort_by(request.args.get('sort', 'created_on'),
+                              request.args.get('direction', 'desc'))
+    order_values = 'invoices.{0} {1}'.format(sort_by[0], sort_by[1])
+
+    paginated_invoices = Invoice.query.join(User) \
+        .filter(Invoice.search(request.args.get('q', ''))) \
+        .order_by(text(order_values)) \
+        .paginate(page, 50, True)
+
+    return render_template('admin/invoice/index.html',
+                           form=search_form, invoices=paginated_invoices)

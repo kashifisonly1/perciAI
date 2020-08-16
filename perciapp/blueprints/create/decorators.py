@@ -15,7 +15,7 @@ def credits_required(f):
         if current_user.credits == 0:
             flash("Sorry, you're out of credits. You should buy more.",
                   'warning')
-            return redirect(url_for('user.settings'))
+            return redirect(url_for('billing.purchase_credits'))
 
         return f(*args, **kwargs)
 

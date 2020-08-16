@@ -125,7 +125,7 @@ def users():
             'username': username,
             'password': User.encrypt_password('password'),
             'sign_in_count': random.random() * 100,
-            'credits': 100,
+            'credits': 20,
             'last_created_on': last_created_on,
             'current_sign_in_on': current_sign_in_on,
             'current_sign_in_ip': fake.ipv4(),

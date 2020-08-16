@@ -1,24 +1,36 @@
 {% extends 'layouts/app.html' %}
 {% import 'macros/items.html' as items %}
 {% import 'macros/form.html' as f with context %}
-{% import 'macros/user.html' as account %}
+{% import 'billing/macros/billing.html' as billing with context %}
 
-{% block title %}Admin - Users / List{% endblock %}
+{% block title %}Admin - Coupons / List{% endblock %}
 
 {% block body %}
-  {{ f.search('admin.users') }}
+  <div class="row">
+    <div class="col-md-6">
+      {{ f.search('admin.coupons') }}
+    </div>
+    <div class="col-md-6">
+      <a href="{{ url_for('admin.coupons_new') }}"
+         class="btn btn-primary pull-right">
+        Create coupon
+      </a>
+    </div>
+  </div>
 
-  {% if users.total == 0 %}
+  {% if coupons.total == 0 %}
     <h3>No results found</h3>
 
     {% if request.args.get('q') %}
       <p>Try limiting or removing your search terms.</p>
     {% else %}
-      <p>There are no users present,
-         you should <a href="{{ url_for('user.signup') }}">sign up</a>.</p>
+      <p>
+         There are no coupons present,
+         you should <a href="{{ url_for('admin.coupons_new') }}">create one</a>.
+       </p>
     {% endif %}
   {% else %}
-    {% call f.form_tag('admin.users_bulk_delete') %}
+    {% call f.form_tag('admin.coupons_bulk_delete') %}
       <table class="table table-striped">
         <thead>
           <tr>
@@ -27,67 +39,63 @@
               <input id="select_all" name="select_all" type="checkbox">
             </th>
             <th class="col-header">
-              {{ items.sort('created_on', 'Registered') }}
+              {{ items.sort('created_on', 'Created') }}
             </th>
             <th class="col-header">
-              {{ items.sort('name') }}
+              {{ items.sort('code') }}
             </th>
             <th class="col-header">
-              {{ items.sort('last_sign_in_on', 'Last seen') }}
+              {{ items.sort('duration') }}
             </th>
             <th class="col-header">
-              {{ items.sort('sign_in_count', 'Sign in count') }}
+              {{ items.sort('redeem_by', 'Expires') }}
             </th>
-            <th id="bulk_actions" colspan="4">
+            <th class="col-header">
+              {{ items.sort('times_redeemed', 'Redeemed') }}
+            </th>
+            <th id="bulk_actions" colspan="5">
               <div class="form-inline">
                 {{ f.field(bulk_form.scope, inline=True) }}
-                  <button type="submit"
-                          class="btn btn-danger btn-sm">
-                    Delete items
-                  </button>
+                <button type="submit"
+                        class="btn btn-danger btn-sm">
+                  Delete items
+                </button>
               </div>
             </th>
           </tr>
         </thead>
         <tbody>
-        {% for user in users.items %}
-          <tr>
+        {% for coupon in coupons.items %}
+          <tr class="{{ 'half-faded' if not coupon.valid }}">
             <td>
               <label for="bulk_ids"></label>
-              <input class="checkbox-item" id="bulk_ids" name="bulk_ids"
-                     type="checkbox" value="{{ user.id }}">
+              <input class="checkbox-item" id="bulk_ids"
+                      name="bulk_ids" type="checkbox" value="{{ coupon.id }}">
             </td>
             <td>
               <time class="from-now"
-                    data-datetime="{{ user.created_on }}">
-                {{ user.created_on }}
+                    data-datetime="{{ coupon.created_on }}">
+                {{ coupon.created_on }}
               </time>
             </td>
             <td>
-              <a href="{{ url_for('admin.users_edit', id=user.id) }}">
-                <div class="pull-left">
-                  {{ account.role_icon_for(user) }}
-                </div>
-                <h4 class="media-heading">{{ user.username }}</h4>
+              {{ coupon.code }}
 
-                <p class="text-muted">{{ user.email }}</p>
-              </a>
+              <p class="small text-muted">
+                {{ billing.coupon_discount(coupon.amount_off, coupon.percent_off) }}
+                discount
+              </p>
             </td>
-            <td>
-              {% if user.last_sign_in_on %}
-                <time class="from-now"
-                      data-datetime="{{ user.last_sign_in_on }}">
-                  {{ user.last_sign_in_on }}
-                </time>
-              {% endif %}
-            </td>
-            <td>{{ user.sign_in_count }}</td>
+            <td>{{ billing.coupon_duration_tag_for(coupon) }}</td>
+            <td>{{ billing.coupon_expiration(coupon) }}</td>
+            <td>{{ billing.coupon_redeemed(coupon.times_redeemed, coupon.max_redemptions) }}</td>
           </tr>
         {% endfor %}
         </tbody>
       </table>
     {% endcall %}
 
-    {{ items.paginate(users) }}
+    {{ items.paginate(coupons) }}
   {% endif %}
 {% endblock %}
+

@@ -3,6 +3,7 @@ import datetime
 import pytz
 
 from lib.money import cents_to_dollars, dollars_to_cents
+from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.models.invoice import Invoice
@@ -154,7 +155,7 @@ class TestInvoice(object):
                                     'interval': 'month',
                                     'name': 'Pro',
                                     'created': 1424879591,
-                                    'amount': 500,
+                                    'amount': 7500,
                                     'currency': 'usd',
                                     'id': 'pro',
                                     'object': 'plan',
@@ -162,7 +163,7 @@ class TestInvoice(object):
                                     'interval_count': 1,
                                     'trial_period_days': 14,
                                     'metadata': {},
-                                    'statement_descriptor': 'PRO MONTHLY'
+                                    'statement_descriptor': 'PERCI.AI PRO'
                                 },
                                 'description': None,
                                 'discountable': True,
@@ -174,7 +175,7 @@ class TestInvoice(object):
                         'url': '/v1/invoices/in_000/lines'
                     },
                     'subtotal': 0,
-                    'total': 500,
+                    'total': 7500,
                     'customer': 'cus_000',
                     'object': 'invoice',
                     'attempted': False,
@@ -208,13 +209,13 @@ class TestInvoice(object):
         assert parsed_payload['payment_id'] == 'cus_000'
         assert parsed_payload['plan'] == 'Pro'
         assert parsed_payload['receipt_number'] == '0009000'
-        assert parsed_payload['description'] == 'PRO MONTHLY'
+        assert parsed_payload['description'] == 'PERCI.AI PRO'
         assert parsed_payload['period_start_on'] == datetime.date(2015, 6, 1)
         assert parsed_payload['period_end_on'] == datetime.date(2015, 6, 15)
         assert parsed_payload['currency'] == 'usd'
         assert parsed_payload['tax'] is None
         assert parsed_payload['tax_percent'] is None
-        assert parsed_payload['total'] == 500
+        assert parsed_payload['total'] == 7500
 
     def test_invoice_upcoming(self, mock_stripe):
         """ Parse out the data correctly from a Stripe invoice payload. """
@@ -223,7 +224,17 @@ class TestInvoice(object):
         next_bill_on = datetime.datetime(2015, 5, 30, 20, 46, 10)
 
         assert parsed_payload['plan'] == 'Pro'
-        assert parsed_payload['description'] == 'PRO MONTHLY'
+        assert parsed_payload['description'] == 'PERCI.AI PRO'
         assert parsed_payload['next_bill_on'] == next_bill_on
-        assert parsed_payload['amount_due'] == 500
+        assert parsed_payload['amount_due'] == 7500
         assert parsed_payload['interval'] == 'month'
+
+    def test_invoice_create(self, users, mock_stripe):
+        """ Successfully create an invoice item. """
+        user = User.find_by_identity('admin@local.host')
+
+        invoice = Invoice()
+        invoice.create(user=user, currency='usd', amount='4000', credits=25,
+                       coupon=None, token='cus_000')
+
+        assert user.credits == 45

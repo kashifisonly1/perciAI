@@ -204,6 +204,21 @@ class Coupon(ResourceMixin, db.Model):
                 self.valid = False
 
         return db.session.commit()
+    
+    def apply_discount_to(self, amount):
+        """
+        Apply the discount to an amount.
+
+        :param amount: Amount in cents
+        :type amount: int
+        :return: int
+        """
+        if self.amount_off:
+            amount -= self.amount_off
+        elif self.percent_off:
+            amount *= (1 - (self.percent_off * 0.01))
+
+        return int(amount)
 
     def to_json(self):
         """

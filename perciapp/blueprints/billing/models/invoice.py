@@ -1,9 +1,16 @@
 import datetime
 
+from sqlalchemy import or_
+
 from lib.util_sqlalchemy import ResourceMixin
 from perciapp.extensions import db
-from perciapp.blueprints.billing.gateways.stripecom import \
+from perciapp.blueprints.billing.models.credit_card import CreditCard
+from perciapp.blueprints.billing.models.coupon import Coupon
+from perciapp.blueprints.billing.gateways.stripecom import (
+    Customer as PaymentCustomer,
+    Charge as PaymentCharge,
     Invoice as PaymentInvoice
+)
 
 
 class Invoice(ResourceMixin, db.Model):
@@ -38,19 +45,24 @@ class Invoice(ResourceMixin, db.Model):
         super(Invoice, self).__init__(**kwargs)
 
     @classmethod
-    def billing_history(cls, user=None):
+    def search(cls, query):
         """
-        Return the billing history for a specific user.
+        Search a resource by 1 or more fields.
 
-        :param user: User whose billing history will be retrieved
-        :type user: User instance
-
-        :return: Invoices
+        :param query: Search query
+        :type query: str
+        :return: SQLAlchemy filter
         """
-        invoices = Invoice.query.filter(Invoice.user_id == user.id) \
-            .order_by(Invoice.created_on.desc()).limit(12)
+        from perciapp.blueprints.user.models import User
 
-        return invoices
+        if not query:
+            return ''
+
+        search_query = '%{0}%'.format(query)
+        search_chain = (User.email.ilike(search_query),
+                        User.username.ilike(search_query))
+
+        return or_(*search_chain)
 
     @classmethod
     def parse_from_event(cls, payload):
@@ -143,3 +155,65 @@ class Invoice(ResourceMixin, db.Model):
         invoice = PaymentInvoice.upcoming(customer_id)
 
         return Invoice.parse_from_api(invoice)
+
+    def create(self, user=None, currency=None, amount=None, credits=None,
+               coupon=None, token=None):
+        """
+        Create an invoice item.
+
+        :param user: User to apply the subscription to
+        :type user: User instance
+        :param amount: Stripe currency
+        :type amount: str
+        :param amount: Amount in cents
+        :type amount: int
+        :param credits: Amount of credits
+        :type credits: int
+        :param coupon: Coupon code to apply
+        :type coupon: str
+        :param token: Token returned by JavaScript
+        :type token: str
+        :return: bool
+        """
+        if token is None:
+            return False
+
+        customer = PaymentCustomer.create(token=token, email=user.email)
+
+        if coupon:
+            self.coupon = coupon.upper()
+            coupon = Coupon.query.filter(Coupon.code == self.coupon).first()
+            amount = coupon.apply_discount_to(amount)
+
+        charge = PaymentCharge.create(customer.id, currency, amount)
+
+        # Redeem the coupon.
+        if coupon:
+            coupon.redeem()
+
+        # Add the credits to the user.
+        user.credits += credits
+
+        # Create the invoice item.
+        period_on = datetime.datetime.utcfromtimestamp(charge.get('created'))
+        card_params = CreditCard.extract_card_params(customer)
+
+        self.user_id = user.id
+        self.plan = '&mdash;'
+        self.receipt_number = charge.get('receipt_number')
+        self.description = charge.get('statement_descriptor')
+        self.period_start_on = period_on
+        self.period_end_on = period_on
+        self.currency = charge.get('currency')
+        self.tax = None
+        self.tax_percent = None
+        self.total = charge.get('amount')
+        self.brand = card_params.get('brand')
+        self.last4 = card_params.get('last4')
+        self.exp_date = card_params.get('exp_date')
+
+        db.session.add(user)
+        db.session.add(self)
+        db.session.commit()
+
+        return True
