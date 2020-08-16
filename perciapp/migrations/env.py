@@ -7,8 +7,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config
 
-from snakeeyes.app import create_app
-from snakeeyes.extensions import db
+from perciapp.app import create_app
+from perciapp.extensions import db
 
 app = create_app()
 
