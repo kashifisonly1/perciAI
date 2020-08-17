@@ -13,9 +13,10 @@
       'Change plan'.
     </div>
   {% else %}
-    <h2 class="text-center">Ready to start?</h2>
+    <h2 class="text-center">Pay less per description with a subscription.</h2>
     <h3 class="text-center text-muted lg-margin-bottom">
-      You're a few clicks away from your own descriptions.
+      Or pay as you go by <a href="{{ url_for('billing.purchase_credits') }}"
+      >purchasing credits</a>.
     </h3>
   {% endif %}
 {% endblock %}
@@ -36,32 +37,23 @@
     <div class="row">
       {% call billing.plan(plans['0']) %}
         <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item strike">Dicta optio cumque dolore</li>
-          <li class="list-group-item strike">Dicta optio cumque dolore</li>
-          <li class="list-group-item strike">Consequuntur voluptatum</li>
-          <li class="list-group-item strike">Consequuntur voluptatum</li>
+          <li class="list-group-item">25 descriptions each month</li>
+          <li class="list-group-item">Descriptions on demand</li>
+          <li class="list-group-item">$2 per description</li>
         </ul>
       {% endcall %}
       {% call billing.plan(plans['1']) %}
         <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item">Dicta optio cumque dolore</li>
-          <li class="list-group-item">Dicta optio cumque dolore</li>
-          <li class="list-group-item strike">Consequuntur voluptatum</li>
-          <li class="list-group-item strike">Consequuntur voluptatum</li>
+          <li class="list-group-item">50 descriptions each month</li>
+          <li class="list-group-item">Descriptions on demand</li>
+          <li class="list-group-item">$1.50 per description</li>
         </ul>
       {% endcall %}
       {% call billing.plan(plans['2']) %}
         <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item">Lorem ipsum dolor sit amet</li>
-          <li class="list-group-item">Dicta optio cumque dolore</li>
-          <li class="list-group-item">Dicta optio cumque dolore</li>
-          <li class="list-group-item">Consequuntur voluptatum</li>
-          <li class="list-group-item">Consequuntur voluptatum</li>
+          <li class="list-group-item">80 descriptions each month</li>
+          <li class="list-group-item">Descriptions on demand</li>
+          <li class="list-group-item">$1.25 per description</li>
         </ul>
       {% endcall %}
     </div>

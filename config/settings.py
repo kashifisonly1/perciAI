@@ -58,19 +58,6 @@ STRIPE_API_VERSION = '2016-03-07'
 STRIPE_CURRENCY = 'usd'
 STRIPE_PLANS = {
     '0': {
-        'id': 'pay as you go',
-        'name': 'Pay as You Go',
-        'amount': 0,
-        'currency': STRIPE_CURRENCY,
-        'interval': 'month',
-        'interval_count': 1,
-        'trial_period_days': 14,
-        'statement_descriptor': 'PERCI.AI PAY AS YOU GO',
-        'metadata': {
-            'credits': 0
-        }
-    },
-    '1': {
         'id': 'standard',
         'name': 'Standard',
         'amount': 5000,
@@ -83,7 +70,7 @@ STRIPE_PLANS = {
             'credits': 25
         }
     },
-    '2': {
+    '1': {
         'id': 'pro',
         'name': 'Pro',
         'amount': 7500,
@@ -97,7 +84,7 @@ STRIPE_PLANS = {
             'recommended': True
         }
     },
-    '3': {
+    '2': {
         'id': 'platinum',
         'name': 'Platinum',
         'amount': 10000,
