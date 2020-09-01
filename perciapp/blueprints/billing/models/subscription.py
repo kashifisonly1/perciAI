@@ -17,6 +17,7 @@ class Subscription(ResourceMixin, db.Model):
     __tablename__ = 'subscriptions'
     id = db.Column(db.Integer, primary_key=True)
 
+    
     # Relationships.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id',
                                                   onupdate='CASCADE',

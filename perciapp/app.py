@@ -34,6 +34,7 @@ CELERY_TASK_LIST = [
     'perciapp.blueprints.contact.tasks',
     'perciapp.blueprints.user.tasks',
     'perciapp.blueprints.billing.tasks',
+    'perciapp.blueprints.create.tasks'
 ]
 
 def create_celery_app(app=None):

@@ -60,7 +60,7 @@ STRIPE_PLANS = {
     '0': {
         'id': 'standard',
         'name': 'Standard',
-        'amount': 5000,
+        'amount': 7500,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
@@ -73,7 +73,7 @@ STRIPE_PLANS = {
     '1': {
         'id': 'pro',
         'name': 'Pro',
-        'amount': 7500,
+        'amount': 11000,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
@@ -87,7 +87,7 @@ STRIPE_PLANS = {
     '2': {
         'id': 'platinum',
         'name': 'Platinum',
-        'amount': 10000,
+        'amount': 15000,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
@@ -100,10 +100,10 @@ STRIPE_PLANS = {
 }
 
 CREDIT_BUNDLES = [
-    {'credits': 5, 'price_in_cents': 1000, 'label': '5 for $10'},
-    {'credits': 25, 'price_in_cents': 4000, 'label': '25 for $40'},
-    {'credits': 100, 'price_in_cents': 15000, 'label': '100 for $150'},
-    {'credits': 500, 'price_in_cents': 50000, 'label': '500 for $500'},
+    {'credits': 5, 'price_in_cents': 1500, 'label': '5 for $15'},
+    {'credits': 25, 'price_in_cents': 6000, 'label': '25 for $60'},
+    {'credits': 100, 'price_in_cents': 22500, 'label': '100 for $225'},
+    {'credits': 500, 'price_in_cents': 75000, 'label': '500 for $750'},
 ]
 
 RATELIMIT_STORAGE_URL = CELERY_BROKER_URL

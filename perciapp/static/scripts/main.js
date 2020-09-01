@@ -279,7 +279,7 @@ var stripe = function (form_id) {
   });
 };
 
-// Placing bets.
+// Generating descriptions.
 var create = function () {
   var titleSelector = '#title';
   var genderSelector = '#gender';
@@ -299,7 +299,7 @@ var create = function () {
   var createDescription = function (csrfToken) {
     return $.ajax({
       type: 'POST',
-      url: '/create/description',
+      url: '/create/',
       data: {title: $(titleSelector).val(), gender: $(genderSelector).val(), category: $(categorySelector).val(),
             subcategory: $(subcategorySelector).val(), detail1: $(detail1Selector).val(),
             detail2: $(detail2Selector).val(), detail3: $(detail3Selector).val(),
@@ -312,7 +312,6 @@ var create = function () {
       }
     }).done(function (data, status, xhr) {
       var parsed_data = xhr.responseJSON.data;
-      var dice_entities = '';
       var status_class = '';
       var creditsLeft = parseInt($userCredits.text());
 
@@ -346,7 +345,7 @@ var create = function () {
       return $outcomeStatus.addClass('alert alert-info alert-small').html(status_class);
     }).fail(function (xhr, status, error) {
       var status_class = 'alert-error';
-      var error_status = 'You are out of credits. You should buy more.';
+      var error_status = error;
 
       if (xhr.responseJSON) {
         error_status = xhr.responseJSON.error;
