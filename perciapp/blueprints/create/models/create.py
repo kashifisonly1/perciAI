@@ -8,16 +8,12 @@ class Create(ResourceMixin, db.Model):
     GENDER = OrderedDict([
         ('men', 'Men'),
         ('women', 'Women'),
-        ('unisex', 'Unisex'),
-        ('boys', 'Boys'),
-        ('girls', 'Girls'),
-        ('baby', 'Baby')
+        ('unisex', 'Unisex')
     ])
 
     CATEGORY = OrderedDict([
         ('clothing', 'Clothing'),
-        ('shoes', 'Shoes'),
-        ('accessories', 'Accessories')
+        ('shoes', 'Shoes')
     ])
 
     SUBCATEGORY = OrderedDict([
@@ -88,7 +84,10 @@ class Create(ResourceMixin, db.Model):
     detail3 = db.Column(db.String(50))
     detail4 = db.Column(db.String(50))
     detail5 = db.Column(db.String(50))
-    description = db.Column(db.String())
+    sent1 = db.Column(db.String(200))
+    sent2 = db.Column(db.String(200))
+    sent3 = db.Column(db.String(200))
+    description = db.Column(db.String(2000))
 
     def __init__(self, **kwargs):
         # Call Flask-SQLAlchemy's constructor.

@@ -106,7 +106,7 @@ def generate(args):
             temperature=args['temperature'],
             top_k=args['top_k'],
             top_p=args['top_p'],
-            device=args['device'],
+            device=args['device']
         )
         outputs = outputs[:, len(context_tokens):].tolist()
         text_candidates = []

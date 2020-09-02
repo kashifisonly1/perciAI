@@ -233,6 +233,9 @@ def descriptions():
             detail3 = fake.text(22)
             detail4 = fake.text(22)
             detail5 = fake.text(22)
+            sent1 = fake.text(50)
+            sent2 = fake.text(50)
+            sent3 = fake.text(50)
             description = fake.text(425)
 
             params = {
@@ -246,6 +249,9 @@ def descriptions():
                 'detail3': detail3,
                 'detail4': detail4,
                 'detail5': detail5,
+                'sent1': sent1,
+                'sent2': sent2,
+                'sent3': sent3,
                 'description': description
             }
 

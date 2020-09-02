@@ -17,6 +17,8 @@ from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
 from lib.subcategories import Subcategories
 import json
+import random
+from perciapp.blueprints.create.helper import generate
 
 create = Blueprint('create', __name__, template_folder='templates',
                 url_prefix='/create')
@@ -37,7 +39,7 @@ def create_description():
 
     if request.method == 'POST':
 
-        from perciapp.blueprints.create.tasks import generate_description
+        from perciapp.blueprints.create.tasks import generate_sent1, generate_sent2, generate_sent3
 
         title = str(request.form.get('title'))
         gender = str(request.form.get('gender'))
@@ -64,14 +66,20 @@ def create_description():
           'detail3': detail3,
           'detail4': detail4,
           'detail5': detail5,
+          'sent1': 'coming soon',
+          'sent2': 'coming soon',
+          'sent3': 'coming soon',
           'description': 'coming soon'
         }
 
         create = Create(**params)
         create.save_and_update_user(current_user)
-                #generating the description in celery
-        generate_description.delay(create.id)
-        flash('Success! Click on "recent descriptions" and your description will appear in a few seconds.', 'success')
+        
+        #generating the description in celery
+        generate_sent1.delay(create.id)
+        # generate_sent2.delay(create.id)
+        # generate_sent3.delay(create.id)
+        flash('Success! Your description will generate in a few seconds.', 'success')
 
         return redirect(url_for('create.create_description'))
     else:
