@@ -6,7 +6,7 @@ import pytz
 from mock import Mock
 
 from config import settings
-from perciapp.application import create_app
+from perciapp.app import create_app
 from lib.util_datetime import timedelta_months
 from perciapp.extensions import db as _db
 from perciapp.blueprints.user.models import User

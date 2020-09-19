@@ -7,7 +7,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config
 
-from perciapp.application import create_app
+from perciapp.app import create_app
 from perciapp.extensions import db
 
 app = create_app()

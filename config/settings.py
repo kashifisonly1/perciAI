@@ -3,24 +3,24 @@ from datetime import timedelta
 from celery.schedules import crontab
 
 
-DEBUG = True
-LOG_LEVEL = 'DEBUG'  # CRITICAL / ERROR / WARNING / INFO / DEBUG
+DEBUG = False
+LOG_LEVEL = 'INFO'  # CRITICAL / ERROR / WARNING / INFO / DEBUG
 
-SERVER_NAME = 'localhost:8000'
-SECRET_KEY = 'insecurekeyfordev'
+SERVER_NAME = 'perciapp-v1:8000'
+SECRET_KEY = 'DjPgxlfSqb2zb1nY-Yyf4lhKnKvI7BXU-hygaVTe4GkP5nGan-lBMObV7lpH6U1H8D2yKUPECCGukWjwMK1BzZ5Ouo8oiZiaHFtgHe19K41JIuewidYfdCKd43IJt6dq'
 
 # Flask-Mail.
-MAIL_DEFAULT_SENDER = 'contact@local.host'
+MAIL_DEFAULT_SENDER = 'contact@perci.ai'
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 587
 MAIL_USE_TLS = True
 MAIL_USE_SSL = False
-MAIL_USERNAME = 'you@gmail.com'
-MAIL_PASSWORD = 'password here'
+MAIL_USERNAME = 'email@gmail.com'
+MAIL_PASSWORD = 'gmailpassword'
 
 # Celery.
-CELERY_BROKER_URL = 'redis://:devpassword@redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://:devpassword@redis:6379/0'
+CELERY_BROKER_URL = 'redis://:roiroiroi*pe@redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://:roiroiroi*pe@redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -40,7 +40,7 @@ CELERYBEAT_SCHEDULE = {
 }
 
 # SQLAlchemy.
-db_uri = 'postgresql://perciapp:devpassword@postgres:5432/perciapp'
+db_uri = 'postgresql://perciapp:roiroiroi*pe@postgres:5432/perciapp'
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 

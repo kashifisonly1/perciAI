@@ -1,7 +1,7 @@
 import random as random
 from sqlalchemy import update
 from perciapp.extensions import db
-from perciapp.application import create_celery_app
+from perciapp.app import create_celery_app
 from perciapp.blueprints.create.helper import (
     generate, 
     format_inputs, 

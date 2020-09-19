@@ -1,4 +1,4 @@
-from perciapp.application import create_celery_app
+from perciapp.app import create_celery_app
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
