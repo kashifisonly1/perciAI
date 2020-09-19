@@ -12,7 +12,7 @@ services:
 
   redis:
     image: 'redis:3.0-alpine'
-    command: redis-server --requirepass devpassword
+    command: redis-server --requirepass roiroiroi*pe
     volumes:
       - 'redis:/var/lib/redis/data'
     ports:
@@ -21,7 +21,7 @@ services:
   website:
     build: .
     command: >
-      gunicorn -c "python:config.gunicorn" --reload "perciapp.application:create_app()"
+      gunicorn -c "python:config.gunicorn" --reload "perciapp.app:create_app()"
     env_file:
       - '.env'
     volumes:

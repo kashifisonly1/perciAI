@@ -5,7 +5,7 @@ from datetime import datetime
 
 from faker import Faker
 
-from perciapp.application import create_app
+from perciapp.app import create_app
 from perciapp.extensions import db
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.invoice import Invoice

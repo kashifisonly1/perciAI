@@ -1,6 +1,6 @@
 import click
 
-from perciapp.application import create_app
+from perciapp.app import create_app
 
 app = create_app()
 
