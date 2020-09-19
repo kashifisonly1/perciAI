@@ -3,9 +3,9 @@ from flask import (
     current_app, 
     render_template, 
     request, 
-    jsonify, 
     redirect,
     flash,
+    jsonify,
     url_for)
 
 from flask_login import current_user, login_required
@@ -16,9 +16,8 @@ from perciapp.blueprints.create.decorators import credits_required
 from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
 from lib.subcategories import Subcategories
+from celery import group
 import json
-import random
-from perciapp.blueprints.create.helper import generate
 
 create = Blueprint('create', __name__, template_folder='templates',
                 url_prefix='/create')
@@ -39,7 +38,16 @@ def create_description():
 
     if request.method == 'POST':
 
-        from perciapp.blueprints.create.tasks import generate_sent1, generate_sent2, generate_sent3
+        from perciapp.blueprints.create.tasks import (
+            generate_sent1,
+            generate_sent2,
+            generate_sent3,
+            edit_sent1,
+            edit_sent2,
+            edit_sent3,
+            error_edit_sent1,
+            error_edit_sent2,
+            error_edit_sent3)
 
         title = str(request.form.get('title'))
         gender = str(request.form.get('gender'))
@@ -52,7 +60,7 @@ def create_description():
         detail5 = request.form.get('detail5')
 
         if current_user.credits < 1:
-            error = 'You need more credits bub.'
+            error = 'You need more credits, Honey Bun.'
             return render_json(400, {'error': error})
 
         params = {
@@ -76,10 +84,29 @@ def create_description():
         create.save_and_update_user(current_user)
         
         #generating the description in celery
-        generate_sent1.delay(create.id)
-        # generate_sent2.delay(create.id)
-        # generate_sent3.delay(create.id)
-        flash('Success! Your description will generate in a few seconds.', 'success')
+        first = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5',
+        'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9']
+        second = ['sent2', 'sent2_2', 'sent2_3', 'sent2_4', 'sent2_5',
+        'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9']
+        third = ['sent3', 'sent3_2', 'sent3_3', 'sent3_4', 'sent3_5',
+        'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9']
+        
+        # #generate the first sentences
+
+        from celery import chord
+        callback = edit_sent1.s().set(link_error=[error_edit_sent1.s()])
+        tasks = [generate_sent1.s(create.id, label) for label in first]
+        chord(tasks)(callback)
+
+        callback = edit_sent2.s().set(link_error=[error_edit_sent2.s()])
+        tasks = [generate_sent2.s(create.id, label) for label in second]
+        chord(tasks)(callback)
+        
+        callback = edit_sent3.s().set(link_error=[error_edit_sent3.s()])
+        tasks = [generate_sent3.s(create.id, label) for label in third]
+        chord(tasks)(callback)
+
+        flash('Success! Your description will appear in a few seconds.', 'success')
 
         return redirect(url_for('create.create_description'))
     else:

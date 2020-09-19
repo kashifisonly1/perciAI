@@ -29,6 +29,7 @@ class Create(ResourceMixin, db.Model):
         ('sweats & hoodies', 'Sweats & Hoodies'),
         ('coats & jackets', 'Coats & Jackets'),
         ('suits & blazers', 'Suits & Blazers'),
+        ('jumpsuits & playsuits', 'Jumpsuits & Playsuits'),
         ('sweaters & cardigans', 'Sweaters & Cardigans'),
         ('sleepwear', 'Sleepwear'),
         ('underwear & socks', 'Underwear & Socks'),
@@ -79,15 +80,39 @@ class Create(ResourceMixin, db.Model):
                      index=True, nullable=False)
     subcategory = db.Column(db.Enum(*SUBCATEGORY, name='subcategory', native_enum=False),
                      index=True, nullable=False)
-    detail1 = db.Column(db.String(50))
-    detail2 = db.Column(db.String(50))
-    detail3 = db.Column(db.String(50))
-    detail4 = db.Column(db.String(50))
-    detail5 = db.Column(db.String(50))
-    sent1 = db.Column(db.String(200))
-    sent2 = db.Column(db.String(200))
-    sent3 = db.Column(db.String(200))
-    description = db.Column(db.String(2000))
+    detail1 = db.Column(db.String(200))
+    detail2 = db.Column(db.String(200))
+    detail3 = db.Column(db.String(200))
+    detail4 = db.Column(db.String(200))
+    detail5 = db.Column(db.String(200))
+    sent1 = db.Column(db.String(300))
+    sent1_2 = db.Column(db.String(300))
+    sent1_3 = db.Column(db.String(300))
+    sent1_4 = db.Column(db.String(300))
+    sent1_5 = db.Column(db.String(300))
+    sent1_6 = db.Column(db.String(300))
+    sent1_7 = db.Column(db.String(300))
+    sent1_8 = db.Column(db.String(300))
+    sent1_9 = db.Column(db.String(300))
+    sent2 = db.Column(db.String(300))
+    sent2_2 = db.Column(db.String(300))
+    sent2_3 = db.Column(db.String(300))
+    sent2_4 = db.Column(db.String(300))
+    sent2_5 = db.Column(db.String(300))
+    sent2_6 = db.Column(db.String(300))
+    sent2_7 = db.Column(db.String(300))
+    sent2_8 = db.Column(db.String(300))
+    sent2_9 = db.Column(db.String(300))
+    sent3 = db.Column(db.String(300))
+    sent3_2 = db.Column(db.String(300))
+    sent3_3 = db.Column(db.String(300))
+    sent3_4 = db.Column(db.String(300))
+    sent3_5 = db.Column(db.String(300))
+    sent3_6 = db.Column(db.String(300))
+    sent3_7 = db.Column(db.String(300))
+    sent3_8 = db.Column(db.String(300))
+    sent3_9 = db.Column(db.String(300))
+    description = db.Column(db.String(3000))
 
     def __init__(self, **kwargs):
         # Call Flask-SQLAlchemy's constructor.
@@ -122,6 +147,7 @@ class Create(ResourceMixin, db.Model):
           'detail4': self.detail4,
           'detail5': self.detail5,
           'description': self.description,
+          
         }
 
         return params

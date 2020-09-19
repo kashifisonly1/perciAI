@@ -19,14 +19,15 @@ Flask-SQLAlchemy==2.1
 alembic==0.8.6
 SQLAlchemy==1.2.0
 redis==3.3.7
-celery==4.3.0
+celery==4.4.7
 
 # Machine Writing
 torch==1.6.0
 torchvision==0.7.0
 Transformers==3.0.2
 spacy==2.3
-
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.0/en_core_web_sm-2.2.0.tar.gz
+pandas==1.1.1
 
 # Forms.
 Flask-WTF==0.9.5

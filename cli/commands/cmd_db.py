@@ -2,7 +2,7 @@ import click
 
 from sqlalchemy_utils import database_exists, create_database
 
-from perciapp.app import create_app
+from perciapp.application import create_app
 from perciapp.extensions import db
 from perciapp.blueprints.user.models import User
 

@@ -21,7 +21,7 @@ services:
   website:
     build: .
     command: >
-      gunicorn -c "python:config.gunicorn" --reload "perciapp.app:create_app()"
+      gunicorn -c "python:config.gunicorn" --reload "perciapp.application:create_app()"
     env_file:
       - '.env'
     volumes:
@@ -31,7 +31,7 @@ services:
     
   celery:
     build: .
-    command: celery worker -B -l info -A perciapp.blueprints.contact.tasks
+    command: celery worker -B -l info -c 1 -A perciapp.blueprints.contact.tasks
     env_file:
      - '.env'
     volumes:

@@ -5,17 +5,6 @@ from wtforms.validators import DataRequired, Length
 from perciapp.blueprints.create.models.create import Create
 from lib.util_wtforms import choices_from_dict
 
-
-def choices_from_subcategory():
-    
-    choices = [(' ', ' ')]
-
-    # for bundle in CREDIT_BUNDLES:
-    #     pair = (str(bundle.get('credits')), bundle.get('label'))
-    #     choices.append(pair)
-
-    return choices
-
 class CreateForm(Form):
     title = StringField('title',[DataRequired(), Length(1, 200)])
     gender = SelectField('gender',
@@ -23,7 +12,7 @@ class CreateForm(Form):
     category = SelectField('category',
                            [DataRequired()], choices=choices_from_dict(Create.CATEGORY))
     subcategory = SelectField('subcategory',
-                           [DataRequired()], choices=choices_from_subcategory())
+                           [DataRequired()], choices=[(' ', ' ')])
     detail1 = StringField('detail1',[DataRequired(), Length(1, 1000)])
     detail2 = StringField('detail2',[DataRequired(), Length(1, 1000)])
     detail3 = StringField('detail3',[DataRequired(),Length(1, 1000)])

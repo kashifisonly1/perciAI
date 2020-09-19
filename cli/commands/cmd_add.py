@@ -5,7 +5,7 @@ from datetime import datetime
 
 from faker import Faker
 
-from perciapp.app import create_app
+from perciapp.application import create_app
 from perciapp.extensions import db
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.invoice import Invoice
@@ -219,8 +219,8 @@ def descriptions():
                 float(fake_datetime)).strftime('%Y-%m-%dT%H:%M:%S Z')
 
             title = fake.text(22)
-            gender = random.choice(['men','women','unisex','boys','girls','baby'])
-            category = random.choice(['clothing','shoes','accessories'])
+            gender = random.choice(['men','women','unisex'])
+            category = random.choice(['clothing','shoes'])
             subcategories = ['tops', 't-shirts & singlets',
             'shirts & polos','dresses','skirts',
             'pants', 'jeans','shorts','swimwear','sweats & hoodies',
@@ -234,8 +234,32 @@ def descriptions():
             detail4 = fake.text(22)
             detail5 = fake.text(22)
             sent1 = fake.text(50)
+            sent1_2 = fake.text(50)
+            sent1_3 = fake.text(50)
+            sent1_4 = fake.text(50)
+            sent1_5 = fake.text(50)
+            sent1_6 = fake.text(50)
+            sent1_7 = fake.text(50)
+            sent1_8 = fake.text(50)
+            sent1_9 = fake.text(50)
             sent2 = fake.text(50)
+            sent2_2 = fake.text(50)
+            sent2_3 = fake.text(50)
+            sent2_4 = fake.text(50)
+            sent2_5 = fake.text(50)
+            sent2_6 = fake.text(50)
+            sent2_7 = fake.text(50)
+            sent2_8 = fake.text(50)
+            sent2_9 = fake.text(50)
             sent3 = fake.text(50)
+            sent3_2 = fake.text(50)
+            sent3_3 = fake.text(50)
+            sent3_4 = fake.text(50)
+            sent3_5 = fake.text(50)
+            sent3_6 = fake.text(50)
+            sent3_7 = fake.text(50)
+            sent3_8 = fake.text(50)
+            sent3_9 = fake.text(50)
             description = fake.text(425)
 
             params = {
@@ -250,8 +274,32 @@ def descriptions():
                 'detail4': detail4,
                 'detail5': detail5,
                 'sent1': sent1,
+                'sent1_2': sent1_2,
+                'sent1_3': sent1_3,
+                'sent1_4': sent1_4,
+                'sent1_5': sent1_5,
+                'sent1_6': sent1_6,
+                'sent1_7': sent1_7,
+                'sent1_8': sent1_8,
+                'sent1_9': sent1_9,
                 'sent2': sent2,
+                'sent2_2': sent2_2,
+                'sent2_3': sent2_3,
+                'sent2_4': sent2_4,
+                'sent2_5': sent2_5,
+                'sent2_6': sent2_6,
+                'sent2_7': sent2_7,
+                'sent2_8': sent2_8,
+                'sent2_9': sent2_9,
                 'sent3': sent3,
+                'sent3_2': sent3_2,
+                'sent3_3': sent3_3,
+                'sent3_4': sent3_4,
+                'sent3_5': sent3_5,
+                'sent3_6': sent3_6,
+                'sent3_7': sent3_7,
+                'sent3_8': sent3_8,
+                'sent3_9': sent3_9,
                 'description': description
             }
 
