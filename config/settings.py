@@ -6,7 +6,8 @@ from celery.schedules import crontab
 DEBUG = False
 LOG_LEVEL = 'INFO'  # CRITICAL / ERROR / WARNING / INFO / DEBUG
 
-SERVER_NAME = 'perciapp-v1:8000'
+# SERVER_NAME = 'perciapp-v1:8000'
+SERVER_NAME = '0.0.0.0:8000'
 SECRET_KEY = 'DjPgxlfSqb2zb1nY-Yyf4lhKnKvI7BXU-hygaVTe4GkP5nGan-lBMObV7lpH6U1H8D2yKUPECCGukWjwMK1BzZ5Ouo8oiZiaHFtgHe19K41JIuewidYfdCKd43IJt6dq'
 
 # Flask-Mail.
