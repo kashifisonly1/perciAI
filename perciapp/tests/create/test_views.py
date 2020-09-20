@@ -5,11 +5,10 @@ from flask import url_for, json
 from lib.tests import ViewTestMixin, assert_status_with_message
 
 
-class TestCreating(ViewTestMixin):
+class TestCreate(ViewTestMixin):
     def test_create_page(self):
         """ Create page renders successfully. """
         self.login()
-
         response = self.client.get(url_for('create.create_description'))
         assert response.status_code == 200
 
@@ -25,13 +24,15 @@ class TestCreating(ViewTestMixin):
         """ Create description works. """
         self.login()
 
-        title = 'baby shoes'
-        gender = 'baby'
-        category = 'clothing'
-        subcategory = 'sandals'
+        title = 'Air Jordans'
+        gender = 'mens'
+        category = 'shoes'
+        subcategory = 'sneakers'
         detail1 = 'vamp straps'
         detail2 = 'open toe'
         detail3 = 'soft footbed'
+        detail4 = ''
+        deatil5 = ''
 
         params = {
           'title': title,
@@ -61,13 +62,15 @@ class TestCreating(ViewTestMixin):
         """ Create description fails due to no credits. """
         self.login()
         
-        title = 'baby shoes'
-        gender = 'baby'
-        category = 'clothing'
-        subcategory = 'sandals'
+        title = 'Air Jordans'
+        gender = 'mens'
+        category = 'shoes'
+        subcategory = 'sneakers'
         detail1 = 'vamp straps'
         detail2 = 'open toe'
         detail3 = 'soft footbed'
+        detail4 = ''
+        deatil5 = ''
 
         params = {
           'current_user.credits': 0,
