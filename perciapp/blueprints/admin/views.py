@@ -64,8 +64,8 @@ def users(page):
     order_values = '{0} {1}'.format(sort_by[0], sort_by[1])
 
     paginated_users = User.query \
-        .filter(User.search(request.args.get('q', ''))) \
-        .order_by(User.role.asc(), text(order_values)) \
+        .filter(User.search(request.args.get('q', text('')))) \
+        .order_by(User.role.asc(), User.payment_id, text(order_values)) \
         .paginate(page, 50, True)
 
     return render_template('admin/user/index.html',
@@ -113,10 +113,7 @@ def users_bulk_delete():
         ids = User.get_bulk_action_ids(request.form.get('scope'),
                                        request.form.getlist('bulk_ids'),
                                        omit_ids=[current_user.id],
-                                       query=request.args.get('q', ''))
-
-        # Prevent circular imports.
-        from perciapp.blueprints.billing.tasks import delete_users
+                                       query=request.args.get('q', text('')))
 
         delete_count = User.bulk_delete(ids)
 
@@ -126,6 +123,7 @@ def users_bulk_delete():
         flash('No users were deleted, something went wrong.', 'error')
 
     return redirect(url_for('admin.users'))
+
 
 @admin.route('/users/cancel_subscription', methods=['POST'])
 def users_cancel_subscription():
@@ -158,7 +156,7 @@ def coupons(page):
     order_values = '{0} {1}'.format(sort_by[0], sort_by[1])
 
     paginated_coupons = Coupon.query \
-        .filter(Coupon.search(request.args.get('q', ''))) \
+        .filter(Coupon.search(request.args.get('q', text('')))) \
         .order_by(text(order_values)) \
         .paginate(page, 50, True)
 
@@ -201,7 +199,7 @@ def coupons_bulk_delete():
     if form.validate_on_submit():
         ids = Coupon.get_bulk_action_ids(request.form.get('scope'),
                                          request.form.getlist('bulk_ids'),
-                                         query=request.args.get('q', ''))
+                                         query=request.args.get('q', text('')))
 
         # Prevent circular imports.
         from perciapp.blueprints.billing.tasks import delete_coupons
@@ -227,7 +225,7 @@ def invoices(page):
     order_values = 'invoices.{0} {1}'.format(sort_by[0], sort_by[1])
 
     paginated_invoices = Invoice.query.join(User) \
-        .filter(Invoice.search(request.args.get('q', ''))) \
+        .filter(Invoice.search(request.args.get('q', text('')))) \
         .order_by(text(order_values)) \
         .paginate(page, 50, True)
 

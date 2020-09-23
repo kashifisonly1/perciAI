@@ -159,8 +159,8 @@ def update_payment_method():
     card = current_user.credit_card
     stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
     form = SubscriptionForm(stripe_key=stripe_key,
-                          plan=active_plan,
-                          name=current_user.name)
+                            plan=active_plan,
+                            name=current_user.name)
 
     if form.validate_on_submit():
         subscription = Subscription()
@@ -179,7 +179,7 @@ def update_payment_method():
         return redirect(url_for('user.settings'))
 
     return render_template('billing/payment_method.html', form=form,
-                           plan=active_plan, card_last4=str(card.last4))
+                           plan=active_plan, card_last4=card.last4)
 
 
 @billing.route('/billing_details', defaults={'page': 1})
@@ -238,4 +238,3 @@ def purchase_credits():
             return redirect(url_for('create.create_description'))
 
     return render_template('billing/purchase_credits.html', form=form)
-

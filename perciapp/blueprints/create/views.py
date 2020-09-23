@@ -1,8 +1,7 @@
 from flask import (
-    Blueprint, 
-    current_app, 
-    render_template, 
-    request, 
+    Blueprint,
+    render_template,
+    request,
     redirect,
     flash,
     jsonify,
@@ -16,11 +15,9 @@ from perciapp.blueprints.create.decorators import credits_required
 from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
 from lib.subcategories import Subcategories
-from celery import group
-import json
 
 create = Blueprint('create', __name__, template_folder='templates',
-                url_prefix='/create')
+                   url_prefix='/create')
 
 
 @create.before_request
@@ -28,6 +25,7 @@ create = Blueprint('create', __name__, template_folder='templates',
 def before_request():
     """ Protect all of the create endpoints. """
     pass
+
 
 @create.route('/', methods=['GET', 'POST'])
 @credits_required
@@ -82,16 +80,16 @@ def create_description():
 
         create = Create(**params)
         create.save_and_update_user(current_user)
-        
-        #generating the description in celery
+
+        # generating the description in celery
         first = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5',
-        'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9']
+                 'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9']
         second = ['sent2', 'sent2_2', 'sent2_3', 'sent2_4', 'sent2_5',
-        'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9']
+                  'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9']
         third = ['sent3', 'sent3_2', 'sent3_3', 'sent3_4', 'sent3_5',
-        'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9']
-        
-        # #generate the first sentences
+                 'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9']
+
+        # generate the first sentences
 
         from celery import chord
         callback = edit_sent1.s().set(link_error=[error_edit_sent1.s()])
@@ -101,19 +99,24 @@ def create_description():
         callback = edit_sent2.s().set(link_error=[error_edit_sent2.s()])
         tasks = [generate_sent2.s(create.id, label) for label in second]
         chord(tasks)(callback)
-        
+
         callback = edit_sent3.s().set(link_error=[error_edit_sent3.s()])
         tasks = [generate_sent3.s(create.id, label) for label in third]
         chord(tasks)(callback)
 
-        flash('Success! Your description will appear in a few seconds.', 'success')
+        flash('Success! Your description will appear in a few seconds.',
+              'success')
 
         return redirect(url_for('create.create_description'))
     else:
-        recent_descriptions = Create.query.filter(Create.user_id == current_user.id) \
+        recent_descriptions = Create.query.filter\
+            (Create.user_id == current_user.id) \
             .order_by(Create.created_on.desc()).limit(5)
 
-        return render_template('create/create_description.html', form=form, recent_descriptions=recent_descriptions)
+        return render_template('create/create_description.html',
+                               form=form,
+                               recent_descriptions=recent_descriptions)
+
 
 @create.route('/create/subcategory/<category>')
 def subcategory(category):
@@ -121,6 +124,7 @@ def subcategory(category):
     return jsonify(Subcategories[category])
 
     # return jsonify({'subcategories' : subcategoryArray})
+
 
 @create.route('/history', defaults={'page': 1})
 @create.route('/history/page/<int:page>')
@@ -130,5 +134,5 @@ def history(page):
         .order_by(Create.created_on.desc()) \
         .paginate(page, 50, True)
 
-    return render_template('create/history.html', descriptions=paginated_descriptions)
-
+    return render_template('create/history.html',
+                           descriptions=paginated_descriptions)

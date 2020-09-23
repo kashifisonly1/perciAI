@@ -14,7 +14,7 @@ contact = Blueprint('contact', __name__, template_folder='templates')
 
 @contact.route('/contact', methods=['GET', 'POST'])
 def index():
-    #Pre-populate the email field if the user is signed in
+    # Pre-populate the email field if the user is signed in
     form = ContactForm(obj=current_user)
 
     if form.validate_on_submit():

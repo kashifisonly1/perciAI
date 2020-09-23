@@ -43,7 +43,7 @@ def login():
             # 1) Replace 'True' below with: request.form.get('remember', False)
             # 2) Uncomment the 'remember' field in user/forms.py#LoginForm
             # 3) Add a checkbox to the login form with the id/name 'remember'
-            if login_user(u, remember=True) and u.is_active():
+            if login_user(u, remember=True):
                 u.update_activity_tracking(request.remote_addr)
 
                 # Handle optionally redirecting to the next URL safely.
@@ -52,8 +52,6 @@ def login():
                     return redirect(safe_next_url(next_url))
 
                 return redirect(url_for('user.settings'))
-            else:
-                flash('This account has been disabled.', 'error')
         else:
             flash('Identity or password is incorrect.', 'error')
 
@@ -138,7 +136,7 @@ def welcome():
         current_user.username = request.form.get('username')
         current_user.save()
 
-        flash("Sign up is complete, you're ready to go.", 'success')
+        flash('Sign up is complete, congrats.', 'success')
         return redirect(url_for('user.settings'))
 
     return render_template('user/welcome.html', form=form)
@@ -153,7 +151,7 @@ def settings():
 @user.route('/settings/update_credentials', methods=['GET', 'POST'])
 @login_required
 def update_credentials():
-    form = UpdateCredentials(current_user, uid=current_user.id)
+    form = UpdateCredentials(obj=current_user)
 
     if form.validate_on_submit():
         new_password = request.form.get('password', '')

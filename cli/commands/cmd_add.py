@@ -162,7 +162,7 @@ def invoices():
             period_start_on = fake.date_time_between(
                 start_date='now', end_date='+1y').strftime('%s')
             period_end_on = fake.date_time_between(
-                start_date=period_start_on, end_date='+14d').strftime('%s')
+                start_date='now', end_date='+14d').strftime('%s')
             exp_date = fake.date_time_between(
                 start_date='now', end_date='+2y').strftime('%s')
 
@@ -175,7 +175,7 @@ def invoices():
             exp_date = datetime.utcfromtimestamp(
                 float(exp_date)).strftime('%Y-%m-%d')
 
-            plans = ['PAY AS YOU GO','STANDARD', 'PRO', 'PLATINUM']
+            plans = ['PAY AS YOU GO','STANDARD', 'PRO', 'BUSINESS']
             cards = ['Visa', 'Mastercard', 'AMEX',
                      'J.C.B', "Diner's Club"]
 
@@ -192,7 +192,7 @@ def invoices():
                 'tax_percent': random.random() * 10,
                 'total': random.random() * 1000,
                 'brand': random.choice(cards),
-                'last4': random.randint(1000, 9000),
+                'last4': str(random.randint(1000, 9000)),
                 'exp_date': exp_date
             }
 
@@ -318,7 +318,7 @@ def all(ctx):
     """
     ctx.invoke(users)
     ctx.invoke(invoices)
-    ctx.invoke(descriptions)
+    # ctx.invoke(descriptions)
 
     return None
 

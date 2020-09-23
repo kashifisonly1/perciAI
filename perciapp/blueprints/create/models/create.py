@@ -58,10 +58,7 @@ class Create(ResourceMixin, db.Model):
         ('headwear', 'Headwear'),
         ('wallets', 'Wallets'),
         ('belts', 'Belts')
-
     ])
-
-
 
     __tablename__ = 'descriptions'
     id = db.Column(db.Integer, primary_key=True)
@@ -71,15 +68,19 @@ class Create(ResourceMixin, db.Model):
                                                   onupdate='CASCADE',
                                                   ondelete='CASCADE'),
                         index=True, nullable=False)
+    user = db.relationship('User')
 
     # Create details
     title = db.Column(db.String(50))
     gender = db.Column(db.Enum(*GENDER, name='gender', native_enum=False),
-                     index=True, nullable=False)
-    category = db.Column(db.Enum(*CATEGORY, name='category', native_enum=False),
-                     index=True, nullable=False)
-    subcategory = db.Column(db.Enum(*SUBCATEGORY, name='subcategory', native_enum=False),
-                     index=True, nullable=False)
+                       index=True, nullable=False)
+    category = db.Column(db.Enum(*CATEGORY, name='category',
+                                 native_enum=False),
+                         index=True, nullable=False)
+    subcategory = db.Column(db.Enum(*SUBCATEGORY,
+                                    name='subcategory',
+                                    native_enum=False),
+                            index=True, nullable=False)
     detail1 = db.Column(db.String(200))
     detail2 = db.Column(db.String(200))
     detail3 = db.Column(db.String(200))
@@ -118,7 +119,6 @@ class Create(ResourceMixin, db.Model):
         # Call Flask-SQLAlchemy's constructor.
         super(Create, self).__init__(**kwargs)
 
-
     def save_and_update_user(self, user):
         """
         Commit the description and update the user's information.
@@ -147,7 +147,6 @@ class Create(ResourceMixin, db.Model):
           'detail4': self.detail4,
           'detail5': self.detail5,
           'description': self.description,
-          
         }
 
         return params

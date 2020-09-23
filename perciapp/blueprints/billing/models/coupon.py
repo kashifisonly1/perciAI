@@ -4,7 +4,7 @@ from collections import OrderedDict
 from random import choice
 
 import pytz
-from sqlalchemy import or_, and_
+from sqlalchemy import and_, or_, text
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -71,8 +71,8 @@ class Coupon(ResourceMixin, db.Model):
         :type query: str
         :return: SQLAlchemy filter
         """
-        if not query:
-            return ''
+        if query == '':
+            return text('')
 
         search_query = '%{0}%'.format(query)
 
@@ -204,7 +204,7 @@ class Coupon(ResourceMixin, db.Model):
                 self.valid = False
 
         return db.session.commit()
-    
+
     def apply_discount_to(self, amount):
         """
         Apply the discount to an amount.

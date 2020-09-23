@@ -9,7 +9,7 @@ from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.gateways.stripecom import Card as PaymentCard
 from perciapp.blueprints.billing.gateways.stripecom import \
-    Customer as PaymentCustomer, Subscription as PaymentSubscription
+    Subscription as PaymentSubscription
 from perciapp.blueprints.create.models.credit import add_subscription_credits
 
 
@@ -17,12 +17,12 @@ class Subscription(ResourceMixin, db.Model):
     __tablename__ = 'subscriptions'
     id = db.Column(db.Integer, primary_key=True)
 
-    
     # Relationships.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id',
                                                   onupdate='CASCADE',
                                                   ondelete='CASCADE'),
                         index=True, nullable=False)
+    user = db.relationship('User')
 
     # Subscription details.
     plan = db.Column(db.String(128))
@@ -97,10 +97,9 @@ class Subscription(ResourceMixin, db.Model):
         user.name = name
         user.previous_plan = plan
         user.credits = add_subscription_credits(user.credits,
-                                            Subscription.get_plan_by_id(
-                                                user.previous_plan),
-                                            Subscription.get_plan_by_id(plan),
-                                            user.cancelled_subscription_on)
+                                                Subscription.get_plan_by_id(user.previous_plan),
+                                                Subscription.get_plan_by_id(plan),
+                                                user.cancelled_subscription_on)
         user.cancelled_subscription_on = None
 
         # Set the subscription details.
@@ -141,10 +140,9 @@ class Subscription(ResourceMixin, db.Model):
         user.previous_plan = user.subscription.plan
         user.subscription.plan = plan
         user.credits = add_subscription_credits(user.credits,
-                                            Subscription.get_plan_by_id(
-                                                user.previous_plan),
-                                            Subscription.get_plan_by_id(plan),
-                                            user.cancelled_subscription_on)
+                                                Subscription.get_plan_by_id(user.previous_plan),
+                                                Subscription.get_plan_by_id(plan),
+                                                user.cancelled_subscription_on)
 
         if coupon:
             user.subscription.coupon = coupon

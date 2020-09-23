@@ -1,28 +1,27 @@
 import random as random
-from sqlalchemy import update
 from perciapp.extensions import db
 from perciapp.app import create_celery_app
 from perciapp.blueprints.create.helper import (
-    generate, 
-    format_inputs, 
-    args, 
-    brand_remove, 
+    generate,
+    format_inputs,
+    args,
+    brand_remove,
     score,
     pop_best_sentence,
     return_most_similar)
-
-from flask import jsonify
 
 from perciapp.blueprints.create.models.create import Create
 
 celery = create_celery_app()
 
+
 def remove_bad_sentences(descriptions):
-    #remove empty sentence from killed processes in the description list
+    # remove empty sentence from killed processes in the description list
     for item in descriptions:
         if type(item) != str:
             descriptions.remove(item)
-        #remove shitty generations that are feature inputs instead of sentences - possible bug causing it
+        # remove shitty generations that are
+        # feature inputs instead of sentences - possible bug causing it
         elif item.startswith('Length'):
             descriptions.remove(item)
     return descriptions
@@ -33,84 +32,99 @@ def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
-    #inputs to LM
+    # inputs to LM
     if 'shoes' in cat.lower():
-        args['model_name_or_path']= 'perciapp/models/unisex_shoes_description_beginning'
+        model = 'perciapp/models/unisex_shoes_description_beginning'
+        args['model_name_or_path'] = model
     elif cat.lower().startswith('men'):
-        args['model_name_or_path']= 'perciapp/models/mens_clothing_description_beginning'
+        model = 'perciapp/models/mens_clothing_description_beginning'
+        args['model_name_or_path'] = model
     else:
-        args['model_name_or_path']= 'perciapp/models/womens_clothing_description_beginning'
-    
-    args['seed']= random.randint(1,100001)
-    args['prompt'] = f'<bos> <category> {cat} <features> {features} <brand> <model> {title} \t<desc1> '
-    
+        model = 'perciapp/models/womens_clothing_description_beginning'
+        args['model_name_or_path'] = model
+
+    args['seed'] = random.randint(1, 100001)
+    args['prompt'] = f'<bos> <category> {cat} <features> \
+                        {features} <brand> <model> {title} \t<desc1> '
+
     sent = brand_remove(generate(args)[0], title)
 
     if len(sent) > 199:
         sent = sent[:190]
 
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
     return description_id
+
 
 @celery.task()
 def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
-    #inputs to LM
+    # inputs to LM
     if 'shoes' in cat.lower():
-        args['model_name_or_path']= 'perciapp/models/unisex_shoes_description_middle'
+        model = 'perciapp/models/unisex_shoes_description_middle'
+        args['model_name_or_path'] = model
     elif cat.lower().startswith('men'):
-        args['model_name_or_path']= 'perciapp/models/mens_clothing_description_middle'
+        model = 'perciapp/models/mens_clothing_description_middle'
+        args['model_name_or_path'] = model
     else:
-        args['model_name_or_path']= 'perciapp/models/womens_clothing_description_middle'
+        model = 'perciapp/models/womens_clothing_description_middle'
+        args['model_name_or_path'] = model
 
-    args['seed']= random.randint(1,100001)
-    args['prompt'] = '<bos> <category> ' + str(cat) + ' <features> ' + features + ' <brand> <model> ' + title + '\t<middle> '
+    args['seed'] = random.randint(1, 100001)
+    args['prompt'] = f'<bos> <category> {cat} <features> \
+                        {features} <brand> <model> {title} \t<middle> '
 
     sent = generate(args)[0]
-    
+
     if len(sent) > 199:
         sent = sent[:190]
 
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
     return description_id
+
 
 @celery.task()
 def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
-    #inputs to LM
+    # inputs to LM
     if 'shoes' in cat.lower():
-        args['model_name_or_path']= 'perciapp/models/unisex_shoes_description_end'
+        model = 'perciapp/models/unisex_shoes_description_end'
+        args['model_name_or_path'] = model
     elif cat.lower().startswith('men'):
-        args['model_name_or_path']= 'perciapp/models/mens_clothing_description_end'
+        model = 'perciapp/models/mens_clothing_description_end'
+        args['model_name_or_path'] = model
     else:
-        args['model_name_or_path']= 'perciapp/models/womens_clothing_description_end'
+        model = 'perciapp/models/womens_clothing_description_end'
+        args['model_name_or_path'] = model
 
-    args['seed']= random.randint(1,100001)
-    args['prompt'] = '<bos> <category> ' + str(cat) + ' <features> ' + features + ' <brand> <model> ' + title + '\t<end> '
+    args['seed'] = random.randint(1, 100001)
+    args['prompt'] = f'<bos> <category> {cat} <features> \
+                        {features} <brand> <model> {title} \t<end> '
 
     sent = generate(args)[0]
 
     if len(sent) > 199:
         sent = sent[:190]
 
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
     return description_id
+
 
 @celery.task()
 def edit_sent1(ids):
@@ -123,13 +137,13 @@ def edit_sent1(ids):
     print()
     print()
 
-    #initialize model
+    # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     description = Create.query.get(ids[0])
     sent1 = description.sent1
     sent2 = description.sent1_2
@@ -155,43 +169,47 @@ def edit_sent1(ids):
     print(sent9)
     print()
     print()
-    
-    descriptions = [sent1, sent2, sent3, sent4, sent5, sent6, sent7, sent8, sent9]
 
-    
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9]
+
     descriptions = remove_bad_sentences(descriptions)
-     
-    #remove 1st sentences without the product title in them
+
+    # remove 1st sentences without the product title in them
     for item in descriptions:
         if str(description.title) not in item:
             descriptions.remove(item)
-    
+
     print()
     print()
     print('descriptions after edit:')
     print(descriptions)
     print()
     print()
-             
+
     scores = [score(i, tokenizer, model) for i in descriptions]
 
     print('scores:')
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(description)
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # first_sent = return_most_similar(features, [candidate1, candidate2])[0]
+# candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     first_sent = descriptions[index]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent1':first_sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent1': first_sent})
     db.session.commit()
     return None
+
 
 @celery.task()
 def error_edit_sent1(request, exc, traceback):
@@ -208,15 +226,14 @@ def error_edit_sent1(request, exc, traceback):
     print(request.args[0][0])
     print()
     print()
-    #initialize model
-    
+    # initialize model
 
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     id = request.args[0][0]
     description = Create.query.get(id)
     sent1 = description.sent1
@@ -228,7 +245,7 @@ def error_edit_sent1(request, exc, traceback):
     sent7 = description.sent1_7
     sent8 = description.sent1_8
     sent9 = description.sent1_9
-    
+
     print()
     print()
     print('sentences:')
@@ -244,35 +261,39 @@ def error_edit_sent1(request, exc, traceback):
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5, 
-    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4, sent5,
+                    sent6, sent7, sent8, sent9]
 
     descriptions = remove_bad_sentences(descriptions)
-            
-    #remove 1st sentences without the product title in them
+
+    # remove 1st sentences without the product title in them
     for item in descriptions:
         if str(description.title) not in item:
             descriptions.remove(item)
-             
+
     scores = [score(i, tokenizer, model) for i in descriptions]
 
     print('scores:')
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(id))
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # first_sent = return_most_similar(features, [candidate1, candidate2])[0]
+# candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     first_sent = descriptions[index]
 
-    update = Create.query.filter_by(id=id).update({'sent1':first_sent})
+    update = Create.query.filter_by(id=id).update({'sent1': first_sent})
     db.session.commit()
     return None
+
 
 @celery.task()
 def edit_sent2(ids):
@@ -284,14 +305,14 @@ def edit_sent2(ids):
     print('THIS IS THE EDIT FUNCTION NOW')
     print()
     print()
-    
-    #initialize model
+
+    # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     description = Create.query.get(ids[0])
     sent1 = description.sent2
     sent2 = description.sent2_2
@@ -318,8 +339,8 @@ def edit_sent2(ids):
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5, 
-    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4, sent5,
+                    sent6, sent7, sent8, sent9]
 
     descriptions = remove_bad_sentences(descriptions)
              
@@ -329,19 +350,23 @@ def edit_sent2(ids):
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(description)
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # sent = return_most_similar(features, [candidate1, candidate2])[0]
+# candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     sent = descriptions[index]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent2':sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent2': sent})
     db.session.commit()
     return None
+
 
 @celery.task()
 def error_edit_sent2(request, exc, traceback):
@@ -358,15 +383,14 @@ def error_edit_sent2(request, exc, traceback):
     print(request.args[0][0])
     print()
     print()
-    #initialize model
-    
+    # initialize model
 
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     id = request.args[0][0]
     description = Create.query.get(id)
     sent1 = description.sent2
@@ -394,8 +418,8 @@ def error_edit_sent2(request, exc, traceback):
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5, 
-    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4, sent5,
+                    sent6, sent7, sent8, sent9]
 
     descriptions = remove_bad_sentences(descriptions)
              
@@ -405,19 +429,23 @@ def error_edit_sent2(request, exc, traceback):
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(id))
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # sent = return_most_similar(features, [candidate1, candidate2])[0]
+    ## candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     sent = descriptions[index]
 
-    update = Create.query.filter_by(id=id).update({'sent2':sent})
+    update = Create.query.filter_by(id=id).update({'sent2': sent})
     db.session.commit()
     return None
+
 
 @celery.task()
 def edit_sent3(ids):
@@ -429,14 +457,14 @@ def edit_sent3(ids):
     print('THIS IS THE EDIT FUNCTION NOW')
     print()
     print()
-    
-    #initialize model
+
+    # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     description = Create.query.get(ids[0])
     sent1 = description.sent3
     sent2 = description.sent3_2
@@ -463,34 +491,38 @@ def edit_sent3(ids):
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5, 
-    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4, sent5,
+                    sent6, sent7, sent8, sent9]
 
     descriptions = remove_bad_sentences(descriptions)
-             
+
     scores = [score(i, tokenizer, model) for i in descriptions]
 
     print('scores:')
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(description)
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # sent = return_most_similar(features, [candidate1, candidate2])[0]
+# candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     sent = descriptions[index]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent3':sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent3': sent})
     db.session.commit()
 
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
     update = Create.query.filter_by(id=ids[0]).update({'description':final_output})
     db.session.commit()
     return None
+
 
 @celery.task()
 def error_edit_sent3(request, exc, traceback):
@@ -507,15 +539,14 @@ def error_edit_sent3(request, exc, traceback):
     print(request.args[0][0])
     print()
     print()
-    #initialize model
-    
+    # initialize model
 
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
     model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #load in sentence candidates
+    # load in sentence candidates
     id = request.args[0][0]
     description = Create.query.get(id)
     sent1 = description.sent3
@@ -527,7 +558,7 @@ def error_edit_sent3(request, exc, traceback):
     sent7 = description.sent3_7
     sent8 = description.sent3_8
     sent9 = description.sent3_9
-    
+
     print()
     print()
     print('sentences:')
@@ -542,29 +573,32 @@ def error_edit_sent3(request, exc, traceback):
     print(sent9)
     print()
     print()
-    
-    descriptions = [sent1, sent2, sent3, sent4, sent5, 
-    sent6, sent7, sent8, sent9]
+
+    descriptions = [sent1, sent2, sent3, sent4, sent5,
+                    sent6, sent7, sent8, sent9]
 
     descriptions = remove_bad_sentences(descriptions)
-             
+
     scores = [score(i, tokenizer, model) for i in descriptions]
 
     print('scores:')
     print(scores)
     print()
     print()
-    #getting the description inputs
+    # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(id))
 
-    # candidate1, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # candidate2, descriptions, scores = pop_best_sentence(descriptions, scores)
-    # sent = return_most_similar(features, [candidate1, candidate2])[0]
+# candidate1, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# candidate2, descriptions, scores = pop_best_sentence(descriptions,
+#                                                      scores)
+# first_sent = return_most_similar(features,
+#                                  [candidate1, candidate2])[0]
 
     index = scores.index(min(scores))
     sent = descriptions[index]
 
-    update = Create.query.filter_by(id=id).update({'sent3':sent})
+    update = Create.query.filter_by(id=id).update({'sent3': sent})
     db.session.commit()
 
     final_output = description.sent1 + '. ' + description.sent2 + '. ' + description.sent3 + '.'

@@ -5,11 +5,11 @@ from logging.handlers import SMTPHandler
 import stripe
 import celery
 
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template
-from celery import Celery, group, states
+from celery import Celery, states
 from celery.backends.redis import RedisBackend
-from itsdangerous import URLSafeTimedSerializer
 
 from perciapp.blueprints.admin import admin
 from perciapp.blueprints.page import page
@@ -29,15 +29,16 @@ from perciapp.extensions import (
     csrf,
     db,
     login_manager,
-    limiter
+    limiter,
+    flask_static_digest
 )
 
 CELERY_TASK_LIST = [
     'perciapp.blueprints.contact.tasks',
     'perciapp.blueprints.user.tasks',
     'perciapp.blueprints.billing.tasks',
-    'perciapp.blueprints.create.tasks'
-]
+    'perciapp.blueprints.create.tasks']
+
 
 def patch_celery():
     """Patch the redis backend."""
@@ -56,9 +57,10 @@ def patch_celery():
 
         return retval
 
-    celery.backends.redis.RedisBackend._unpack_chord_result = _unpack_chord_result
+    RedisBackend._unpack_chord_result = _unpack_chord_result
 
     return celery
+
 
 def create_celery_app(app=None):
     """
@@ -70,8 +72,9 @@ def create_celery_app(app=None):
     """
     app = app or create_app()
 
-    celery = patch_celery().Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'],
-                    include=CELERY_TASK_LIST)
+    celery = patch_celery().Celery(app.import_name,
+                                   broker=app.config['CELERY_BROKER_URL'],
+                                   include=CELERY_TASK_LIST)
     celery.conf.update(app.config)
     TaskBase = celery.Task
 
@@ -85,7 +88,7 @@ def create_celery_app(app=None):
     celery.Task = ContextTask
     return celery
 
-    
+
 def create_app(settings_override=None):
     """
     Create a Flask application using the app factory pattern.
@@ -93,10 +96,9 @@ def create_app(settings_override=None):
     :param settings_override: Override settings
     :return: Flask app
     """
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, static_folder='../public', static_url_path='')
 
     app.config.from_object('config.settings')
-    app.config.from_pyfile('settings.py', silent=True)
 
     if settings_override:
         app.config.update(settings_override)
@@ -118,6 +120,9 @@ def create_app(settings_override=None):
     extensions(app)
     authentication(app, User)
 
+    if app.debug:
+        app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
+
     return app
 
 
@@ -134,6 +139,7 @@ def extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
     limiter.init_app(app)
+    flask_static_digest.init_app(app)
 
     return None
 
@@ -164,17 +170,13 @@ def authentication(app, user_model):
 
     @login_manager.user_loader
     def load_user(uid):
-        return user_model.query.get(uid)
+        user = user_model.query.get(uid)
 
-    @login_manager.token_loader
-    def load_token(token):
-        duration = app.config['REMEMBER_COOKIE_DURATION'].total_seconds()
-        serializer = URLSafeTimedSerializer(app.secret_key)
+        if not user.is_active():
+            login_manager.login_message = 'This account has been disabled.'
+            return None
 
-        data = serializer.loads(token, max_age=duration)
-        user_uid = data[0]
-
-        return user_model.query.get(user_uid)
+        return user
 
 
 def middleware(app):
@@ -247,4 +249,3 @@ def exception_handler(app):
     app.logger.addHandler(mail_handler)
 
     return None
-    

@@ -4,6 +4,7 @@ from perciapp.blueprints.user.models import db, User
 from perciapp.blueprints.billing.models.subscription import Subscription
 from perciapp.blueprints.create.models.create import Create
 
+
 class Dashboard(object):
     @classmethod
     def group_and_count_users(cls):
@@ -50,7 +51,6 @@ class Dashboard(object):
         """
         return Dashboard._group_and_count(Create, Create.category)
 
-    
     @classmethod
     def group_and_count_subcategories(cls):
         """

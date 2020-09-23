@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import (
   SelectField,
   StringField,
@@ -16,19 +16,19 @@ from wtforms.validators import (
   Regexp,
   NumberRange
 )
-from wtforms_components import Unique
+from wtforms_alchemy.validators import Unique
 
 from lib.locale import Currency
 from lib.util_wtforms import ModelForm, choices_from_dict
-from perciapp.blueprints.user.models import db, User
+from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.coupon import Coupon
 
 
-class SearchForm(Form):
+class SearchForm(FlaskForm):
     q = StringField('Search terms', [Optional(), Length(1, 256)])
 
 
-class BulkDeleteForm(Form):
+class BulkDeleteForm(FlaskForm):
     SCOPE = OrderedDict([
         ('all_selected_items', 'All selected items'),
         ('all_search_results', 'All search results')
@@ -42,17 +42,12 @@ class UserForm(ModelForm):
     username_message = 'Letters, numbers and underscores only please.'
 
     credits = IntegerField('Credits', [DataRequired(),
-                                   NumberRange(min=1, max=2147483647)])
+                                       NumberRange(min=1, max=2147483647)])
 
     username = StringField(validators=[
-        Unique(
-            User.username,
-            get_session=lambda: db.session
-        ),
+        Unique(User.username),
         Optional(),
         Length(1, 16),
-        # Part of the Python 3.7.x update included updating flake8 which means
-        # we need to explicitly define our regex pattern with r'xxx'.
         Regexp(r'^\w+$', message=username_message)
     ])
 
@@ -61,11 +56,12 @@ class UserForm(ModelForm):
                                                  prepend_blank=False))
     active = BooleanField('Yes, allow this user to sign in')
 
-class UserCancelSubscriptionForm(Form):
+
+class UserCancelSubscriptionForm(FlaskForm):
     pass
 
 
-class CouponForm(Form):
+class CouponForm(FlaskForm):
     percent_off = IntegerField('Percent off (%)', [Optional(),
                                                    NumberRange(min=1,
                                                                max=100)])
@@ -90,7 +86,7 @@ class CouponForm(Form):
                               format='%Y-%m-%d %H:%M:%S')
 
     def validate(self):
-        if not Form.validate(self):
+        if not FlaskForm.validate(self):
             return False
 
         result = True
