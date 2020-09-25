@@ -4,11 +4,18 @@
 {% block title %}Billing details and history{% endblock %}
 
 {% block body %}
-  {{ billing.subscription_details(coupon) }}
-  {{ billing.upcoming_invoice(upcoming) }}
-  {{ billing.invoices(paginated_invoices) }}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        {{ billing.subscription_details(coupon) }}
+        {{ billing.upcoming_invoice(upcoming) }}
+        {{ billing.invoices(paginated_invoices) }}
 
-  <a href="{{ url_for('user.settings') }}" class="margin-top btn btn-primary">
-    Go back to your account
-  </a>
+        <hr class="mt-5" />
+        <a href="{{ url_for('user.settings') }}" class="btn btn-primary">
+          Go back to your account
+        </a>
+      </div>
+    </div>
+  </div>
 {% endblock %}

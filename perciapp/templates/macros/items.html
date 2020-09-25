@@ -35,40 +35,43 @@
   {% set args = request.args.to_dict() %}
 
   <ul class="pagination">
-    <li class="{{ 'disabled' if resource.page == 1 }}">
+    <li class="page-item {{ 'disabled' if resource.page == 1 }}">
       <a href="{{ url_for(request.endpoint, page=1, **args) }}"
-          aria-label="First">
+         class="page-link" aria-label="First">
         &laquo; First
       </a>
     </li>
-    <li class="{{ 'disabled' if not resource.has_prev }}">
+    <li class="page-item {{ 'disabled' if not resource.has_prev }}">
       <a href="{{ url_for(request.endpoint, page=resource.page - 1, **args) }}"
-          aria-label="Previous">
+         class="page-link" aria-label="Previous">
         Prev
       </a>
     </li>
   {%- for page in resource.iter_pages() %}
-    <li class="{{ 'active' if page and page == resource.page }}">
+    <li class="page-item {{ 'active' if page and page == resource.page }}">
       {% if page %}
         {% if page != resource.page %}
-          <a href="{{ url_for(request.endpoint, page=page, **args) }}">{{ page }}</a>
+          <a href="{{ url_for(request.endpoint, page=page, **args) }}"
+             class="page-link">
+            {{ page }}
+          </a>
         {% else %}
-          <span class="text-muted">{{ page }}</span>
+          <span class="page-link">{{ page }}</span>
         {% endif %}
       {% else %}
-        <span class="ellipsis">…</span>
+        <span class="page-link">&hellip;</span>
       {% endif %}
     </li>
   {%- endfor %}
-    <li class="{{ 'disabled' if not resource.has_next }}">
+    <li class="page-item {{ 'disabled' if not resource.has_next }}">
       <a href="{{ url_for(request.endpoint, page=resource.page + 1, **args) }}"
-          aria-label="Next">
+         class="page-link" aria-label="Next">
         Next
       </a>
     </li>
-    <li class="{{ 'disabled' if resource.page == resource.pages }}">
+    <li class="page-item {{ 'disabled' if resource.page == resource.pages }}">
       <a href="{{ url_for(request.endpoint, page=resource.pages, **args) }}"
-          aria-label="Last">
+         class="page-link" aria-label="Last">
         Last &raquo;
       </a>
     </li>

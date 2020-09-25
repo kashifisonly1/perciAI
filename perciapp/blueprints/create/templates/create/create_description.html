@@ -4,118 +4,121 @@
 {% block title %}Create Description{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-md-4">
-      {% call f.form_tag('create.create_description') %}
-      
-        <legend class="text-warning">
-          <strong id="user_credits">{{ current_user.credits }}</strong> credits left
-        </legend>
-        {% call f.form_group(form.title, css_class='margin-bottom', placeholder='Title') %}
-        {% endcall %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <form id="create_description">
+          <h2 class="text-warning">
+            <strong id="user_credits">{{ current_user.credits }}</strong> credits left
+          </h2>
+          {% call f.form_group(form.title, class='form-control', placeholder='Title') %}
+          {% endcall %}
 
-        {% call f.form_group(form.gender, css_class='margin-bottom') %}
-        {% endcall %}
-        
-        {% call f.form_group(form.category, css_class='margin-bottom') %}
-        {% endcall %}
-        
-        {% call f.form_group(form.subcategory, css_class='margin-bottom') %}
-        {% endcall %}
+          {% call f.form_group(form.gender, css_class='form-control') %}
+          {% endcall %}
+          
+          {% call f.form_group(form.category, css_class='form-control') %}
+          {% endcall %}
+          
+          {% call f.form_group(form.subcategory, css_class='form-control') %}
+          {% endcall %}
 
-        <script>
-          let category_select = document.getElementById('category');
-          let subcategory_select = document.getElementById('subcategory');
+          <script>
+            let category_select = document.getElementById('category');
+            let subcategory_select = document.getElementById('subcategory');
 
-          category_select.onchange = function() {
-            category= category_select.value;
-            
-            fetch('create/subcategory/' + category).then(function(response)  {
+            category_select.onchange = function() {
+              category= category_select.value;
               
-              response.json().then(function(data) {
-                let optionHTML = '';
+              fetch('create/subcategory/' + category).then(function(response)  {
+                
+                response.json().then(function(data) {
+                  let optionHTML = '';
 
-                for (var key in data) {
-                // check if the property/key is defined in the object itself, not in parent
-                    if (data.hasOwnProperty(key)) {           
-                      console.log(key, data[key]);
-                    }
-                }
+                  for (var key in data) {
+                  // check if the property/key is defined in the object itself, not in parent
+                      if (data.hasOwnProperty(key)) {           
+                        console.log(key, data[key]);
+                      }
+                  }
 
-                for(var key in data) {
-                  optionHTML += '<option value="' + data[key][0] + '">' + data[key][1] + '</option>';
-                }
+                  for(var key in data) {
+                    optionHTML += '<option value="' + data[key][0] + '">' + data[key][1] + '</option>';
+                  }
 
-                subcategory_select.innerHTML = optionHTML;
+                  subcategory_select.innerHTML = optionHTML;
+                });
               });
-            });
-          }
-        </script>
-        {% call f.form_group(form.detail1, css_class='margin-bottom') %}
-        {% endcall %}
-        {% call f.form_group(form.detail2, css_class='margin-bottom') %}
-        {% endcall %}
-        {% call f.form_group(form.detail3, css_class='margin-bottom') %}
-        {% endcall %}
-        {% call f.form_group(form.detail4, css_class='margin-bottom') %}
-        {% endcall %}
-        {% call f.form_group(form.detail5, css_class='margin-bottom') %}
-        {% endcall %}
-        
-        <button type="submit" class="btn btn-primary btn-block sm-margin-top">
-          <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
-               class="spinner"
-               width="16" height="11" alt="Spinner"/>
-          Create Descriptions
-        </button>
+            }
+          </script>
+          {% call f.form_group(form.detail1, css_class='form-control') %}
+          {% endcall %}
+          {% call f.form_group(form.detail2, css_class='form-control') %}
+          {% endcall %}
+          {% call f.form_group(form.detail3, css_class='form-control') %}
+          {% endcall %}
+          {% call f.form_group(form.detail4, css_class='form-control') %}
+          {% endcall %}
+          {% call f.form_group(form.detail5, css_class='form-control') %}
+          {% endcall %}
+          
+          <button type="submit" class="btn btn-primary btn-block">
+            <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
+                 class="spinner"
+                 width="16" height="11" alt="Spinner"/>
+            Create Descriptions
+          </button>
 
-        <noscript>
-          <p class="alert alert-sm alert-warning text-center sm-margin-top">
-            You need to enable JavaScript to create descriptions.
-          </p>
-        </noscript>
+          <noscript>
+            <p class="alert alert-warning small text-center mt-3">
+              You must enable JavaScript to place bets.
+            </p>
+          </noscript>
 
-        <hr/>
+          <hr/>
 
-        <div class="text-center">
-          <a href="{{ url_for('billing.purchase_credits') }}"
-             class="btn btn-default">Buy credits</a>
+          <div class="text-center">
+            <a href="{{ url_for('billing.purchase_credits') }}"
+              class="btn btn-outline-primary">Buy credits</a>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-7 offset-md-1">
+        <div id="recent_descriptions">
+          <h2>Recent descriptions</h2>
+          <table class="table mt-5">
+            <thead>
+            <tr>
+              <th>Title</th>
+              <th>Gender</th>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            {% if recent_descriptions.count() == 0 %}
+                <tbody>
+                </tbody>
+            {% else %}
+                <tbody>
+                {% for item in recent_descriptions %}
+                  <tr>
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.gender }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.subcategory }}</td>
+                  <td>{{ item.description }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+          <a href="{{ url_for('create.history') }}">
+            <span class="btn btn-outline-secondary">
+              View full description history
+            </span>
+          </a>
         </div>
-        {% endcall %}
-    </div>
-    <div class="col-md-7 col-md-offset-1">
-      <div id="recent_bets">
-        <h2>Recent descriptions</h2>
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Title</th>
-            <th>Gender</th>
-            <th>Category</th>
-            <th>Subcategory</th>
-            <th>Description</th>
-          </tr>
-          </thead>
-          {% if recent_descriptions.count() == 0 %}
-            <tbody>
-            </tbody>
-          {% else %}
-            <tbody>
-            {% for item in recent_descriptions %}
-              <tr>
-                <td>{{ item.title }}</td>
-                <td>{{ item.gender }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.subcategory }}</td>
-                <td>{{ item.description }}</td>
-              </tr>
-            {% endfor %}
-            </tbody>
-        {% endif %}
-        </table>
-        <a href="{{ url_for('create.history') }}">
-          <span class="btn btn-md btn-primary">View full description history</span>
-        </a>
       </div>
     </div>
   </div>

@@ -4,46 +4,52 @@
 {% block title %}Description history{% endblock %}
 
 {% block body %}
-  <h2>Description history</h2>
-  {% if descriptions.total == 0 %}
-    <p>No descriptions found.</p>
-  {% else %}
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Date</th>
-        <th>Title</th>
-        <th>Gender</th>
-        <th>Category</th>
-        <th>Subcategory</th>
-        <th>Description</th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for description in descriptions.items %}
-        <tr>
-          <td>
-            <time class="from-now"
-                  data-datetime="{{ description.created_on }}">
-              {{ description.created_on }}
-            </time>            
-          </td>
-          <td>{{ description.title }}</td>
-          <td>
-            {{ description.gender }}
-          </td>
-          <td>{{ description.category }}</td>
-          <td>{{ description.subcategory }}</td>
-          <td>{{ description.description }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Description history</h2>
+        {% if bets.total == 0 %}
+          <p>No descriptions found.</p>
+        {% else %}
+          <table class="table mt-5">
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Gender</th>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for description in descriptions.items %}
+              <tr>
+                <td>
+                  <time class="js-from-now"
+                        data-datetime="{{ description.created_on }}">
+                    {{ description.created_on }}
+                  </time>
+                </td>
+                <td>{{ description.title }}</td>
+                <td>
+                  {{ description.gender }}
+                </td>
+                <td>{{ description.category }}</td>
+                <td>{{ description.subcategory }}</td>
+                <td>{{ description.description }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
 
-    {{ items.paginate(descriptions) }}
-  {% endif %}
-  <hr/>
-  <a href="{{ url_for('user.settings') }}" class="margin-top btn btn-primary">
-    Go back to your account
-  </a>
+          {{ items.paginate(descriptions) }}
+        {% endif %}
+        <hr class="mt-5" />
+        <a href="{{ url_for('create.create_description') }}" class="btn btn-primary">
+          Go back to creating descriptions
+        </a>
+      </div>
+    </div>
+  </div>
 {% endblock %}

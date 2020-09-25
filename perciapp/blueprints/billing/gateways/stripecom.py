@@ -1,4 +1,7 @@
+import datetime
 import stripe
+
+from config.settings import STRIPE_TRIAL_PERIOD_DAYS
 
 
 class Event(object):
@@ -20,7 +23,7 @@ class Event(object):
 
 class Customer(object):
     @classmethod
-    def create(cls, token=None, email=None, coupon=None, plan=None):
+    def create(cls, token=None, email=None):
         """
         Create a new customer.
 
@@ -31,22 +34,12 @@ class Customer(object):
         :type token: str
         :param email: E-mail address of the customer
         :type email: str
-        :param coupon: Coupon code
-        :type coupon: str
-        :param plan: Plan identifier
-        :type plan: str
         :return: Stripe customer
         """
         params = {
             'source': token,
             'email': email
         }
-
-        if plan:
-            params['plan'] = plan
-
-        if coupon:
-            params['coupon'] = coupon
 
         return stripe.Customer.create(**params)
 
@@ -65,13 +58,24 @@ class Charge(object):
         :type amount: int
         :return: Stripe charge
         """
-        foo = stripe.Charge.create(
-            amount=amount,
-            currency=currency,
-            customer=customer_id,
-            statement_descriptor='PERCI.AI CREDITS')
-        
-        return foo
+        statement_descriptor = 'PERCI.AI CREDITS'
+
+        # Stripe requires a minimum of 50 cents to create a charge, so if it's
+        # below that let's return a charge-like object so that we can create
+        # an invoice later on with this data.
+        if amount < 50:
+            return {
+                'created': datetime.datetime.now().timestamp(),
+                'receipt_number': 'N/A',
+                'currency': 'N/A',
+                'amount': 0,
+                'statement_descriptor': statement_descriptor
+            }
+
+        return stripe.Charge.create(amount=amount,
+                                    currency=currency,
+                                    customer=customer_id,
+                                    statement_descriptor=statement_descriptor)
 
 
 class Coupon(object):
@@ -165,6 +169,33 @@ class Invoice(object):
 
 class Subscription(object):
     @classmethod
+    def create(cls, customer_id=None, coupon=None, plan=None):
+        """
+        Create a subscription for a customer.
+
+        API Documentation:
+          https://stripe.com/docs/api/python#create_subscription
+
+        :param customer_id: Customer id
+        :type customer_id: str
+        :param coupon: Coupon code
+        :type coupon: str
+        :param plan: Plan identifier
+        :type plan: str
+        :return: Stripe subscription
+        """
+        params = {
+            'customer': customer_id,
+            'items': [{'plan': plan}],
+            'trial_period_days': STRIPE_TRIAL_PERIOD_DAYS
+        }
+
+        if coupon:
+            params['coupon'] = coupon
+
+        return stripe.Subscription.create(**params)
+
+    @classmethod
     def update(cls, customer_id=None, coupon=None, plan=None):
         """
         Update an existing subscription.
@@ -187,7 +218,7 @@ class Subscription(object):
         subscription.plan = plan
 
         if coupon:
-            subscription.coupon = coupon
+            subscription.coupon = coupon.upper()
 
         return subscription.save()
 
@@ -263,8 +294,8 @@ class Plan(object):
 
     @classmethod
     def create(cls, id=None, name=None, amount=None, currency=None,
-               interval=None, interval_count=None, trial_period_days=None,
-               metadata=None, statement_descriptor=None):
+               interval=None, interval_count=None, metadata=None,
+               statement_descriptor=None):
         """
         Create a new plan.
 
@@ -283,8 +314,6 @@ class Plan(object):
         :type interval: str
         :param interval_count: Number of intervals between each bill
         :type interval_count: int
-        :param trial_period_days: Number of days to run a free trial
-        :type trial_period_days: int
         :param metadata: Additional data to save with the plan
         :type metadata: dct
         :param statement_descriptor: Arbitrary string to appear on CC statement
@@ -293,17 +322,15 @@ class Plan(object):
         """
         try:
             product = {
-                "name": name,
-                "statement_descriptor": statement_descriptor
+                'name': name,
+                'statement_descriptor': statement_descriptor
             }
 
             return stripe.Plan.create(id=id,
-                                      name=name,
                                       amount=amount,
                                       currency=currency,
                                       interval=interval,
                                       interval_count=interval_count,
-                                      trial_period_days=trial_period_days,
                                       nickname=name,
                                       metadata=metadata,
                                       product=product

@@ -1,10 +1,10 @@
-version: '3.4'
+version: "3.4"
 
 services:
   postgres:
     env_file:
       - ".env"
-    image: "postgres:12.1"
+    image: "postgres:12.3"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     ports:
       - "${DOCKER_POSTGRES_PORT:-127.0.0.1:5432}:5432"
@@ -15,7 +15,7 @@ services:
   redis:
     env_file:
       - ".env"
-    image: "redis:5.0.7-buster"
+    image: "redis:6.0.5-buster"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
     volumes:
@@ -26,6 +26,7 @@ services:
       context: "."
       args:
         - "FLASK_ENV=${FLASK_ENV:-production}"
+        - "NODE_ENV=${NODE_ENV:-production}"
     depends_on:
       - "postgres"
       - "redis"
@@ -43,12 +44,13 @@ services:
     stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
     volumes:
       - "${DOCKER_WEB_VOLUME:-./public:/app/public}"
-    
+
   worker:
     build:
       context: "."
       args:
         - "FLASK_ENV=${FLASK_ENV:-production}"
+        - "NODE_ENV=${NODE_ENV:-production}"
     command: celery worker -B -l info -c 1 -A perciapp.blueprints.contact.tasks
     depends_on:
       - "postgres"

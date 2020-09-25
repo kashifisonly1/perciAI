@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, StringField, PasswordField
+from wtforms import HiddenField, StringField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Length, Optional, Regexp
 from wtforms_alchemy.validators import Unique
 from wtforms_components import EmailField, Email
 
-from lib.util_wtforms import ModelForm
+from config.settings import LANGUAGES
+from lib.util_wtforms import ModelForm, choices_from_dict
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.user.validations import ensure_identity_exists, \
     ensure_existing_password_matches
@@ -46,13 +47,11 @@ class WelcomeForm(ModelForm):
         Unique(User.username),
         DataRequired(),
         Length(1, 16),
-        # Part of the Python 3.7.x update included updating flake8 which means
-        # we need to explicitly define our regex pattern with r'xxx'.
         Regexp(r'^\w+$', message=username_message)
     ])
 
 
-class UpdateCredentials(ModelForm):
+class UpdateCredentialsForm(ModelForm):
     current_password = PasswordField('Current password',
                                      [DataRequired(),
                                       Length(8, 128),
@@ -63,3 +62,9 @@ class UpdateCredentials(ModelForm):
         Unique(User.email)
     ])
     password = PasswordField('Password', [Optional(), Length(8, 128)])
+
+
+class UpdateLocaleForm(FlaskForm):
+    locale = SelectField('Language preference', [DataRequired()],
+                         choices=choices_from_dict(LANGUAGES,
+                                                   prepend_blank=False))

@@ -2,14 +2,14 @@
 {% import 'macros/items.html' as items %}
 
 {% macro card_expiring_warning() -%}
-  {% if current_user.is_authenticated and 
+  {% if current_user.is_authenticated and
         current_user.subscription and current_user.credit_card.is_expiring %}
-    <div class="alert alert-warning" role="alert">
+    <div class="alert alert-danger text-center mb-0" role="alert">
       <div class="container">
-        Your credit card is going to expire soon,
+        <strong>Your credit card is going to expire soon,
         <a href="{{ url_for('billing.update_payment_method') }}">
           please update it</a>
-        .
+        .</strong>
       </div>
     </div>
   {% endif %}
@@ -17,21 +17,23 @@
 
 
 {% macro plan(plan) -%}
-  <div class="col-md-4{{ ' scale-up' if plan.metadata.recommended }} {{ ' quarter-faded' if not plan.metadata.recommended }}">
-    <div class="panel panel-default{{ ' panel-danger' if plan.metadata.recommended }}">
-      <div class="panel-heading text-center"><h3>{{ plan.name }}</h3></div>
-      <div class="panel-body">
+  <div class="col-md-4{{ ' scale-up' if plan.metadata.recommended }}">
+    <div class="card">
+      <div class="card-header{{ ' text-white bg-secondary' if plan.metadata.recommended }}">
+        <h3 class="text-center mt-2">{{ plan.name }}</h3>
+      </div>
+      <div class="card-body">
         {{ caller () }}
-
         {% if current_user.is_authenticated %}
           {% if current_user.subscription %}
             {% if plan == active_plan %}
-              <strong class="btn btn-default btn-lg btn-block">
+              <strong class="btn btn-light btn-lg btn-block disabled mt-5"
+                      aria-disabled="true">
                 Current plan
               </strong>
             {% else %}
               <button id="submit_{{ plan.id }}" name="submit_{{ plan.id }}"
-                      class="btn btn-primary btn-lg btn-block">
+                      class="btn btn-primary btn-lg btn-block mt-5">
                 <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
                      class="spinner"
                      width="16" height="11" alt="Spinner"/>
@@ -40,17 +42,18 @@
             {% endif %}
           {% else %}
             <a href="{{ url_for('billing.create', plan=plan.id) }}"
-               class="btn btn-primary btn-lg btn-block">Continue</a>
+               class="btn btn-primary btn-lg btn-block mt-5">Continue</a>
           {% endif %}
         {% else %}
           <a href="{{ url_for('user.signup') }}"
-             class="btn btn-primary btn-lg btn-block">
+             class="btn btn-primary btn-lg btn-block mt-5">
             Sign up
           </a>
         {% endif %}
 
-        <p class="small text-muted sm-margin-top text-center">
-          ${{ plan.amount | format_currency }} / {{ plan.interval }}
+        <p class="text-muted text-center mt-3">
+          $<span class="js-payment-amount" data-amount="{{ plan.amount }}">{{ plan.amount | format_currency }}</span>
+          / {{ plan.interval }}
         </p>
       </div>
     </div>
@@ -91,8 +94,7 @@
 
 {% macro coupon_expiration(coupon) -%}
   {% if coupon.redeem_by %}
-    <time class="from-now"
-          data-datetime="{{ coupon.redeem_by }}">
+    <time class="js-from-now" data-datetime="{{ coupon.redeem_by }}">
       {{ coupon.redeem_by }}
     </time>
   {% elif coupon.duration_in_months %}
@@ -121,25 +123,20 @@
 {% macro subscription_details(coupon) -%}
   <h2>Subscription details</h2>
   {% if coupon %}
-    <div class="alert alert-info alert-small">
+    <p class="text-muted mb-0">
       Coupon code <strong>{{ coupon.code }}</strong> is applied to your
-      subscription.
-    </div>
-    <span class="small text-muted">
-      {{ coupon_data(coupon) }}
-    </span>
-    <br class="sm-margin-bottom">
-    <br class="sm-margin-bottom">
+      subscription. {{ coupon_data(coupon) }}
+    </p>
   {% endif %}
 {%- endmacro %}
 
 
 {% macro upcoming_invoice(invoice) -%}
   {% if invoice == None %}
-    <h3>No upcoming payments</h3>
+    <h5>No upcoming payments</h5>
     <p>You are not currently subscribed, so there's nothing to see here.</p>
   {% else %}
-    <table class="table table-striped sm-margin-bottom">
+    <table class="table table-striped mt-3">
       <thead>
         <tr>
           <th>Subscription</th>
@@ -153,7 +150,7 @@
           <td>{{ invoice.plan }}</td>
           <td>{{ invoice.description }}</td>
           <td>
-            <time class="short-date" data-datetime="{{ invoice.next_bill_on }}">
+            <time class="js-short-date" data-datetime="{{ invoice.next_bill_on }}">
               {{ invoice.next_bill_on }}
             </time>
           </td>
@@ -169,12 +166,12 @@
 
 
 {% macro invoices(invoices) -%}
-  <h2>Billing history</h2>
+  <h2 class="mt-5">Billing history</h2>
   {% if invoices.total == 0 %}
-    <h4>No invoices found</h4>
-    <p>This isn't an error. You just haven't been invoiced yet.</p>
+    <h5>No invoices found</h5>
+    <p>This isn't an error, you just haven't been invoiced yet.</p>
   {% else %}
-    <table class="table table-striped sm-margin-bottom">
+    <table class="table table-striped mt-3">
       <thead>
         <tr>
           <th>Date</th>
@@ -189,7 +186,7 @@
       {% for invoice in invoices.items %}
         <tr>
           <td>
-            <time class="from-now" data-datetime="{{ invoice.created_on }}">
+            <time class="js-from-now" data-datetime="{{ invoice.created_on }}">
               {{ invoice.created_on }}
             </time>
           </td>
@@ -198,11 +195,11 @@
           </td>
           <td class="small">{{ invoice.description }}</td>
           <td>
-            <time class="short-date" data-datetime="{{ invoice.period_start_on }}">
+            <time class="js-short-date" data-datetime="{{ invoice.period_start_on }}">
               {{ invoice.period_start_on }}
             </time>
             <span class="text-info">&mdash;</span>
-            <time class="short-date" data-datetime="{{ invoice.period_end_on }}">
+            <time class="js-short-date" data-datetime="{{ invoice.period_end_on }}">
               {{ invoice.period_end_on }}
             </time>
           </td>
@@ -222,22 +219,22 @@
 
 
 {% macro payment_form(form, button_label, with_coupon) -%}
-  <div class="alert alert-small alert-danger payment-errors"></div>
+  {% set button_label = _(button_label) %}
 
   <noscript>
-    <p class="alert alert-sm alert-warning text-center sm-margin-top">
-      You need to enable JavaScript to proceed.
+    <p class="alert alert-warning text-center">
+      {{ _('You must enable JavaScript for this request.') }}
     </p>
   </noscript>
 
+  <div class="small alert alert-danger payment-errors"></div>
+
   {% if with_coupon %}
-      <div class="coupon-code">
-        {{ form.coupon_code.label }}
-        {{ f.field(form.coupon_code) }}
-          <div id="coupon_code_status"
-               class="small alert alert-small alert-success">
-          </div>
-      </div>
+    <div class="mb-4">
+      {{ form.coupon_code.label }}
+      {{ f.field(form.coupon_code, css_class='text-uppercase') }}
+      <div id="coupon_code_status" class="small alert alert-success mt-1"></div>
+    </div>
   {% endif %}
 
   {% call f.form_group(form.name, css_class='sm-margin-bottom',
@@ -245,70 +242,71 @@
   {% endcall %}
 
   <div class="form-group">
-    <label for=""><strong>Card number</strong></label>
+    <label for=""><strong>{{ _('Card number') }}</strong></label>
     <input data-stripe="number" class="form-control"
            value="{{ card_last4 if card_last4 }}"/>
   </div>
 
   <div class="row">
-    <div class="col-md-6">
-      <div class="form-group pull-left form-inline">
-        <label for="" class="block"><strong>Exp. date</strong></label><br/>
-        <select data-stripe="exp-month" class="form-control cc-details">
-          <option value=""></option>
-          {% for month in range(1,13) %}
-            <option value="{{ '%02d' % month }}">
-              {{ '%02d' % month }}
-            </option>
-          {% endfor %}
-        </select>
-        <select data-stripe="exp-year" class="form-control cc-details">
-          <option value=""></option>
-          {% for year in range(current_year(),current_year()+15) %}
-            <option value="{{ '%04d' % year }}">
-              {{ '%04d' % year }}
-            </option>
-          {% endfor %}
-        </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="" class="block">
+          <strong>{{ _('Exp. date') }}</strong>
+        </label>
+        <div class="input-group">
+          <select data-stripe="exp-month" class="form-control cc-details mr-2">
+            <option value=""></option>
+            {% for month in range(1,13) %}
+              <option value="{{ '%02d' % month }}">
+                {{ '%02d' % month }}
+              </option>
+            {% endfor %}
+          </select>
+          <select data-stripe="exp-year" class="form-control cc-details">
+            <option value=""></option>
+            {% for year in range(current_year(),current_year()+15) %}
+              <option value="{{ '%04d' % year }}">
+                {{ '%04d' % year }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="form-group pull-right">
-        <label for="">
-          <strong>
-            <abbr title="3-4 digit code on the back">CVC</abbr>
-          </strong>
-        </label>
-        <input data-stripe="cvc" class="form-control cc-details"/>
+    <div class="col-md-4">
+      <div class="float-md-right float-sm-left form-group">
+          <label for="">
+            <strong>
+              <abbr title="3-4 digit code on the back">CVC</abbr>
+            </strong>
+          </label>
+          <input data-stripe="cvc" class="form-control cc-details"/>
       </div>
     </div>
   </div>
-
-  <button type="submit" class="btn btn-primary btn-block lg-margin-bottom">
+  <button type="submit" class="btn btn-primary btn-block mb-5">
     <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
          class="spinner"
          width="16" height="11" alt="Spinner"/>
     {{ button_label }}
   </button>
-
-  <div class="text-center quarter-faded">
+  <div class="text-center">
     <img src="{{ static_url_for('static', filename='images/cc/visa.png') }}"
-          width="40" height="24" class="cc-images" alt="Visa"/>
+          width="40" height="24" alt="Visa"/>
     <img src="{{ static_url_for('static', filename='images/cc/mastercard.png') }}"
-          width="40" height="24" class="cc-images"
-          alt="Mastercard"/>
+          width="40" height="24" alt="Mastercard"/>
     <img src="{{ static_url_for('static', filename='images/cc/american-express.png') }}"
-          width="40" height="24" class="cc-images"
-          alt="American Express"/>
+          width="40" height="24" alt="American Express"/>
     <img src="{{ static_url_for('static', filename='images/cc/jcb.png') }}"
-          width="40" height="24" class="cc-images" alt="J.C.B"/>
+          width="40" height="24" alt="J.C.B"/>
     <img src="{{ static_url_for('static', filename='images/cc/diners-club.png') }}"
-          width="40" height="24" class="cc-images"
-          alt="Diner's Club"/>
+          width="40" height="24" alt="Diner's Club"/>
 
-    <div class="text-success sm-margin-top">
-      <i class="fa fa-fw fa-lock"></i>
-      <span class="small">Protected by 128-bit SSL encryption</span>
+    <div class="text-success mt-2 mb-3">
+      <i class="fas fa-fw fa-lock"></i>
+      <span class="small">
+        {{ _('Protected by 128-bit SSL encryption') }}
+      </span>
     </div>
   </div>
 {%- endmacro %}

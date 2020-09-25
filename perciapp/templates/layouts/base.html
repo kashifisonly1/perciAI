@@ -15,20 +15,8 @@
 
     <link
       rel="stylesheet"
-      href="{{ static_url_for('static', filename='styles/vendor/bootstrap.min.css') }}">
-    <link
-      rel="stylesheet"
-      href="{{ static_url_for('static', filename='styles/main.css') }}">
-    <link
-      rel="stylesheet"
-      href="{{ static_url_for('static', filename='styles/vendor/font-awesome.min.css') }}">
-    <link
-      rel="stylesheet"
-      href="{{ static_url_for('static', filename='styles/vendor/eonasdan-bootstrap-datetimepicker.4.13.30.min.css') }}">
-    <script
-      src="https://code.jquery.com/jquery-1.12.2.min.js"
-      integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk="
-      crossorigin="anonymous"></script>
+      href="{{ static_url_for('static', filename='css/app.css') }}">
+    <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="https://js.stripe.com/v2/"></script>
 
     {% if config['ANALYTICS_GOOGLE_UA'] %}
@@ -44,37 +32,24 @@
     {% endif %}
   </head>
   <body>
-    {% block header %}{% endblock %}
-    
     {{ billing.card_expiring_warning() }}
-    
-    <main class="container">
-      {{ flash.render() }}
 
-      <div class="md-margin-top">{% block heading %}{% endblock %}</div>
+    {% block header %}{% endblock %}
+
+    <main class="container mb-5">
+      {{ flash.render() }}
       {% block body %}{% endblock %}
     </main>
 
     <footer class="footer text-center">
       <div class="container">
         <ul class="list-inline">
-          <li class="text-muted">perci.AI &copy; {{ current_year() }}</li>
+          <li class="list-inline-item text-muted">
+            Snake Eyes &copy; {{ current_year() }}
+          </li>
           {% block footer %}{% endblock %}
         </ul>
       </div>
     </footer>
-
-    <script
-      src="{{ static_url_for('static', filename='scripts/vendor/bootstrap.min.js') }}">
-    </script>
-    <script
-      src="{{ static_url_for('static', filename='scripts/vendor/moment.min.js') }}">
-    </script>
-    <script
-      src="{{ static_url_for('static', filename='scripts/vendor/eonasdan-bootstrap-datetimepicker.4.14.30.min.js') }}">
-    </script>
-    <script
-      src="{{ static_url_for('static', filename='scripts/main.js') }}">
-    </script>
   </body>
 </html>

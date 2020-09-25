@@ -5,57 +5,59 @@
 {% block title %}Ready to start selling?{% endblock %}
 {% block meta_description %}Sign up now to begin creating your own custom descriptions.{% endblock %}
 
-{% block heading %}
-  {% if current_user.subscription %}
-    <h2 class="text-center">You're about to change plans</h2>
-    <div class="alert alert-warning text-center margin-bottom">
-      Your plan will change <strong>immediately</strong> after clicking
-      'Change plan'.
-    </div>
-  {% else %}
-    <h2 class="text-center">Pay less per description with a subscription.</h2>
-    <h3 class="text-center text-muted lg-margin-bottom">
-      Or pay as you go by <a href="{{ url_for('billing.purchase_credits') }}"
-      >purchasing credits</a>.
-    </h3>
-  {% endif %}
-{% endblock %}
-
 {% block body %}
-  {% call f.form_tag('billing.update', class='text-center') %}
-    {% if current_user.subscription %}
-      <div class="lg-margin-bottom">
-        <div class="coupon-code">
-          {{ form.coupon_code.label }}
-          {{ f.field(form.coupon_code) }}
-          <div id="coupon_code_status"
-               class="small alert alert-small alert-success">
-          </div>
-        </div>
-      </div>
-    {% endif %}
+  <div class="container">
     <div class="row">
-      {% call billing.plan(plans['0']) %}
-        <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">25 descriptions each month</li>
-          <li class="list-group-item">Descriptions on demand</li>
-          <li class="list-group-item">$3 per description</li>
-        </ul>
-      {% endcall %}
-      {% call billing.plan(plans['1']) %}
-        <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">50 descriptions each month</li>
-          <li class="list-group-item">Descriptions on demand</li>
-          <li class="list-group-item">$2.25 per description</li>
-        </ul>
-      {% endcall %}
-      {% call billing.plan(plans['2']) %}
-        <ul class="list-group list-group-flush text-center">
-          <li class="list-group-item">80 descriptions each month</li>
-          <li class="list-group-item">Descriptions on demand</li>
-          <li class="list-group-item">$1.87 per description</li>
-        </ul>
-      {% endcall %}
+      <div class="col-md-12 mb-4">
+        {% if current_user.subscription %}
+          <h2 class="h1 text-center">You're about to change plans</h2>
+          <div class="alert alert-warning text-center mb-3">
+            Your plan will change <strong>immediately</strong> after clicking
+            'Change plan'.
+          </div>
+        {% else %}
+          <h2 class="h1 text-center">Pay less per description with a subscription.</h2>
+          <h3 class="font-weight-light text-center text-muted mt-0">
+            Or pay as you go by <a href="{{ url_for('billing.purchase_credits') }}"
+            >purchasing credits</a>.
+          </h3>
+        {% endif %}
+        {% call f.form_tag('billing.update', fid='subscription_form') %}
+          {% if current_user.subscription %}
+            <div class="row">
+              <div class="col-md-4 offset-md-4">
+                {{ form.coupon_code.label }}
+                {{ f.field(form.coupon_code, css_class='text-uppercase') }}
+                <div id="coupon_code_status" class="small alert alert-success mt-1">
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          <div class="row mt-5">
+            {% call billing.plan(plans['0']) %}
+              <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">25 descriptions each month</li>
+                <li class="list-group-item">Descriptions on demand</li>
+                <li class="list-group-item">$3 per description</li>
+              </ul>
+            {% endcall %}
+            {% call billing.plan(plans['1']) %}
+              <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">50 descriptions each month</li>
+                <li class="list-group-item">Descriptions on demand</li>
+                <li class="list-group-item">$2.25 per description</li>
+              </ul>
+            {% endcall %}
+            {% call billing.plan(plans['2']) %}
+              <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">80 descriptions each month</li>
+                <li class="list-group-item">Descriptions on demand</li>
+                <li class="list-group-item">$1.87 per description</li>
+              </ul>
+            {% endcall %}
+          </div>
+        {% endcall %}
+      </div>
     </div>
-  {% endcall %}
+  </div>
 {% endblock %}

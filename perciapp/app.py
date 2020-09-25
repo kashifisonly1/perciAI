@@ -7,10 +7,12 @@ import celery
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.debug import DebuggedApplication
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from flask_login import current_user
 from celery import Celery, states
 from celery.backends.redis import RedisBackend
 
+from cli import register_cli_commands
 from perciapp.blueprints.admin import admin
 from perciapp.blueprints.page import page
 from perciapp.blueprints.contact import contact
@@ -30,6 +32,7 @@ from perciapp.extensions import (
     db,
     login_manager,
     limiter,
+    babel,
     flask_static_digest
 )
 
@@ -119,6 +122,8 @@ def create_app(settings_override=None):
     template_processors(app)
     extensions(app)
     authentication(app, User)
+    locale(app)
+    register_cli_commands(app)
 
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
@@ -139,6 +144,7 @@ def extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
     limiter.init_app(app)
+    babel.init_app(app)
     flask_static_digest.init_app(app)
 
     return None
@@ -177,6 +183,23 @@ def authentication(app, user_model):
             return None
 
         return user
+
+
+def locale(app):
+    """
+    Initialize a locale for the current request.
+
+    :param app: Flask application instance
+    :return: str
+    """
+    if babel.locale_selector_func is None:
+        @babel.localeselector
+        def get_locale():
+            if current_user.is_authenticated:
+                return current_user.locale
+
+            accept_languages = app.config.get('LANGUAGES').keys()
+            return request.accept_languages.best_match(accept_languages)
 
 
 def middleware(app):

@@ -30,8 +30,7 @@ class User(UserMixin, ResourceMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Relationships.
-    credit_card = db.relationship(CreditCard,
-                                  uselist=False,
+    credit_card = db.relationship(CreditCard, uselist=False,
                                   backref='credit_card',
                                   passive_deletes=True)
     subscription = db.relationship(Subscription, uselist=False,
@@ -68,6 +67,9 @@ class User(UserMixin, ResourceMixin, db.Model):
     current_sign_in_ip = db.Column(db.String(45))
     last_sign_in_on = db.Column(AwareDateTime())
     last_sign_in_ip = db.Column(db.String(45))
+
+    # Additional settings.
+    locale = db.Column(db.String(5), nullable=False, server_default='en')
 
     def __init__(self, **kwargs):
         # Call Flask-SQLAlchemy's constructor.

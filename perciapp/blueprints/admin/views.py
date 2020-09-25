@@ -115,9 +115,12 @@ def users_bulk_delete():
                                        omit_ids=[current_user.id],
                                        query=request.args.get('q', text('')))
 
-        delete_count = User.bulk_delete(ids)
+        # Prevent circular imports.
+        from perciapp.blueprints.billing.tasks import delete_users
 
-        flash('{0} user(s) were scheduled to be deleted.'.format(delete_count),
+        delete_users.delay(ids)
+
+        flash('{0} user(s) were scheduled to be deleted.'.format(len(ids)),
               'success')
     else:
         flash('No users were deleted, something went wrong.', 'error')

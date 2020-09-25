@@ -9,7 +9,7 @@ from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.gateways.stripecom import Card as PaymentCard
 from perciapp.blueprints.billing.gateways.stripecom import \
-    Subscription as PaymentSubscription
+    Customer as PaymentCustomer, Subscription as PaymentSubscription
 from perciapp.blueprints.create.models.credit import add_subscription_credits
 
 
@@ -65,7 +65,8 @@ class Subscription(ResourceMixin, db.Model):
 
         return None
 
-    def create(self, user=None, name=None, plan=None, coupon=None, token=None):
+    def create(self, user=None, name=None, plan=None, coupon_code=None,
+               token=None):
         """
         Create a recurring subscription.
 
@@ -75,8 +76,8 @@ class Subscription(ResourceMixin, db.Model):
         :type name: str
         :param plan: Plan identifier
         :type plan: str
-        :param coupon: Coupon code to apply
-        :type coupon: str
+        :param coupon_code: Coupon code to apply
+        :type coupon_code: str
         :param token: Token returned by JavaScript
         :type token: str
         :return: bool
@@ -84,20 +85,25 @@ class Subscription(ResourceMixin, db.Model):
         if token is None:
             return False
 
-        if coupon:
-            self.coupon = coupon.upper()
+        coupon = None
+        if coupon_code:
+            coupon_code = coupon_code.upper()
+            coupon = Coupon.query.filter(Coupon.code == coupon_code).first()
 
-        customer = PaymentSubscription.create(token=token,
-                                              email=user.email,
-                                              plan=plan,
-                                              coupon=self.coupon)
+            # The user bypassed the JS and input an invalid coupon code.
+            if not coupon:
+                return False
+
+        customer = PaymentCustomer.create(token, user.email)
+        PaymentSubscription.create(customer.id, coupon_code, plan)
 
         # Update the user account.
         user.payment_id = customer.id
         user.name = name
         user.previous_plan = plan
         user.credits = add_subscription_credits(user.credits,
-                                                Subscription.get_plan_by_id(user.previous_plan),
+                                                Subscription.get_plan_by_id(
+                                                    user.previous_plan),
                                                 Subscription.get_plan_by_id(plan),
                                                 user.cancelled_subscription_on)
         user.cancelled_subscription_on = None
@@ -106,9 +112,9 @@ class Subscription(ResourceMixin, db.Model):
         self.user_id = user.id
         self.plan = plan
 
-        # Redeem the coupon.
+        # Attach and redeem the coupon.
         if coupon:
-            coupon = Coupon.query.filter(Coupon.code == self.coupon).first()
+            self.coupon = coupon_code
             coupon.redeem()
 
         # Create the credit card.
@@ -123,33 +129,39 @@ class Subscription(ResourceMixin, db.Model):
 
         return True
 
-    def update(self, user=None, coupon=None, plan=None):
+    def update(self, user=None, coupon_code=None, plan=None):
         """
         Update an existing subscription.
 
         :param user: User to apply the subscription to
         :type user: User instance
-        :param coupon: Coupon code to apply
-        :type coupon: str
+        :param coupon_code: Coupon code to apply
+        :type coupon_code: str
         :param plan: Plan identifier
         :type plan: str
         :return: bool
         """
-        PaymentSubscription.update(user.payment_id, coupon, plan)
+        coupon = None
+        if coupon_code:
+            coupon_code = coupon_code.upper()
+            coupon = Coupon.query.filter(Coupon.code == coupon_code).first()
+
+            if not coupon:
+                return False
+
+        PaymentSubscription.update(user.payment_id, coupon_code, plan)
 
         user.previous_plan = user.subscription.plan
         user.subscription.plan = plan
         user.credits = add_subscription_credits(user.credits,
-                                                Subscription.get_plan_by_id(user.previous_plan),
+                                                Subscription.get_plan_by_id(
+                                                    user.previous_plan),
                                                 Subscription.get_plan_by_id(plan),
                                                 user.cancelled_subscription_on)
 
         if coupon:
-            user.subscription.coupon = coupon
-            coupon = Coupon.query.filter(Coupon.code == coupon).first()
-
-            if coupon:
-                coupon.redeem()
+            user.subscription.coupon = coupon_code
+            coupon.redeem()
 
         db.session.add(user.subscription)
         db.session.commit()

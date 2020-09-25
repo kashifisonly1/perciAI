@@ -9,6 +9,7 @@ from flask import (
 )
 
 from flask_login import login_required, current_user
+from flask_babel import gettext as _
 
 from config import settings
 from lib.util_json import render_json
@@ -39,9 +40,9 @@ def pricing():
 @login_required
 def coupon_code():
     code = request.form.get('coupon_code')
+
     if code is None:
-        return render_json(422,
-                           {'error': 'Coupon code cannot be processed.'})
+        return render_json(422, {'error': 'Coupon code cannot be processed.'})
 
     coupon = Coupon.find_by_code(code)
     if coupon is None:
@@ -55,7 +56,7 @@ def coupon_code():
 @login_required
 def create():
     if current_user.subscription:
-        flash('You already have an active subscription.', 'info')
+        flash(_('You already have an active subscription.'), 'info')
         return redirect(url_for('user.settings'))
 
     plan = request.args.get('plan')
@@ -63,7 +64,7 @@ def create():
 
     # Guard against an invalid or missing plan.
     if subscription_plan is None and request.method == 'GET':
-        flash('Sorry, that plan did not exist.', 'error')
+        flash(_('Sorry, that plan did not exist.'), 'error')
         return redirect(url_for('billing.pricing'))
 
     stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
@@ -74,13 +75,14 @@ def create():
         created = subscription.create(user=current_user,
                                       name=request.form.get('name'),
                                       plan=request.form.get('plan'),
-                                      coupon=request.form.get('coupon_code'),
+                                      coupon_code=request.form.get(
+                                        'coupon_code'),
                                       token=request.form.get('stripe_token'))
 
         if created:
-            flash('Awesome, thanks for subscribing!', 'success')
+            flash(_('Awesome, thanks for subscribing!'), 'success')
         else:
-            flash('You must enable JavaScript for this request.', 'warning')
+            flash(_('You must enable JavaScript for this request.'), 'warning')
 
         return redirect(url_for('user.settings'))
 
@@ -90,8 +92,8 @@ def create():
 
 @billing.route('/update', methods=['GET', 'POST'])
 @handle_stripe_exceptions
-@subscription_required
 @login_required
+@subscription_required
 def update():
     current_plan = current_user.subscription.plan
     active_plan = Subscription.get_plan_by_id(current_plan)
@@ -110,12 +112,16 @@ def update():
     if form.validate_on_submit():
         subscription = Subscription()
         updated = subscription.update(user=current_user,
-                                      coupon=request.form.get('coupon_code'),
+                                      coupon_code=request.form.get(
+                                          'coupon_code'),
                                       plan=plan.get('id'))
 
         if updated:
-            flash('Your subscription has been updated.', 'success')
+            flash(_('Your subscription has been updated.'), 'success')
             return redirect(url_for('user.settings'))
+        else:
+            flash(_('That coupon code is not valid.'), 'error')
+            return redirect(url_for('billing.update'))
 
     return render_template('billing/pricing.html',
                            form=form,
@@ -128,7 +134,7 @@ def update():
 @login_required
 def cancel():
     if not current_user.subscription:
-        flash('You do not have an active subscription.', 'error')
+        flash(_('You do not have an active subscription.'), 'error')
         return redirect(url_for('user.settings'))
 
     form = CancelSubscriptionForm()
@@ -138,7 +144,7 @@ def cancel():
         cancelled = subscription.cancel(user=current_user)
 
         if cancelled:
-            flash('Sorry to see you go, your subscription has been cancelled.',
+            flash(_('Sorry to see you go, your subscription has been cancelled.'),
                   'success')
             return redirect(url_for('user.settings'))
 
@@ -150,7 +156,7 @@ def cancel():
 @login_required
 def update_payment_method():
     if not current_user.credit_card:
-        flash('You do not have a payment method on file.', 'error')
+        flash(_('You do not have a payment method on file.'), 'error')
         return redirect(url_for('user.settings'))
 
     active_plan = Subscription.get_plan_by_id(
@@ -172,9 +178,9 @@ def update_payment_method():
                                                          'stripe_token'))
 
         if updated:
-            flash('Your payment method has been updated.', 'success')
+            flash(_('Your payment method has been updated.'), 'success')
         else:
-            flash('You must enable JavaScript for this request.', 'warning')
+            flash(_('You must enable JavaScript for this request.'), 'warning')
 
         return redirect(url_for('user.settings'))
 
@@ -228,11 +234,10 @@ def purchase_credits():
                                      token=request.form.get('stripe_token'))
 
             if created:
-                flash('{0} credits have been added to your account.'.format(
-                       credit_bundles_form),
-                      'success')
+                flash(_('%(amount)s credits have been added to your account.',
+                        amount=credit_bundles_form), 'success')
             else:
-                flash('You must enable JavaScript for this request.',
+                flash(_('You must enable JavaScript for this request.'),
                       'warning')
 
             return redirect(url_for('create.create_description'))

@@ -5,35 +5,38 @@
 {% set plan_name = request.args.get('plan', '') %}
 {% set is_create = request.endpoint.endswith('create') %}
 {% if is_create %}
-  {% set title = 'Enter payment information' %}
+  {% set title = _('Enter credit card') %}
   {% set endpoint = 'billing.create' %}
-  {% set button = 'Process payment' %}
+  {% set button = _('Process payment') %}
 {% else %}
-  {% set title = 'Update payment information' %}
+  {% set title = _('Update credit card') %}
   {% set endpoint = 'billing.update_payment_method' %}
-  {% set button = 'Update payment method' %}
+  {% set button = _('Update payment method') %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-md-4 col-md-offset-4 well">
-      {% call f.form_tag(endpoint, fid='subscription_form') %}
-        <legend>
-          {% if is_create %}
-            {{ plan_name | title }} subscription<br/>
-              <span class="small text-muted">
-                This plan costs 
-                ${{ plan.amount | format_currency }} / {{ plan.interval }}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 offset-md-4 card bg-light">
+        {% call f.form_tag(endpoint, fid='payment_form') %}
+          <h2 class="mb-4">
+            {% if is_create %}
+              {{ plan_name | title }} {{ _('subscription') }}<br/>
+              <span class="h5 text-muted">
+                {{ _('This plan costs') }}
+                $<span class="js-payment-amount" data-amount="{{ plan.amount }}">{{ plan.amount | format_currency }}</span>
+                / {{ plan.interval }}
               </span>
-          {% else %}
-            {{ title }}
-          {% endif %}
-        </legend>
+            {% else %}
+              {{ title }}
+            {% endif %}
+          </h2>
 
-        {{ billing.payment_form(form, button, is_create) }}
-      {% endcall %}
+          {{ billing.payment_form(form, button, is_create) }}
+        {% endcall %}
+      </div>
     </div>
   </div>
 {% endblock %}

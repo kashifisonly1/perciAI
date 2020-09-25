@@ -16,7 +16,3 @@ def terms():
 @page.route('/privacy')
 def privacy():
     return render_template('page/privacy.html')
-
-@page.route('/healthy')
-def healthy():
-    return ''

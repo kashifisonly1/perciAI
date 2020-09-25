@@ -4,69 +4,59 @@
 {% block title %}Sign up for a new account{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-md-5">
-      <h2>Let's get selling.</h2>
-
-      <div class="media md-margin-bottom">
-        <div class="media-left">
-          <i class="fa fa-fw fa-3x fa-bullhorn text-primary"></i>
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Unique Descriptions</h4>
-          <span class="text-muted">
-            Written from scratch with our AI algorithm.
-          </span>
-        </div>
-      </div>
-      <div class="media md-margin-bottom">
-        <div class="media-left">
-          <i class="fa fa-fw fa-3x fa-database text-primary"></i>
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">SEO Optimized</h4>
-          <span class="text-muted">
-            So you rank higher, get more traffic and make more sales
-          </span>
-        </div>
-      </div>
-      <div class="media md-margin-bottom">
-        <div class="media-left">
-          <i class="fa fa-fw fa-3x fa-trophy text-primary"></i>
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Built for Fashion</h4>
-          <span class="text-muted">Authentic tone of voice that speaks to your shoppers.</span>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-5 col-md-push-1 col-md-offset-1 well">
-      {% call f.form_tag('user.signup') %}
-        <legend>Sign up today</legend>
-
-        {% call f.form_group(form.email, css_class='sm-margin-bottom',
-                             autofocus='autofocus',
-                             placeholder='Email address') %}
-        {% endcall %}
-
-        {% call f.form_group(form.password, css_class='sm-margin-bottom') %}
-        {% endcall %}
-
-        <div class="row">
-          <div class="col-md-6">
-            <button type="submit" class="btn btn-primary btn-block">
-              Register
-            </button>
-          </div>
-          <div class="col-md-6">
-            <div class="visible-xs visible-sm sm-margin-top"></div>
-            <a href="{{ url_for('user.login') }}"
-               class="btn btn-default btn-block">
-              Looking to sign in?
-            </a>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="mt-2 mb-5">Let's get selling.</h2>
+        <div class="media">
+          <i class="fas fa-fw fa-3x fa-snowflake-o text-primary mr-2"></i>
+          <div class="media-body">
+            <h4 class="mt-0">Unique Descriptions</h4>
+            <p class="text-muted">Written from scratch with AI.</p>
           </div>
         </div>
-      {% endcall %}
+        <div class="media mt-3">
+          <i class="fas fa-fw fa-3x fa-database text-primary mr-2"></i>
+          <div class="media-body">
+            <h4 class="mt-0">SEO Optimized</h4>
+            <p class="text-muted">So you rank higher, get more traffic and make more sales</p>
+          </div>
+        </div>
+        <div class="media mt-3">
+          <i class="fas fa-fw fa-3x fa-users text-primary mr-2"></i>
+          <div class="media-body">
+            <h4 class="mt-0">Built for Fashion</h4>
+            <p class="text-muted">Language that speaks to your shoppers.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 card bg-light">
+        {% call f.form_tag('user.signup') %}
+          <h2 class="mt-2 mb-4">Sign up today</h1>
+
+          {% call f.form_group(form.email,
+                               autofocus='autofocus',
+                               placeholder='Email address') %}
+          {% endcall %}
+
+          {% call f.form_group(form.password) %}
+          {% endcall %}
+
+          <div class="row">
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-primary btn-block">
+                Register
+              </button>
+            </div>
+            <div class="col-md-6">
+              <a href="{{ url_for('user.login') }}"
+                 class="btn btn-outline-secondary btn-block">
+                Sign in
+              </a>
+            </div>
+          </div>
+        {% endcall %}
+      </div>
     </div>
   </div>
 {% endblock %}

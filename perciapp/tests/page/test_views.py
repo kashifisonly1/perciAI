@@ -24,4 +24,3 @@ class TestPage(ViewTestMixin):
         response = self.client.get('/nochancethispagewilleverexistintheapp')
 
         assert_status_with_message(404, response, 'Error 404')
-        

@@ -67,7 +67,7 @@ class ResourceMixin(object):
         :type query: str
         :return: list
         """
-        omit_ids = map(str, omit_ids)
+        omit_ids = list(map(str, omit_ids))
 
         if scope == 'all_search_results':
             # Change the scope to go from selected ids to all search results.
@@ -98,7 +98,7 @@ class ResourceMixin(object):
         db.session.commit()
 
         return delete_count
-        
+
     def save(self):
         """
         Save a model instance.

@@ -36,6 +36,12 @@ def create_description():
 
     if request.method == 'POST':
 
+        print()
+        print()
+        print('this is the POST method now!')
+        print()
+        print()
+        
         from perciapp.blueprints.create.tasks import (
             generate_sent1,
             generate_sent2,
@@ -58,7 +64,7 @@ def create_description():
         detail5 = request.form.get('detail5')
 
         if current_user.credits < 1:
-            error = 'You need more credits, Honey Bun.'
+            error = 'You need more credits.'
             return render_json(400, {'error': error})
 
         params = {

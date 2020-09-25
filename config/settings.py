@@ -1,10 +1,10 @@
 from datetime import timedelta
 import os
 
-from datetime import timedelta
 from distutils.util import strtobool
 
 from celery.schedules import crontab
+
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
 
@@ -53,23 +53,27 @@ MAIL_USE_TLS = bool(strtobool(os.getenv('MAIL_USE_TLS', 'true')))
 MAIL_USE_SSL = bool(strtobool(os.getenv('MAIL_USE_SSL', 'false')))
 MAIL_USERNAME = os.getenv('MAIL_USERNAME', None)
 MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', None)
-MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'smtp.gmail.com')
+MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'contact@local.host')
+
+# Flask-Babel.
+LANGUAGES = {
+    'en': 'English',
+    'kl': 'Klingon',
+    'es': 'Spanish'
+}
+BABEL_DEFAULT_LOCALE = 'en'
 
 # User.
 SEED_ADMIN_EMAIL = os.getenv('SEED_ADMIN_EMAIL', 'dev@local.host')
 SEED_ADMIN_PASSWORD = os.getenv('SEED_ADMIN_PASSWORD', 'password')
 REMEMBER_COOKIE_DURATION = timedelta(days=90)
 
-# Image display.
-IMAGE_UPLOADS = 'perciapp/perciapp/static/uploads/'
-ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF"]
-MAX_IMAGE_FILESIZE = 0.5 * 1024 * 1024
-
 # Billing.
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY', None)
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', None)
-STRIPE_API_VERSION = '2018-02-28'
+STRIPE_API_VERSION = '2020-03-02'
 STRIPE_CURRENCY = 'usd'
+STRIPE_TRIAL_PERIOD_DAYS = 14
 STRIPE_PLANS = {
     '0': {
         'id': 'standard',
@@ -120,6 +124,7 @@ CREDIT_BUNDLES = [
     {'credits': 500, 'price_in_cents': 75000, 'label': '500 for $750'},
 ]
 
+# Rate limiting.
 RATELIMIT_STORAGE_URL = CELERY_BROKER_URL
 RATELIMIT_STRATEGY = 'fixed-window-elastic-expiry'
 RATELIMIT_HEADERS_ENABLED = True

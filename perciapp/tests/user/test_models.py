@@ -1,6 +1,7 @@
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.subscription import Subscription
 
+
 class TestUser(object):
     def test_serialize_token(self, token):
         """ Token serializer serializes a JWS correctly. """

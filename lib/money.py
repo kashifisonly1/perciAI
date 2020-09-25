@@ -6,6 +6,9 @@ def cents_to_dollars(cents):
     :type cents: int
     :return: float
     """
+    if not cents:
+        return 0
+
     return round(cents / 100.0, 2)
 
 
@@ -17,4 +20,7 @@ def dollars_to_cents(dollars):
     :type dollars: float
     :return: int
     """
+    if not dollars:
+        return 0
+
     return int(dollars * 100)

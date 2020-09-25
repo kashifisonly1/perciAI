@@ -6,7 +6,6 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-node_modules/
 bin/
 build/manifest.json
 develop-eggs/
@@ -49,10 +48,17 @@ tmtags
 
 # App ignores.
 .env
+docker-compose.override.yml
+
 celerybeat*
+
 *-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].*
+
 *.gz
 cache_manifest.json
+
+assets/node_modules/
+public/
 
 # Language Model files
 config.json

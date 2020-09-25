@@ -3,7 +3,7 @@ import json
 
 import pytest
 import pytz
-from mock import Mock
+from unittest.mock import Mock
 
 from config import settings
 from perciapp.app import create_app
@@ -215,7 +215,7 @@ def coupons(db):
             'redeem_by': june_29_2015
         },
         {
-            'amount_off': 1
+            'percent_off': 0.33
         }
     ]
 

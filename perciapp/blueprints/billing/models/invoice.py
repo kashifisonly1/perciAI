@@ -3,14 +3,14 @@ import datetime
 from sqlalchemy import or_, text
 
 from lib.util_sqlalchemy import ResourceMixin
+from config import settings
 from perciapp.extensions import db
 from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 from perciapp.blueprints.billing.gateways.stripecom import (
     Customer as PaymentCustomer,
     Charge as PaymentCharge,
-    Invoice as PaymentInvoice,
-    Product as PaymentProduct
+    Invoice as PaymentInvoice
 )
 
 
@@ -81,13 +81,16 @@ class Invoice(ResourceMixin, db.Model):
         period_end_on = datetime.datetime.utcfromtimestamp(
             data['lines']['data'][0]['period']['end']).date()
 
-        product = PaymentProduct.retrieve(plan_info['product'])
+        description = ''
+        for key, value in settings.STRIPE_PLANS.items():
+            if value.get('id') == plan_info['id']:
+                description = value.get('statement_descriptor')
 
         invoice = {
             'payment_id': data['customer'],
             'plan': plan_info['nickname'],
             'receipt_number': data['receipt_number'],
-            'description': product['statement_descriptor'],
+            'description': description,
             'period_start_on': period_start_on,
             'period_end_on': period_end_on,
             'currency': data['currency'],
@@ -108,13 +111,16 @@ class Invoice(ResourceMixin, db.Model):
         :return: dict
         """
         plan_info = invoice['lines']['data'][0]['plan']
-        date = datetime.datetime.utcfromtimestamp(invoice['date'])
+        date = datetime.datetime.utcfromtimestamp(invoice['created'])
 
-        product = PaymentProduct.retrieve(plan_info['product'])
+        description = ''
+        for key, value in settings.STRIPE_PLANS.items():
+            if value.get('id') == plan_info['id']:
+                description = value.get('statement_descriptor')
 
         invoice = {
             'plan': plan_info['nickname'],
-            'description': product['statement_descriptor'],
+            'description': description,
             'next_bill_on': date,
             'amount_due': invoice['amount_due'],
             'interval': plan_info['interval']
@@ -202,7 +208,6 @@ class Invoice(ResourceMixin, db.Model):
         # Add the credits to the user.
         user.credits += credits
 
-        # Create the invoice item.
         period_on = datetime.datetime.utcfromtimestamp(charge.get('created'))
         card_params = CreditCard.extract_card_params(customer)
 
@@ -220,8 +225,8 @@ class Invoice(ResourceMixin, db.Model):
         self.last4 = card_params.get('last4')
         self.exp_date = card_params.get('exp_date')
 
-        db.session.add(user)
         db.session.add(self)
+        db.session.add(user)
         db.session.commit()
 
         return True
