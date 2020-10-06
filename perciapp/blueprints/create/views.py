@@ -89,11 +89,17 @@ def create_description():
 
         # generating the description in celery
         first = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5',
-                 'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9']
+                 'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9', 'sent1_10',
+                 'sent1_11', 'sent1_12', 'sent1_13', 'sent1_14', 'sent1_15',
+                 'sent1_16', 'sent1_17', 'sent1_18', 'sent1_19']
         second = ['sent2', 'sent2_2', 'sent2_3', 'sent2_4', 'sent2_5',
-                  'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9']
+                  'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9', 'sent2_10',
+                  'sent2_11', 'sent2_12', 'sent2_13', 'sent2_14', 'sent2_15',
+                  'sent2_16', 'sent2_17', 'sent2_18', 'sent2_19']
         third = ['sent3', 'sent3_2', 'sent3_3', 'sent3_4', 'sent3_5',
-                 'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9']
+                 'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9', 'sent3_10',
+                 'sent3_11', 'sent3_12', 'sent3_13', 'sent3_14', 'sent3_15',
+                 'sent3_16', 'sent3_17', 'sent3_18', 'sent3_19']
 
         # generate the first sentences
 

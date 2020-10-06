@@ -1,4 +1,4 @@
-from snakeeyes.blueprints.billing.models.coupon import Coupon
+from perciapp.blueprints.billing.models.coupon import Coupon
 
 
 class TestCoupon(object):

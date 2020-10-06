@@ -154,6 +154,16 @@ def edit_sent1(ids):
     sent7 = description.sent1_7
     sent8 = description.sent1_8
     sent9 = description.sent1_9
+    sent10 = description.sent1_10
+    sent11 = description.sent1_11
+    sent12 = description.sent1_12
+    sent13 = description.sent1_13
+    sent14 = description.sent1_14
+    sent15 = description.sent1_15
+    sent16 = description.sent1_16
+    sent17 = description.sent1_17
+    sent18 = description.sent1_18
+    sent19 = description.sent1_19
 
     print()
     print()
@@ -167,11 +177,23 @@ def edit_sent1(ids):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
     descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9]
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
 
@@ -193,20 +215,24 @@ def edit_sent1(ids):
     print(scores)
     print()
     print()
+
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
-# candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    # pulling the best written sentence
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
 
-    index = scores.index(min(scores))
-    first_sent = descriptions[index]
+    # pulling the next best written sentence
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    
+    # picing the one which is most similar to the features list
+    first_sent = return_most_similar(features,
+                                    [candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent1': first_sent})
+    # saving the best first sentence
+    update = Create.query.filter_by(id=ids[0]).update({'sent1_winner': first_sent})
     db.session.commit()
     return None
 
@@ -245,6 +271,16 @@ def error_edit_sent1(request, exc, traceback):
     sent7 = description.sent1_7
     sent8 = description.sent1_8
     sent9 = description.sent1_9
+    sent10 = description.sent1_10
+    sent11 = description.sent1_11
+    sent12 = description.sent1_12
+    sent13 = description.sent1_13
+    sent14 = description.sent1_14
+    sent15 = description.sent1_15
+    sent16 = description.sent1_16
+    sent17 = description.sent1_17
+    sent18 = description.sent1_18
+    sent19 = description.sent1_19
 
     print()
     print()
@@ -258,11 +294,23 @@ def error_edit_sent1(request, exc, traceback):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5,
-                    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
 
@@ -271,26 +319,37 @@ def error_edit_sent1(request, exc, traceback):
         if str(description.title) not in item:
             descriptions.remove(item)
 
+    print()
+    print()
+    print('descriptions after edit:')
+    print(descriptions)
+    print()
+    print()
+
     scores = [score(i, tokenizer, model) for i in descriptions]
 
     print('scores:')
     print(scores)
     print()
     print()
+
     # getting the description inputs
-    title, cat, features = format_inputs(Create.query.get(id))
+    title, cat, features = format_inputs(description)
 
-# candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    # pulling the best written sentence
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
 
-    index = scores.index(min(scores))
-    first_sent = descriptions[index]
+    # pulling the next best written sentence
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    
+    # picing the one which is most similar to the features list
+    first_sent = return_most_similar(features,
+                                    [candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id=id).update({'sent1': first_sent})
+    # saving the best first sentence
+    update = Create.query.filter_by(id=ids[0]).update({'sent1_winner': first_sent})
     db.session.commit()
     return None
 
@@ -298,7 +357,7 @@ def error_edit_sent1(request, exc, traceback):
 @celery.task()
 def edit_sent2(ids):
     """
-    Cull sent1 candidates and put best candidate back into database
+    Cull sent2 candidates and put best candidate into database
     """
     print()
     print()
@@ -323,6 +382,16 @@ def edit_sent2(ids):
     sent7 = description.sent2_7
     sent8 = description.sent2_8
     sent9 = description.sent2_9
+    sent10 = description.sent2_10
+    sent11 = description.sent2_11
+    sent12 = description.sent2_12
+    sent13 = description.sent2_13
+    sent14 = description.sent2_14
+    sent15 = description.sent2_15
+    sent16 = description.sent2_16
+    sent17 = description.sent2_17
+    sent18 = description.sent2_18
+    sent19 = description.sent2_19
     
     print()
     print()
@@ -336,11 +405,23 @@ def edit_sent2(ids):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5,
-                    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
              
@@ -353,17 +434,13 @@ def edit_sent2(ids):
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
-# candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    sent = return_most_similar(features,[candidate1, candidate2])[0]
 
-    index = scores.index(min(scores))
-    sent = descriptions[index]
-
-    update = Create.query.filter_by(id=ids[0]).update({'sent2': sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent2_winner': sent})
     db.session.commit()
     return None
 
@@ -402,6 +479,16 @@ def error_edit_sent2(request, exc, traceback):
     sent7 = description.sent2_7
     sent8 = description.sent2_8
     sent9 = description.sent2_9
+    sent10 = description.sent2_10
+    sent11 = description.sent2_11
+    sent12 = description.sent2_12
+    sent13 = description.sent2_13
+    sent14 = description.sent2_14
+    sent15 = description.sent2_15
+    sent16 = description.sent2_16
+    sent17 = description.sent2_17
+    sent18 = description.sent2_18
+    sent19 = description.sent2_19
     
     print()
     print()
@@ -415,11 +502,23 @@ def error_edit_sent2(request, exc, traceback):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5,
-                    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
              
@@ -430,19 +529,15 @@ def error_edit_sent2(request, exc, traceback):
     print()
     print()
     # getting the description inputs
-    title, cat, features = format_inputs(Create.query.get(id))
+    title, cat, features = format_inputs(description)
 
-    ## candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    sent = return_most_similar(features,[candidate1, candidate2])[0]
 
-    index = scores.index(min(scores))
-    sent = descriptions[index]
-
-    update = Create.query.filter_by(id=id).update({'sent2': sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent2_winner': sent})
     db.session.commit()
     return None
 
@@ -475,6 +570,16 @@ def edit_sent3(ids):
     sent7 = description.sent3_7
     sent8 = description.sent3_8
     sent9 = description.sent3_9
+    sent10 = description.sent3_10
+    sent11 = description.sent3_11
+    sent12 = description.sent3_12
+    sent13 = description.sent3_13
+    sent14 = description.sent3_14
+    sent15 = description.sent3_15
+    sent16 = description.sent3_16
+    sent17 = description.sent3_17
+    sent18 = description.sent3_18
+    sent19 = description.sent3_19
     
     print()
     print()
@@ -488,11 +593,23 @@ def edit_sent3(ids):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5,
-                    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
 
@@ -505,17 +622,14 @@ def edit_sent3(ids):
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
-# candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    sent = return_most_similar(features,
+                                    [candidate1, candidate2])[0]
 
-    index = scores.index(min(scores))
-    sent = descriptions[index]
-
-    update = Create.query.filter_by(id=ids[0]).update({'sent3': sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent3_winner': sent})
     db.session.commit()
 
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
@@ -558,7 +672,17 @@ def error_edit_sent3(request, exc, traceback):
     sent7 = description.sent3_7
     sent8 = description.sent3_8
     sent9 = description.sent3_9
-
+    sent10 = description.sent3_10
+    sent11 = description.sent3_11
+    sent12 = description.sent3_12
+    sent13 = description.sent3_13
+    sent14 = description.sent3_14
+    sent15 = description.sent3_15
+    sent16 = description.sent3_16
+    sent17 = description.sent3_17
+    sent18 = description.sent3_18
+    sent19 = description.sent3_19
+    
     print()
     print()
     print('sentences:')
@@ -571,11 +695,23 @@ def error_edit_sent3(request, exc, traceback):
     print(sent7)
     print(sent8)
     print(sent9)
+    print(sent10)
+    print(sent11)
+    print(sent12)
+    print(sent13)
+    print(sent14)
+    print(sent15)
+    print(sent16)
+    print(sent17)
+    print(sent18)
+    print(sent19)
     print()
     print()
 
-    descriptions = [sent1, sent2, sent3, sent4, sent5,
-                    sent6, sent7, sent8, sent9]
+    descriptions = [sent1, sent2, sent3, sent4,
+                    sent5, sent6, sent7, sent8, sent9, sent10,
+                    sent11, sent12, sent13, sent14, sent15, sent16,
+                    sent17, sent18, sent19]
 
     descriptions = remove_bad_sentences(descriptions)
 
@@ -586,22 +722,19 @@ def error_edit_sent3(request, exc, traceback):
     print()
     print()
     # getting the description inputs
-    title, cat, features = format_inputs(Create.query.get(id))
+    title, cat, features = format_inputs(description)
 
-# candidate1, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# candidate2, descriptions, scores = pop_best_sentence(descriptions,
-#                                                      scores)
-# first_sent = return_most_similar(features,
-#                                  [candidate1, candidate2])[0]
+    candidate1, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    candidate2, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    sent = return_most_similar(features,
+                                    [candidate1, candidate2])[0]
 
-    index = scores.index(min(scores))
-    sent = descriptions[index]
-
-    update = Create.query.filter_by(id=id).update({'sent3': sent})
+    update = Create.query.filter_by(id=ids[0]).update({'sent3_winner': sent})
     db.session.commit()
 
-    final_output = description.sent1 + '. ' + description.sent2 + '. ' + description.sent3 + '.'
+    final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
     update = Create.query.filter_by(id=ids[0]).update({'description':final_output})
     db.session.commit()
     return None

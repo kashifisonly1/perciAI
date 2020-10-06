@@ -244,6 +244,16 @@ def descriptions():
             sent1_7 = fake.text(50)
             sent1_8 = fake.text(50)
             sent1_9 = fake.text(50)
+            sent1_10 = fake.text(50)
+            sent1_11 = fake.text(50)
+            sent1_12 = fake.text(50)
+            sent1_13 = fake.text(50)
+            sent1_14 = fake.text(50)
+            sent1_15 = fake.text(50)
+            sent1_16 = fake.text(50)
+            sent1_17 = fake.text(50)
+            sent1_18 = fake.text(50)
+            sent1_19 = fake.text(50)
             sent2 = fake.text(50)
             sent2_2 = fake.text(50)
             sent2_3 = fake.text(50)
@@ -253,6 +263,16 @@ def descriptions():
             sent2_7 = fake.text(50)
             sent2_8 = fake.text(50)
             sent2_9 = fake.text(50)
+            sent2_10 = fake.text(50)
+            sent2_11 = fake.text(50)
+            sent2_12 = fake.text(50)
+            sent2_13 = fake.text(50)
+            sent2_14 = fake.text(50)
+            sent2_15 = fake.text(50)
+            sent2_16 = fake.text(50)
+            sent2_17 = fake.text(50)
+            sent2_18 = fake.text(50)
+            sent2_19 = fake.text(50)
             sent3 = fake.text(50)
             sent3_2 = fake.text(50)
             sent3_3 = fake.text(50)
@@ -262,6 +282,16 @@ def descriptions():
             sent3_7 = fake.text(50)
             sent3_8 = fake.text(50)
             sent3_9 = fake.text(50)
+            sent3_10 = fake.text(50)
+            sent3_11 = fake.text(50)
+            sent3_12 = fake.text(50)
+            sent3_13 = fake.text(50)
+            sent3_14 = fake.text(50)
+            sent3_15 = fake.text(50)
+            sent3_16 = fake.text(50)
+            sent3_17 = fake.text(50)
+            sent3_18 = fake.text(50)
+            sent3_19 = fake.text(50)
             description = fake.text(425)
 
             params = {
@@ -284,6 +314,16 @@ def descriptions():
                 'sent1_7': sent1_7,
                 'sent1_8': sent1_8,
                 'sent1_9': sent1_9,
+                'sent1_10': sent1_10,
+                'sent1_11': sent1_11,
+                'sent1_12': sent1_12,
+                'sent1_13': sent1_13,
+                'sent1_14': sent1_14,
+                'sent1_15': sent1_15,
+                'sent1_16': sent1_16,
+                'sent1_17': sent1_17,
+                'sent1_18': sent1_18,
+                'sent1_19': sent1_19,
                 'sent2': sent2,
                 'sent2_2': sent2_2,
                 'sent2_3': sent2_3,
@@ -293,6 +333,16 @@ def descriptions():
                 'sent2_7': sent2_7,
                 'sent2_8': sent2_8,
                 'sent2_9': sent2_9,
+                'sent2_10': sent2_10,
+                'sent2_11': sent2_11,
+                'sent2_12': sent2_12,
+                'sent2_13': sent2_13,
+                'sent2_14': sent2_14,
+                'sent2_15': sent2_15,
+                'sent2_16': sent2_16,
+                'sent2_17': sent2_17,
+                'sent2_18': sent2_18,
+                'sent2_19': sent2_19,
                 'sent3': sent3,
                 'sent3_2': sent3_2,
                 'sent3_3': sent3_3,
@@ -302,6 +352,16 @@ def descriptions():
                 'sent3_7': sent3_7,
                 'sent3_8': sent3_8,
                 'sent3_9': sent3_9,
+                'sent3_10': sent3_10,
+                'sent3_11': sent3_11,
+                'sent3_12': sent3_12,
+                'sent3_13': sent3_13,
+                'sent3_14': sent3_14,
+                'sent3_15': sent3_15,
+                'sent3_16': sent3_16,
+                'sent3_17': sent3_17,
+                'sent3_18': sent3_18,
+                'sent3_19': sent3_19,
                 'description': description
             }
 
