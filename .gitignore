@@ -63,3 +63,8 @@ public/
 # Language Model files
 config.json
 *.bin
+.vscode
+*.egg-info
+**/__pycache__/
+**/build/
+**/dist/

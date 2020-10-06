@@ -1,0 +1,17 @@
+### I'm Submitting a ...
+
+- [ ] bug report
+- [ ] feature request
+- [ ] chore
+
+### Description
+
+If you are submitting a bug, please describe the bug and provide a code snippet if possible. If this is a UI bug, please include any JS errors from a browser console. Screenshots are also helpful.
+
+If you are submitting a feature request, please include a description of the desired behavior.
+
+If you are submitting a chore, describe in detail what needs to happen and attach any relevant information you have.
+
+### Additional Context
+
+Please provide links to any relevant slack conversations, external issue trackers, etc.
