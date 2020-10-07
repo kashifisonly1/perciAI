@@ -1,7 +1,7 @@
 steps:
 - name: gcr.io/kaniko-project/executor:latest
   id: perciai
-  args: [--target=app, --destination=gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA, --cache=true, --dockerfile=Dockerfile, --context=.]
+  args: [--destination=gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA, --cache=true, --dockerfile=Dockerfile, --context=.]
   waitFor: [-]
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
