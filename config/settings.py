@@ -24,7 +24,7 @@ cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
 pool = sqlalchemy.create_engine(
     sqlalchemy.engine.url.URL(
-        drivername="postgres+pg8000",
+        drivername="postgresql",
         username=db_user,  # e.g. "my-database-user"
         password=db_pass,  # e.g. "my-database-password"
         database=db_name,  # e.g. "my-database-name"
