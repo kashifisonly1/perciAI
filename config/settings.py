@@ -16,11 +16,11 @@ SERVER_NAME = os.getenv('SERVER_NAME',
                                                          '8000')))
 
 # SQLAlchemy.
-db_user = os.environ["DB_USER"]
-db_pass = os.environ["DB_PASS"]
-db_name = os.environ["DB_NAME"]
+db_user = os.getenv('DB_USER')
+db_pass = os.getenv('DB_PASS')
+db_name = os.getenv('DB_NAME')
 db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
-cloud_sql_connection_name = os.environ["CLOUD_SQL_CONNECTION_NAME"]
+cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
 pool = sqlalchemy.create_engine(
     sqlalchemy.engine.url.URL(
