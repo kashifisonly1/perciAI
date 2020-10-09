@@ -15,7 +15,7 @@ SERVER_NAME = os.getenv('SERVER_NAME',
                         'localhost:{0}'.format(os.getenv('DOCKER_WEB_PORT',
                                                          '8000')))
 
-# SQLAlchemy.
+# # SQLAlchemy for Gcloud.
 db_user = os.getenv('DB_USER')
 db_pass = os.getenv('DB_PASS')
 db_name = os.getenv('DB_NAME')
@@ -36,6 +36,14 @@ pool = sqlalchemy.create_engine(
     ),
     # ... Specify additional properties here.
 )
+
+pg_host = os.getenv('POSTGRES_HOST', 'postgres')
+pg_port = os.getenv('POSTGRES_PORT', '5432')
+pg_db = os.getenv('POSTGRES_DB', pg_user)
+db = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(db_user, db_pass,
+                                               pg_host, pg_port, pg_db)
+SQLALCHEMY_DATABASE_URI = db
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Celery.
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
