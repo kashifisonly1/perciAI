@@ -39,9 +39,8 @@ pool = sqlalchemy.create_engine(
 
 pg_host = os.getenv('POSTGRES_HOST', 'postgres')
 pg_port = os.getenv('POSTGRES_PORT', '5432')
-pg_db = os.getenv('POSTGRES_DB', pg_user)
 db = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(db_user, db_pass,
-                                               pg_host, pg_port, pg_db)
+                                               pg_host, pg_port, db_name)
 SQLALCHEMY_DATABASE_URI = db
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
