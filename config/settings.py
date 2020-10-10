@@ -19,7 +19,7 @@ SERVER_NAME = os.getenv('SERVER_NAME',
 db_user = os.getenv('DB_USER')
 db_pass = os.getenv('DB_PASS')
 db_name = os.getenv('DB_NAME')
-db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
+db_socket_dir = os.getenv("DB_SOCKET_DIR", "/cloudsql")
 cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
 pool = sqlalchemy.create_engine(
@@ -37,7 +37,7 @@ pool = sqlalchemy.create_engine(
     # ... Specify additional properties here.
 )
 
-pg_host = os.getenv('POSTGRES_HOST', 'postgres')
+pg_host = os.getenv('DB_HOST', '127.0.0.1:5432')
 pg_port = os.getenv('POSTGRES_PORT', '5432')
 db = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(db_user, db_pass,
                                                pg_host, pg_port, db_name)
