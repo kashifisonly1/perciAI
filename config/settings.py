@@ -37,12 +37,12 @@ pool = sqlalchemy.create_engine(
     # ... Specify additional properties here.
 )
 
-pg_host = os.getenv('DB_HOST', '127.0.0.1')
-pg_port = os.getenv('POSTGRES_PORT', '5432')
-db = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(db_user, db_pass,
-                                               pg_host, pg_port, db_name)
-SQLALCHEMY_DATABASE_URI = db
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+# pg_host = os.getenv('DB_HOST', '127.0.0.1')
+# pg_port = os.getenv('POSTGRES_PORT', '5432')
+# db = 'postgresql://{0}:{1}@{2}:{3}/{4}'.format(db_user, db_pass,
+#                                                pg_host, pg_port, db_name)
+# SQLALCHEMY_DATABASE_URI = db
+# SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Celery.
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
