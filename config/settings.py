@@ -39,7 +39,7 @@ cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
 pg_host = os.getenv('DB_HOST', '127.0.0.1')
 
-DATABASE_URL='postgres://{}:{}@/{}?{}={}/{}'.format(
+SQLALCHEMY_DATABASE_URI='postgres://{}:{}@/{}?{}={}/{}'.format(
     db_user,db_pass,db_name,pg_host, db_socket_dir, 
     cloud_sql_connection_name)
 
