@@ -22,26 +22,28 @@ db_name = os.getenv('DB_NAME')
 db_socket_dir = os.getenv("DB_SOCKET_DIR", "/cloudsql")
 cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
-# pool = sqlalchemy.create_engine(
-#     sqlalchemy.engine.url.URL(
-#         drivername="postgresql",
-#         username=db_user,  # e.g. "my-database-user"
-#         password=db_pass,  # e.g. "my-database-password"
-#         database=db_name,  # e.g. "my-database-name"
-#         query={
-#             "unix_sock": "{}/{}/.s.PGSQL.5432".format(
-#                 db_socket_dir,  # e.g. "/cloudsql"
-#                 cloud_sql_connection_name)  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
-#         }
-#     ),
+sqlalchemy.create_engine(
+    "postgresql+psycopg2://{}:{}@/{}?unix_sock={}/{}/.s.PGSQL.5432".format(
+        db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
+    )
+
+    #     username=db_user,  # e.g. "my-database-user"
+    #     password=db_pass,  # e.g. "my-database-password"
+    #     database=db_name,  # e.g. "my-database-name"
+    #     query={
+    #         "unix_sock": "{}/{}/.s.PGSQL.5432".format(
+    #             db_socket_dir,  # e.g. "/cloudsql"
+    #             cloud_sql_connection_name)  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
+    #     }
+    # ),
     # ... Specify additional properties here.
-# )
+)
 
-pg_host = os.getenv('DB_HOST', '127.0.0.1')
+# pg_host = os.getenv('DB_HOST', '127.0.0.1')
 
-SQLALCHEMY_DATABASE_URI='postgres://{}:{}@/{}?{}={}/{}'.format(
-    db_user,db_pass,db_name,pg_host, db_socket_dir, 
-    cloud_sql_connection_name)
+# SQLALCHEMY_DATABASE_URI='postgres://{}:{}@/{}?{}={}/{}'.format(
+#     db_user,db_pass,db_name,pg_host, db_socket_dir, 
+#     cloud_sql_connection_name)
 
 # pg_port = os.getenv('DB_PORT', '5432')
 # db = f'postgresql://{db_user}:{db_pass}@{pg_host}:{pg_port}/{db_name}'
