@@ -37,9 +37,9 @@ cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
     # ... Specify additional properties here.
 # )
 
-# pg_host = os.getenv('DB_HOST', 'postgres')
-# pg_port = os.getenv('POSTGRES_PORT', '5432')
-db = f'postgresql://{db_user}:{db_pass}@{db_name}?unix_sock={db_socket_dir}/{cloud_sql_connection_name}/.s.PGSQL.5432'
+pg_host = os.getenv('DB_HOST', '127.0.0.1')
+pg_port = os.getenv('POSTGRES_PORT', '5432')
+db = f'postgresql://{db_user}:{db_pass}@{pg_host}:{pg_port}/{db_name}'
 SQLALCHEMY_DATABASE_URI = db
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
