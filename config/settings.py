@@ -28,8 +28,7 @@ cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 #     )
 
 db = "postgresql+psycopg2://{0}:{1}@/{2}?unix_sock={3}/{4}/.s.PGSQL.5432".format(
-         db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
-     )
+         db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name)
 SQLALCHEMY_DATABASE_URI= db
     #     username=db_user,  # e.g. "my-database-user"
     #     password=db_pass,  # e.g. "my-database-password"
@@ -41,7 +40,6 @@ SQLALCHEMY_DATABASE_URI= db
     #     }
     # ),
     # ... Specify additional properties here.
-)
 
 # pg_host = os.getenv('DB_HOST', '127.0.0.1')
 
