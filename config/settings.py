@@ -22,11 +22,15 @@ db_name = os.getenv('DB_NAME')
 db_socket_dir = os.getenv("DB_SOCKET_DIR", "/cloudsql")
 cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
-sqlalchemy.create_engine(
-    "postgresql+psycopg2://{0}:{1}@/{2}?unix_sock={3}/{4}/.s.PGSQL.5432".format(
-        db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
-    )
+# sqlalchemy.create_engine(
+#     "postgresql+psycopg2://{0}:{1}@/{2}?unix_sock={3}/{4}/.s.PGSQL.5432".format(
+#         db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
+#     )
 
+db = "postgresql+psycopg2://{0}:{1}@/{2}?unix_sock={3}/{4}/.s.PGSQL.5432".format(
+         db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
+     )
+SQLALCHEMY_DATABASE_URI= db
     #     username=db_user,  # e.g. "my-database-user"
     #     password=db_pass,  # e.g. "my-database-password"
     #     database=db_name,  # e.g. "my-database-name"
