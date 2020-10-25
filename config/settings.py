@@ -22,35 +22,10 @@ db_name = os.getenv('DB_NAME')
 db_socket_dir = os.getenv("DB_SOCKET_DIR", "/cloudsql")
 cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 
-# sqlalchemy.create_engine(
-#     "postgresql+psycopg2://{0}:{1}@/{2}?unix_sock={3}/{4}/.s.PGSQL.5432".format(
-#         db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name
-#     )
-
 db = "postgres://{0}:{1}@/{2}?host={3}/{4}".format(
          db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name)
 SQLALCHEMY_DATABASE_URI= db
-    #     username=db_user,  # e.g. "my-database-user"
-    #     password=db_pass,  # e.g. "my-database-password"
-    #     database=db_name,  # e.g. "my-database-name"
-    #     query={
-    #         "unix_sock": "{}/{}/.s.PGSQL.5432".format(
-    #             db_socket_dir,  # e.g. "/cloudsql"
-    #             cloud_sql_connection_name)  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
-    #     }
-    # ),
-    # ... Specify additional properties here.
-
-# pg_host = os.getenv('DB_HOST', '127.0.0.1')
-
-# SQLALCHEMY_DATABASE_URI='postgres://{}:{}@/{}?{}={}/{}'.format(
-#     db_user,db_pass,db_name,pg_host, db_socket_dir, 
-#     cloud_sql_connection_name)
-
-# pg_port = os.getenv('DB_PORT', '5432')
-# db = f'postgresql://{db_user}:{db_pass}@{pg_host}:{pg_port}/{db_name}'
-# SQLALCHEMY_DATABASE_URI = db
-# SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Celery.
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
