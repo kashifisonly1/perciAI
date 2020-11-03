@@ -36,22 +36,13 @@ def create_description():
 
     if request.method == 'POST':
 
-        print()
-        print()
-        print('this is the POST method now!')
-        print()
-        print()
-        
         from perciapp.blueprints.create.tasks import (
             generate_sent1,
             generate_sent2,
             generate_sent3,
             edit_sent1,
             edit_sent2,
-            edit_sent3,
-            error_edit_sent1,
-            error_edit_sent2,
-            error_edit_sent3)
+            edit_sent3)
 
         title = str(request.form.get('title'))
         gender = str(request.form.get('gender'))
@@ -101,20 +92,22 @@ def create_description():
                  'sent3_11', 'sent3_12', 'sent3_13', 'sent3_14', 'sent3_15',
                  'sent3_16', 'sent3_17', 'sent3_18', 'sent3_19']
 
-        # generate the first sentences
+        # generate sentences
+        for label in first:
+            #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
+            generate_sent1(create.id, label)
 
-        from celery import chord
-        callback = edit_sent1.s().set(link_error=[error_edit_sent1.s()])
-        tasks = [generate_sent1.s(create.id, label) for label in first]
-        chord(tasks)(callback)
+        for label in second:
+            #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
+            generate_sent2(create.id, label)
 
-        callback = edit_sent2.s().set(link_error=[error_edit_sent2.s()])
-        tasks = [generate_sent2.s(create.id, label) for label in second]
-        chord(tasks)(callback)
+        for label in third:
+            #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
+            generate_sent3(create.id, label)
 
-        callback = edit_sent3.s().set(link_error=[error_edit_sent3.s()])
-        tasks = [generate_sent3.s(create.id, label) for label in third]
-        chord(tasks)(callback)
+        edit_sent1(create.id)
+        edit_sent2(create.id)
+        edit_sent3(create.id)
 
         flash('Success! Your description will appear in a few seconds.',
               'success')
@@ -148,3 +141,42 @@ def history(page):
 
     return render_template('create/history.html',
                            descriptions=paginated_descriptions)
+
+
+@create.route('/gensent1')
+def genFirst(description_id,label):
+    #Generate a first sentence candidate
+    generate_sent1(description_id,label)
+    return description_id
+
+
+@create.route('/gensent2')
+def genSecond(description_id,label):
+    #Generate a sentence sentence candidate
+    generate_sent2(description_id,label)
+    return description_id
+
+
+@create.route('/gensent3')
+def genThird(description_id,label):
+    #Generate a third sentence candidate
+    generate_sent3(description_id,label)
+    return description_id
+
+@create.route('/editsent1')
+def editFirst(description_id):
+    #Pick the best first sentence
+    edit_sent1(description_id)
+    return description_id
+
+@create.route('/editsent2')
+def editSecond(description_id):
+    #Pick the best second sentence
+    edit_sent2(description_id)
+    return description_id
+
+@create.route('/editsent3')
+def editThird(description_id):
+    #Pick the best third sentence
+    edit_sent3(description_id)
+    return description_id
