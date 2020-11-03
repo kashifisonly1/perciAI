@@ -45,8 +45,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /usr/share/doc && rm -rf /usr/share/man \
   && apt-get purge -y --auto-remove ${BUILD_DEPS} \
-  && apt-get clean \
-  && gsutil cp -r models gs://perciapp-processor
+  && apt-get clean
 
 ARG FLASK_ENV="production"
 ENV FLASK_ENV="${FLASK_ENV}" \
