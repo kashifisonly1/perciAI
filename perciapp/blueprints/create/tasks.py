@@ -58,8 +58,6 @@ def generate_sent1(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
@@ -91,8 +89,6 @@ def generate_sent2(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
@@ -124,8 +120,6 @@ def generate_sent3(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def edit_sent1(ids):
     """
     Cull sent1 candidates and put best candidate back into database
@@ -230,8 +224,6 @@ def edit_sent1(ids):
     db.session.commit()
     return None
 
-
-@celery.task()
 def edit_sent2(ids):
     """
     Cull sent2 candidates and put best candidate into database
