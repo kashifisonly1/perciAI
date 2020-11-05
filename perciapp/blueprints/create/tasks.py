@@ -27,7 +27,6 @@ def remove_bad_sentences(descriptions):
     return descriptions
 
 
-@celery.task()
 def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
@@ -59,8 +58,6 @@ def generate_sent1(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
@@ -92,8 +89,6 @@ def generate_sent2(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
@@ -125,17 +120,10 @@ def generate_sent3(description_id, label):
     db.session.commit()
     return description_id
 
-
-@celery.task()
 def edit_sent1(ids):
     """
     Cull sent1 candidates and put best candidate back into database
     """
-    print()
-    print()
-    print('THIS IS THE EDIT FUNCTION NOW')
-    print()
-    print()
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -236,134 +224,10 @@ def edit_sent1(ids):
     db.session.commit()
     return None
 
-
-@celery.task()
-def error_edit_sent1(request, exc, traceback):
-    """
-    Cull sent1 candidates and put best candidate back into database
-    """
-
-    print()
-    print()
-    print('THIS IS THE ERROR_EDIT FUNCTION NOW')
-    print()
-    print()
-    print('request.args[0][0] returns')
-    print(request.args[0][0])
-    print()
-    print()
-    # initialize model
-
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
-
-    # load in sentence candidates
-    id = request.args[0][0]
-    description = Create.query.get(id)
-    sent1 = description.sent1
-    sent2 = description.sent1_2
-    sent3 = description.sent1_3
-    sent4 = description.sent1_4
-    sent5 = description.sent1_5
-    sent6 = description.sent1_6
-    sent7 = description.sent1_7
-    sent8 = description.sent1_8
-    sent9 = description.sent1_9
-    sent10 = description.sent1_10
-    sent11 = description.sent1_11
-    sent12 = description.sent1_12
-    sent13 = description.sent1_13
-    sent14 = description.sent1_14
-    sent15 = description.sent1_15
-    sent16 = description.sent1_16
-    sent17 = description.sent1_17
-    sent18 = description.sent1_18
-    sent19 = description.sent1_19
-
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
-
-    descriptions = remove_bad_sentences(descriptions)
-
-    # remove 1st sentences without the product title in them
-    for item in descriptions:
-        if str(description.title) not in item:
-            descriptions.remove(item)
-
-    print()
-    print()
-    print('descriptions after edit:')
-    print(descriptions)
-    print()
-    print()
-
-    scores = [score(i, tokenizer, model) for i in descriptions]
-
-    print('scores:')
-    print(scores)
-    print()
-    print()
-
-    # getting the description inputs
-    title, cat, features = format_inputs(description)
-
-    # pulling the best written sentence
-    candidate1, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-
-    # pulling the next best written sentence
-    candidate2, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-    
-    # picing the one which is most similar to the features list
-    first_sent = return_most_similar(features,
-                                    [candidate1, candidate2])[0]
-
-    # saving the best first sentence
-    update = Create.query.filter_by(id=ids[0]).update({'sent1_winner': first_sent})
-    db.session.commit()
-    return None
-
-
-@celery.task()
 def edit_sent2(ids):
     """
     Cull sent2 candidates and put best candidate into database
     """
-    print()
-    print()
-    print('THIS IS THE EDIT FUNCTION NOW')
-    print()
-    print()
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -373,103 +237,6 @@ def edit_sent2(ids):
 
     # load in sentence candidates
     description = Create.query.get(ids[0])
-    sent1 = description.sent2
-    sent2 = description.sent2_2
-    sent3 = description.sent2_3
-    sent4 = description.sent2_4
-    sent5 = description.sent2_5
-    sent6 = description.sent2_6
-    sent7 = description.sent2_7
-    sent8 = description.sent2_8
-    sent9 = description.sent2_9
-    sent10 = description.sent2_10
-    sent11 = description.sent2_11
-    sent12 = description.sent2_12
-    sent13 = description.sent2_13
-    sent14 = description.sent2_14
-    sent15 = description.sent2_15
-    sent16 = description.sent2_16
-    sent17 = description.sent2_17
-    sent18 = description.sent2_18
-    sent19 = description.sent2_19
-    
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
-
-    descriptions = remove_bad_sentences(descriptions)
-             
-    scores = [score(i, tokenizer, model) for i in descriptions]
-
-    print('scores:')
-    print(scores)
-    print()
-    print()
-    # getting the description inputs
-    title, cat, features = format_inputs(description)
-
-    candidate1, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-    candidate2, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-    sent = return_most_similar(features,[candidate1, candidate2])[0]
-
-    update = Create.query.filter_by(id=ids[0]).update({'sent2_winner': sent})
-    db.session.commit()
-    return None
-
-
-@celery.task()
-def error_edit_sent2(request, exc, traceback):
-    """
-    Cull sent1 candidates and put best candidate back into database
-    """
-
-    print()
-    print()
-    print('THIS IS THE ERROR_EDIT FUNCTION NOW')
-    print()
-    print()
-    print('request.args[0][0] returns')
-    print(request.args[0][0])
-    print()
-    print()
-    # initialize model
-
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
-
-    # load in sentence candidates
-    id = request.args[0][0]
-    description = Create.query.get(id)
     sent1 = description.sent2
     sent2 = description.sent2_2
     sent3 = description.sent2_3
@@ -547,11 +314,6 @@ def edit_sent3(ids):
     """
     Cull sent1 candidates and put best candidate back into database
     """
-    print()
-    print()
-    print('THIS IS THE EDIT FUNCTION NOW')
-    print()
-    print()
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -561,108 +323,6 @@ def edit_sent3(ids):
 
     # load in sentence candidates
     description = Create.query.get(ids[0])
-    sent1 = description.sent3
-    sent2 = description.sent3_2
-    sent3 = description.sent3_3
-    sent4 = description.sent3_4
-    sent5 = description.sent3_5
-    sent6 = description.sent3_6
-    sent7 = description.sent3_7
-    sent8 = description.sent3_8
-    sent9 = description.sent3_9
-    sent10 = description.sent3_10
-    sent11 = description.sent3_11
-    sent12 = description.sent3_12
-    sent13 = description.sent3_13
-    sent14 = description.sent3_14
-    sent15 = description.sent3_15
-    sent16 = description.sent3_16
-    sent17 = description.sent3_17
-    sent18 = description.sent3_18
-    sent19 = description.sent3_19
-    
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
-
-    descriptions = remove_bad_sentences(descriptions)
-
-    scores = [score(i, tokenizer, model) for i in descriptions]
-
-    print('scores:')
-    print(scores)
-    print()
-    print()
-    # getting the description inputs
-    title, cat, features = format_inputs(description)
-
-    candidate1, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-    candidate2, descriptions, scores = pop_best_sentence(descriptions,
-                                                        scores)
-    sent = return_most_similar(features,
-                                    [candidate1, candidate2])[0]
-
-    update = Create.query.filter_by(id=ids[0]).update({'sent3_winner': sent})
-    db.session.commit()
-
-    final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
-    update = Create.query.filter_by(id=ids[0]).update({'description':final_output})
-    db.session.commit()
-    return None
-
-
-@celery.task()
-def error_edit_sent3(request, exc, traceback):
-    """
-    Cull sent1 candidates and put best candidate back into database
-    """
-
-    print()
-    print()
-    print('THIS IS THE ERROR_EDIT FUNCTION NOW')
-    print()
-    print()
-    print('request.args[0][0] returns')
-    print(request.args[0][0])
-    print()
-    print()
-    # initialize model
-
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
-
-    # load in sentence candidates
-    id = request.args[0][0]
-    description = Create.query.get(id)
     sent1 = description.sent3
     sent2 = description.sent3_2
     sent3 = description.sent3_3
