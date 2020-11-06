@@ -4,8 +4,6 @@ import sqlalchemy
 
 from distutils.util import strtobool
 
-from celery.schedules import crontab
-
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
 
@@ -26,27 +24,6 @@ db = "postgres://{0}:{1}@/{2}?host={3}/{4}".format(
          db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name)
 SQLALCHEMY_DATABASE_URI= db
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-# Celery.
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_CHORD_PROPAGATES = False
-WORKER_PREFETCH_MULTIPLIER = 1,
-TASK_ACKS_LATE = True,
-CELERY_REDIS_MAX_CONNECTIONS = 5
-CELERYBEAT_SCHEDULE = {
-    'mark-soon-to-expire-credit-cards': {
-        'task': 'perciapp.blueprints.billing.tasks.mark_old_credit_cards',
-        'schedule': crontab(hour=0, minute=0)
-    },
-    'expire-old-coupons': {
-        'task': 'perciapp.blueprints.billing.tasks.expire_old_coupons',
-        'schedule': crontab(hour=0, minute=1)
-    },
-}
 
 # Flask-Mail.
 MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
@@ -127,7 +104,6 @@ CREDIT_BUNDLES = [
 ]
 
 # Rate limiting.
-RATELIMIT_STORAGE_URL = CELERY_BROKER_URL
 RATELIMIT_STRATEGY = 'fixed-window-elastic-expiry'
 RATELIMIT_HEADERS_ENABLED = True
 

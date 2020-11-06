@@ -3,14 +3,11 @@ import logging
 from logging.handlers import SMTPHandler
 
 import stripe
-import celery
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template, request
 from flask_login import current_user
-from celery import Celery, states
-from celery.backends.redis import RedisBackend
 
 from cli import register_cli_commands
 from perciapp.blueprints.admin import admin
@@ -35,61 +32,6 @@ from perciapp.extensions import (
     babel,
     flask_static_digest
 )
-
-CELERY_TASK_LIST = [
-    'perciapp.blueprints.contact.tasks',
-    'perciapp.blueprints.user.tasks',
-    'perciapp.blueprints.billing.tasks',
-    'perciapp.blueprints.create.tasks']
-
-
-def patch_celery():
-    """Patch the redis backend."""
-    def _unpack_chord_result(
-        self, tup, decode,
-        EXCEPTION_STATES=states.EXCEPTION_STATES,
-        PROPAGATE_STATES=states.PROPAGATE_STATES,
-    ):
-        _, tid, state, retval = decode(tup)
-
-        if state in EXCEPTION_STATES:
-            retval = self.exception_to_python(retval)
-        if state in PROPAGATE_STATES:
-            # retval is an Exception
-            return '{}: {}'.format(retval.__class__.__name__, str(retval))
-
-        return retval
-
-    RedisBackend._unpack_chord_result = _unpack_chord_result
-
-    return celery
-
-
-def create_celery_app(app=None):
-    """
-    Create a new Celery object and tie together the Celery config to the app's
-    config. Wrap all tasks in the context of the application.
-
-    :param app: Flask app
-    :return: Celery app
-    """
-    app = app or create_app()
-
-    celery = patch_celery().Celery(app.import_name,
-                                   broker=app.config['CELERY_BROKER_URL'],
-                                   include=CELERY_TASK_LIST)
-    celery.conf.update(app.config)
-    TaskBase = celery.Task
-
-    class ContextTask(TaskBase):
-        abstract = True
-
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
 
 
 def create_app(settings_override=None):
