@@ -1,10 +1,6 @@
 from lib.flask_mailplus import send_template_message
-from perciapp.app import create_celery_app
-
-celery = create_celery_app()
 
 
-@celery.task()
 def deliver_contact_email(email, message):
     """
     Send a contact e-mail.

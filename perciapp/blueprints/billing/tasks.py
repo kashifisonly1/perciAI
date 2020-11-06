@@ -1,12 +1,8 @@
-from perciapp.app import create_celery_app
 from perciapp.blueprints.user.models import User
 from perciapp.blueprints.billing.models.credit_card import CreditCard
 from perciapp.blueprints.billing.models.coupon import Coupon
 
-celery = create_celery_app()
 
-
-@celery.task()
 def mark_old_credit_cards():
     """
     Mark credit cards that are going to expire soon or have expired.
@@ -15,8 +11,6 @@ def mark_old_credit_cards():
     """
     return CreditCard.mark_old_credit_cards()
 
-
-@celery.task()
 def expire_old_coupons():
     """
     Invalidate coupons that are past their redeem date.
@@ -25,8 +19,6 @@ def expire_old_coupons():
     """
     return Coupon.expire_old_coupons()
 
-
-@celery.task()
 def delete_users(ids):
     """
     Delete users and potentially cancel their subscription.
@@ -37,8 +29,6 @@ def delete_users(ids):
     """
     return User.bulk_delete(ids)
 
-
-@celery.task()
 def delete_coupons(ids):
     """
     Delete coupons both on the payment gateway and locally.
