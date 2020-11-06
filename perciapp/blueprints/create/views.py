@@ -80,7 +80,6 @@ def create_description():
         create = Create(**params)
         create.save_and_update_user(current_user)
 
-        # generating the description in celery
         first = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5',
                  'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9', 'sent1_10',
                  'sent1_11', 'sent1_12', 'sent1_13', 'sent1_14', 'sent1_15',

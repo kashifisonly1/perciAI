@@ -15,7 +15,7 @@ def deliver_contact_email(email, message):
 
     send_template_message(subject='[Perci.AI] Contact',
                           sender=email,
-                          recipients=[celery.conf.get('MAIL_USERNAME')],
+                          recipients=[os.getenv('MAIL_USERNAME')],
                           reply_to=email,
                           template='contact/mail/index', ctx=ctx)
 
