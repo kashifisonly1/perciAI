@@ -1,6 +1,5 @@
 import random as random
 from perciapp.extensions import db
-from perciapp.app import create_celery_app
 from perciapp.blueprints.create.helper import (
     generate,
     format_inputs,
@@ -11,8 +10,6 @@ from perciapp.blueprints.create.helper import (
     return_most_similar)
 
 from perciapp.blueprints.create.models.create import Create
-
-celery = create_celery_app()
 
 
 def remove_bad_sentences(descriptions):
@@ -309,7 +306,6 @@ def edit_sent2(ids):
     return None
 
 
-@celery.task()
 def edit_sent3(ids):
     """
     Cull sent1 candidates and put best candidate back into database

@@ -1,11 +1,6 @@
 from lib.flask_mailplus import send_template_message
-from perciapp.app import create_celery_app
 from perciapp.blueprints.user.models import User
 
-celery = create_celery_app()
-
-
-@celery.task()
 def deliver_password_reset_email(user_id, reset_token):
     """
     Send a reset password e-mail to a user.
