@@ -10,5 +10,5 @@ steps:
   entrypoint: gcloud
   args: ['run', 'services', 'update', 'perciappprocessor', '--image', 'gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA', '--region', 'us-central1', '--platform', 'managed']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  args: ['gsutil','cp', '-r', 'gs://perciapp-processor/models', 'perciapp/models']
+  args: ['gsutil','cp', 'gs://perciapp-processor/models', 'perciapp/models']
 timeout: "2400s"
