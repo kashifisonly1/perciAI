@@ -104,7 +104,7 @@ def create_description():
         topic_path = publisher.topic_path(project_id, topic_id)
 
         for i in ['sent1', 'sent1_2']:
-            data = create.id
+            data = str(create.id)
             data = data.encode("utf-8")
             future = publisher.publish(topic_path, data, label=i)
             print(future.result())
@@ -168,7 +168,7 @@ def history(page):
 @create.route('/gensent1', methods=['POST'])
 def index():
     message = request.get_json()['message']
-    description_id = base64.b64decode(message.data).decode('utf-8').strip()
+    description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
     print()
     print()
     print('description_id=')
