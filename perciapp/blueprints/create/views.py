@@ -7,6 +7,8 @@ from flask import (
     jsonify,
     url_for)
 
+from perciapp.extensions import csrf
+
 from flask_login import current_user, login_required
 
 from lib.util_json import render_json
