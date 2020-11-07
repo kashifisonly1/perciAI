@@ -28,6 +28,13 @@ def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
+
+    print()
+    print()
+    print('generate_sent_1 starting now')
+    print()
+    print()
+
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
@@ -47,6 +54,13 @@ def generate_sent1(description_id, label):
                         {features} <brand> <model> {title} \t<desc1> '
 
     sent = brand_remove(generate(args)[0], title)
+
+    print()
+    print()
+    print('generation complete')
+    print(sent)
+    print()
+    print()
 
     if len(sent) > 199:
         sent = sent[:190]

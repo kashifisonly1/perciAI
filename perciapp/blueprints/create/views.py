@@ -50,6 +50,8 @@ def create_description():
             edit_sent3
         )
 
+
+
         title = str(request.form.get('title'))
         gender = str(request.form.get('gender'))
         category = str(request.form.get('category'))
@@ -168,6 +170,11 @@ def history(page):
 @create.route('/gensent1', methods=['POST'])
 def index():
     message = request.get_json()['message']
+    print()
+    print()
+    print('receiving route starting now')
+    print()
+    print()
     description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
     print()
     print()
@@ -181,7 +188,7 @@ def index():
     print()
     print()
     print()
-    generate_sent1(description_id,label)
+    id = generate_sent1(description_id,label)
     return ('', 204)
 
 # @create.route('/gensent1-2', methods=['POST'])
