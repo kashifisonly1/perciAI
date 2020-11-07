@@ -1,13 +1,16 @@
 {% extends 'layouts/app.html' %}
 {% import 'macros/form.html' as f with context %}
 
+
+form_tag(endpoint, fid='', css_class='', method='post')
+
 {% block title %}Create Description{% endblock %}
 
 {% block body %}
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <form id="create_description" action="{{ url_for('create.create_description') }}" method="POST">
+        {% call f.form_tag(url_for('create.create_description'), fid='create_description', css_class='', method='post') %}
           <h2 class="text-warning">
             <strong id="user_credits">{{ current_user.credits }}</strong> credits left
           </h2>
@@ -81,7 +84,7 @@
             <a href="{{ url_for('billing.purchase_credits') }}"
               class="btn btn-outline-primary">Buy credits</a>
           </div>
-        </form>
+        {% endcall %}
       </div>
       <div class="col-md-7 offset-md-1">
         <div id="recent_descriptions">
