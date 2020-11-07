@@ -37,6 +37,10 @@ def create_description():
 
     if request.method == 'POST':
 
+        print()
+        print('post method starting now')
+        print()
+
         from perciapp.blueprints.create.tasks import(
             generate_sent1,
             generate_sent2,
