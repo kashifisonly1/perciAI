@@ -7,7 +7,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <form id="create_description">
+        <form id="create_description" action="{{ url_for('create.create_description') }}" method="POST">
           <h2 class="text-warning">
             <strong id="user_credits">{{ current_user.credits }}</strong> credits left
           </h2>
