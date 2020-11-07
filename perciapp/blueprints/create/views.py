@@ -168,6 +168,7 @@ def history(page):
                            descriptions=paginated_descriptions)
 
 @create.route('/gensent1', methods=['POST'])
+@csrf.exempt
 def index():
     message = request.get_json()['message']
     print()
