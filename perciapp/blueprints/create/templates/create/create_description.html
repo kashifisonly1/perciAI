@@ -10,7 +10,7 @@ form_tag(endpoint, fid='', css_class='', method='post')
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        {% call f.form_tag('create.create_description'), fid='create_description', css_class='', method='post') %}
+        {% call f.form_tag('create.create_description', fid='create_description') %}
           <h2 class="text-warning">
             <strong id="user_credits">{{ current_user.credits }}</strong> credits left
           </h2>
