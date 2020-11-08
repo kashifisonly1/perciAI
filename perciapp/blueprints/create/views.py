@@ -168,12 +168,15 @@ def history(page):
 @create.route('/gensent1/', methods=['POST'])
 @csrf.exempt
 def index():
-    message = request.get_json()['message']
     print()
     print()
     print('receiving route starting now')
+    print('request.get_json()=')
+    print(request.get_json())
     print()
     print()
+    print()
+    message = request.get_json()['message']
     description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
     print()
     print()
