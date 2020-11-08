@@ -34,21 +34,6 @@ def create_description():
 
     if request.method == 'POST':
 
-        print()
-        print('post method starting now')
-        print()
-
-        from perciapp.blueprints.create.tasks import(
-            generate_sent1,
-            generate_sent2,
-            generate_sent3,
-            edit_sent1,
-            edit_sent2,
-            edit_sent3
-        )
-
-
-
         title = str(request.form.get('title'))
         gender = str(request.form.get('gender'))
         category = str(request.form.get('category'))
@@ -170,25 +155,15 @@ def history(page):
 @csrf.exempt
 def index():
     from perciapp.blueprints.create.tasks import generate_sent1
-    print()
-    print()
+
     print('receiving route starting now')
-    print('request.get_json()=')
-    print(request.get_json())
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
-    print()
-    print()
     print('description_id=')
     print(description_id)
     label = message['attributes']['label']
-    print()
-    print()
     print('label=')
     print(label)
-    print()
-    print()
-    print()
     id = generate_sent1(description_id,label)
     return ('', 204)
 

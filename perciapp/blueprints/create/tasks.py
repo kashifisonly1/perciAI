@@ -28,11 +28,15 @@ def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-
-    print()
     print()
     print('generate_sent_1 starting now')
     print()
+    print('exploring dir structure:')
+    import os
+    print('os.listdir(.)')
+    print(os.listdir(.))
+    print('os.listdir(perciapp)')
+    print(os.ls(perciapp))
     print()
 
     # getting the description inputs
