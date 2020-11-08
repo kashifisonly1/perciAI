@@ -8,6 +8,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template, request
 from flask_login import current_user
+from google.cloud import storage
 
 from cli import register_cli_commands
 from perciapp.blueprints.admin import admin
@@ -70,9 +71,29 @@ def create_app(settings_override=None):
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
 
-
+    download_blob('perciapp-processor','models/','/app/perciapp')
 
     return app
+
+def download_blob(bucket_name, source_blob_name, destination_file_name):
+    """Downloads a blob from the bucket."""
+    # bucket_name = "your-bucket-name"
+    # source_blob_name = "storage-object-name"
+    # destination_file_name = "local/path/to/file"
+
+    storage_client = storage.Client()
+
+    bucket = storage_client.bucket(bucket_name)
+    blobs = bucket.list_blobs(prefix='models/')
+    for blob in blobs:
+        filename = blob.name.replace('/', '_') 
+        blob.download_to_filename(dl_dir + filename
+
+    print(
+        "Blob {} downloaded to {}.".format(
+            source_blob_name, destination_file_name
+        )
+    )
 
 
 def extensions(app):
