@@ -175,13 +175,12 @@ def index():
     print('request.get_json()=')
     print(request.get_json())
     message = request.get_json()['message']
-    # description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
-    description_id = message.attributes.get('id')
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     print()
     print()
     print('description_id=')
     print(description_id)
-    label = message.attributes.get('label')
+    label = message['attributes']['label']
     print()
     print()
     print('label=')
