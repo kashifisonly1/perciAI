@@ -33,13 +33,10 @@ def generate_sent1(description_id, label):
     print()
     print('exploring dir structure:')
     import os
-    print('os.listdir()')
-    print(os.listdir())
-    print('os.listdir("perciapp")')
-    print(os.listdir('perciapp'))
-    print('os.listdir("perciapp/models")')
-    print(os.listdir('perciapp/models'))
-    print()
+    for root, dirs, files in os.walk('.'):
+    for file in files:
+        if file.endswith(".bin"):
+             print(os.path.join(root, file))
 
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
