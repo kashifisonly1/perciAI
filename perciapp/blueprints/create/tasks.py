@@ -33,10 +33,14 @@ def generate_sent1(description_id, label):
     print()
     print('exploring dir structure:')
     import os
-    print('os.listdir(.)')
-    print(os.listdir(.))
-    print('os.listdir(perciapp)')
-    print(os.ls(perciapp))
+    print('os.listdir()')
+    print(os.listdir())
+    for item in os.listdir():
+        print('going into directories:')
+        print('item:')
+        print(item)
+        print(os.listdir(item))
+
     print()
 
     # getting the description inputs
