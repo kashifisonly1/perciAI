@@ -105,7 +105,7 @@ def create_description():
         for i in ['sent1', 'sent1_2']:
             data = str(create.id)
             data = data.encode("utf-8")
-            future = publisher.publish(topic_path, data, label=i, id=create.id)
+            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
             print(future.result())
 
         print()
