@@ -154,8 +154,8 @@ def subcategory(category):
 
 
 @create.route('/history', defaults={'page': 1})
-@login_required
 @create.route('/history/page/<int:page>')
+@login_required
 def history(page):
     paginated_descriptions = Create.query \
         .filter(Create.user_id == current_user.id) \
