@@ -18,6 +18,7 @@ from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
 from lib.subcategories import Subcategories
 from google.cloud import pubsub_v1
+import base64
 
 create = Blueprint('create', __name__, template_folder='templates',
                    url_prefix='/create')
@@ -173,9 +174,6 @@ def index():
     print('receiving route starting now')
     print('request.get_json()=')
     print(request.get_json())
-    print()
-    print()
-    print()
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
     print()
