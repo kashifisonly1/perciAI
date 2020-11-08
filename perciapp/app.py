@@ -77,6 +77,11 @@ def create_app(settings_override=None):
 
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
+    import os
+    print('system os = ')
+    print(os.getcwd())
+    print()
+    print()
     # bucket_name = "your-bucket-name"
     # source_blob_name = "storage-object-name"
     # destination_file_name = "local/path/to/file"
@@ -85,9 +90,15 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
 
     bucket = storage_client.bucket(bucket_name)
     blobs = bucket.list_blobs(prefix='models/')
+    print('blobs = ')
+    print(blobs)
+    print()
     for blob in blobs:
         filename = blob.name.replace('/', '_') 
-        blob.download_to_filename(source_blob_name + filename)
+        print('filenames = ')
+        print(filename)
+        print()
+        blob.download_to_filename(destination_file_name + filename)
 
     print(
         "Blob {} downloaded to {}.".format(
