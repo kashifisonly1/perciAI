@@ -105,7 +105,7 @@ def create_description():
         for i in ['sent1', 'sent1_2']:
             data = str(create.id)
             data = data.encode("utf-8")
-            future = publisher.publish(topic_path, data, label=i)
+            future = publisher.publish(topic_path, data, label=i, id=create.id)
             print(future.result())
 
         print()
@@ -175,12 +175,12 @@ def index():
     print('request.get_json()=')
     print(request.get_json())
     message = request.get_json()['message']
-    description_id = int(base64.b64decode(message.data).decode('utf-8').strip())
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     print()
     print()
     print('description_id=')
     print(description_id)
-    label = message.attributes.get('label')
+    label = message['attributes']['label']
     print()
     print()
     print('label=')
