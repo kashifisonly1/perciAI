@@ -87,7 +87,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
     blobs = bucket.list_blobs(prefix='models/')
     for blob in blobs:
         filename = blob.name.replace('/', '_') 
-        blob.download_to_filename(dl_dir + filename
+        blob.download_to_filename(dl_dir + filename)
 
     print(
         "Blob {} downloaded to {}.".format(
