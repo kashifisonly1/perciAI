@@ -23,15 +23,9 @@ create = Blueprint('create', __name__, template_folder='templates',
                    url_prefix='/create')
 
 
-@create.before_request
-@login_required
-def before_request():
-    """ Protect all of the create endpoints. """
-    pass
-
-
 @create.route('/', methods=['GET', 'POST'])
 @credits_required
+@login_required
 @limiter.limit('3/second')
 def create_description():
 
@@ -151,6 +145,7 @@ def create_description():
 
 
 @create.route('/create/subcategory/<category>')
+@login_required
 def subcategory(category):
 
     return jsonify(Subcategories[category])
@@ -159,6 +154,7 @@ def subcategory(category):
 
 
 @create.route('/history', defaults={'page': 1})
+@login_required
 @create.route('/history/page/<int:page>')
 def history(page):
     paginated_descriptions = Create.query \
