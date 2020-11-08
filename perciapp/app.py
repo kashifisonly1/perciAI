@@ -70,6 +70,8 @@ def create_app(settings_override=None):
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
 
+
+
     return app
 
 
@@ -90,7 +92,6 @@ def extensions(app):
     flask_static_digest.init_app(app)
 
     return None
-
 
 def template_processors(app):
     """
