@@ -90,13 +90,13 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
 
     bucket = storage_client.bucket(bucket_name)
     blobs = bucket.list_blobs(prefix='models/')
-    print('blobs = ')
-    print(blobs)
-    print()
     for blob in blobs:
-        filename = blob.name.replace('/', '_') 
-        print('filenames = ')
-        print(filename)
+        print('blob = ')
+        print(blobs)
+        print()
+        # filename = blob.name.replace('/', '_') 
+        print('download path = ')
+        print(destination_file_name + filename)
         print()
         blob.download_to_filename(destination_file_name + filename)
 
