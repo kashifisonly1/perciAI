@@ -4,11 +4,13 @@ steps:
   args: [--destination=gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA, --cache=false, --dockerfile=Dockerfile, --context=.]
   waitFor: [-]
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['pwd']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gsutil','-m','cp', '-r', 'gs://perciapp-processor/models', '/app/perciapp']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args: ['run', 'services', 'update', 'perciappcloudrun', '--image', 'gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA', '--region', 'us-central1', '--platform', 'managed']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args: ['run', 'services', 'update', 'perciappprocessor', '--image', 'gcr.io/$PROJECT_ID/perciai:$COMMIT_SHA', '--region', 'us-central1', '--platform', 'managed']
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  args: ['gsutil','-m','cp', '-r', 'gs://perciapp-processor/models', '/app/perciapp']
 timeout: "2400s"
