@@ -47,7 +47,7 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove ${BUILD_DEPS} \
   && apt-get clean
 
-RUN --recursive --no-parent https://storage.googleapis.com/perciapp-processor/models/ -P /app/perciapp
+RUN wget --recursive --no-parent https://storage.googleapis.com/perciapp-processor/models/ -P /app/perciapp
 
 ARG FLASK_ENV="production"
 ENV FLASK_ENV="${FLASK_ENV}" \
