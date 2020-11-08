@@ -169,6 +169,7 @@ def history(page):
 @create.route('/gensent1/', methods=['POST'])
 @csrf.exempt
 def index():
+    from perciapp.blueprints.create.tasks import generate_sent1
     print()
     print()
     print('receiving route starting now')
