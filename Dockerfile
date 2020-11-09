@@ -74,7 +74,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS="service-account.json"
 RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
 # Copy the models in
-RUN gsutil cp -r gs://perciapp-processor/models /app/perciapp
+RUN gsutil -m cp -r gs://perciapp-processor/models /app/perciapp
 
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]

@@ -1,4 +1,5 @@
 import random as random
+import time
 from perciapp.extensions import db
 from perciapp.blueprints.create.helper import (
     generate,
@@ -69,6 +70,9 @@ def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
+    print()
+    print('generate_sent_2 starting now')
+
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
@@ -92,6 +96,13 @@ def generate_sent2(description_id, label):
     if len(sent) > 199:
         sent = sent[:190]
 
+    print()
+    print()
+    print('generation complete')
+    print(sent)
+    print()
+    print()
+
     update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
     return description_id
@@ -100,6 +111,10 @@ def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
+
+    print()
+    print('generate_sent_3 starting now')
+
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
 
@@ -123,14 +138,35 @@ def generate_sent3(description_id, label):
     if len(sent) > 199:
         sent = sent[:190]
 
+    print()
+    print()
+    print('generation complete')
+    print(sent)
+    print()
+    print()
+
     update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
     return description_id
 
-def edit_sent1(ids):
+
+def edit_sent1(id):
     """
     Cull sent1 candidates and put best candidate back into database
     """
+
+    #wait until generating is done to begin
+    description = Create.query.get(id)
+    print()
+    print('description.sent1_19=')
+    print(description.sent1_19)
+    print()
+    while not len(description.sent1_19) > 5:
+        description = Create.query.get(id)
+        time.sleep(1)
+
+    print()
+    print('edit_sent1 starting now')
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -139,7 +175,6 @@ def edit_sent1(ids):
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     # load in sentence candidates
-    description = Create.query.get(ids[0])
     sent1 = description.sent1
     sent2 = description.sent1_2
     sent3 = description.sent1_3
@@ -229,12 +264,27 @@ def edit_sent1(ids):
     # saving the best first sentence
     update = Create.query.filter_by(id=ids[0]).update({'sent1_winner': first_sent})
     db.session.commit()
-    return None
+    print()
+    print('edit_sent1 complete')
+    print()
+    return id
 
-def edit_sent2(ids):
+def edit_sent2(id):
     """
     Cull sent2 candidates and put best candidate into database
     """
+    #wait until generating is done to begin
+    description = Create.query.get(id)
+    print()
+    print('description.sent2_19=')
+    print(description.sent2_19)
+    print()
+    while not len(description.sent2_19) > 5:
+        description = Create.query.get(id)
+        time.sleep(1)
+
+    print()
+    print('edit_sent2 starting now')
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -243,7 +293,6 @@ def edit_sent2(ids):
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     # load in sentence candidates
-    description = Create.query.get(ids[0])
     sent1 = description.sent2
     sent2 = description.sent2_2
     sent3 = description.sent2_3
@@ -313,13 +362,29 @@ def edit_sent2(ids):
 
     update = Create.query.filter_by(id=ids[0]).update({'sent2_winner': sent})
     db.session.commit()
-    return None
+    print()
+    print('edit_sent2 complete')
+    print()
+    return id
 
 
-def edit_sent3(ids):
+def edit_sent3(id):
     """
-    Cull sent1 candidates and put best candidate back into database
+    Cull sent3 candidates and put best candidate back into database
     """
+
+    #wait until generating is done to begin
+    description = Create.query.get(id)
+    print()
+    print('description.sent3_19=')
+    print(description.sent3_19)
+    print()
+    while not len(description.sent3_19) > 5:
+        description = Create.query.get(id)
+        time.sleep(1)
+
+    print()
+    print('edit_sent2 starting now')
 
     # initialize model
     from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
@@ -328,7 +393,6 @@ def edit_sent3(ids):
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     # load in sentence candidates
-    description = Create.query.get(ids[0])
     sent1 = description.sent3
     sent2 = description.sent3_2
     sent3 = description.sent3_3
@@ -403,4 +467,7 @@ def edit_sent3(ids):
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
     update = Create.query.filter_by(id=ids[0]).update({'description':final_output})
     db.session.commit()
-    return None
+    print()
+    print('edit_sent3 complete')
+    print()
+    return id
