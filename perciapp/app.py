@@ -62,7 +62,7 @@ def create_app(settings_override=None):
     app.register_blueprint(stripe_webhook)
     app.register_blueprint(create)
     template_processors(app)
-    exensions(app)
+    extensions(app)
     authentication(app, User)
     locale(app)
     register_cli_commands(app)
