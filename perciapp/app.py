@@ -96,8 +96,9 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         print(destination_file_name + '/' + filename)
         path = (destination_file_name + '/' + filename)
         print('parent path = ')
+
         print(os.path.dirname(path))
-        os.path.dirname(path).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
         blob.download_to_filename(destination_file_name + '/' + filename)
 
     print(
