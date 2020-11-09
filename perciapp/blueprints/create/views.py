@@ -167,7 +167,7 @@ def history(page):
 
 @create.route('/gensent1/', methods=['POST'])
 @csrf.exempt
-def index():
+def routesent1():
     from perciapp.blueprints.create.tasks import generate_sent1
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
@@ -177,7 +177,7 @@ def index():
 
 @create.route('/gensent2/', methods=['POST'])
 @csrf.exempt
-def index():
+def routesent2():
     from perciapp.blueprints.create.tasks import generate_sent2
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
@@ -187,7 +187,7 @@ def index():
 
 @create.route('/gensent3/', methods=['POST'])
 @csrf.exempt
-def index():
+def routesent3():
     from perciapp.blueprints.create.tasks import generate_sent1
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
@@ -197,7 +197,7 @@ def index():
 
 @create.route('/editsent1/', methods=['POST'])
 @csrf.exempt
-def index():
+def routeedit1():
     from perciapp.blueprints.create.tasks import edit_sent1
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
@@ -206,7 +206,7 @@ def index():
 
 @create.route('/editsent2/', methods=['POST'])
 @csrf.exempt
-def index():
+def routeedit2():
     from perciapp.blueprints.create.tasks import edit_sent2
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
@@ -215,7 +215,7 @@ def index():
 
 @create.route('/editsent3/', methods=['POST'])
 @csrf.exempt
-def index():
+def routeedit3():
     from perciapp.blueprints.create.tasks import edit_sent3
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
