@@ -44,6 +44,7 @@ RUN apt-get update \
   && pip install -r requirements.txt \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /usr/share/doc && rm -rf /usr/share/man \
+  && apt-get update && apt-get install -y gnupg2 \
   && apt-get purge -y --auto-remove ${BUILD_DEPS} \
   && apt-get clean
 
