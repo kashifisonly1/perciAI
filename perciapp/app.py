@@ -8,8 +8,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template, request
 from flask_login import current_user
-from google.cloud import storage
-import pathlib
 
 from cli import register_cli_commands
 from perciapp.blueprints.admin import admin

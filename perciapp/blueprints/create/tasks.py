@@ -23,37 +23,6 @@ def remove_bad_sentences(descriptions):
             descriptions.remove(item)
     return descriptions
 
-def download_blob(bucket_name, model_name, destination_file_name):
-    """Downloads a blob from the bucket."""
-    import os
-    # bucket_name = "your-bucket-name"
-    # source_blob_name = "storage-object-name"
-    # destination_file_name = "local/path/to/file"
-
-    storage_client = storage.Client()
-
-    bucket = storage_client.bucket(bucket_name)
-    prefix = 'models/' + model_name
-    blobs = bucket.list_blobs(prefix=prefix)
-    for blob in blobs:
-        print('blob = ')
-        print(blob)
-        print()
-        filename = blob.name
-        print('download path = ')
-        print(destination_file_name + '/' + filename)
-        path = (destination_file_name + '/' + filename)
-        print('parent path = ')
-
-        print(os.path.dirname(path))
-        pathlib.Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
-        blob.download_to_filename(destination_file_name + '/' + filename)
-
-    print(
-        "Blob {} downloaded to {}.".format(
-            source_blob_name, destination_file_name
-        )
-    )
 
 def generate_sent1(description_id, label):
     """
@@ -69,15 +38,12 @@ def generate_sent1(description_id, label):
     if 'shoes' in cat.lower():
         model = 'perciapp/models/unisex_shoes_description_beginning'
         args['model_name_or_path'] = model
-        download_blob('perciapp-processor','unisex_shoes_description_beginning/','/app/perciapp')
     elif cat.lower().startswith('men'):
         model = 'perciapp/models/mens_clothing_description_beginning'
         args['model_name_or_path'] = model
-        download_blob('perciapp-processor','mens_clothing_description_beginning/','/app/perciapp')
     else:
         model = 'perciapp/models/womens_clothing_description_beginning'
         args['model_name_or_path'] = model
-        download_blob('perciapp-processor','womens_clothing_description_beginning/','/app/perciapp')
 
     args['seed'] = random.randint(1, 100001)
     args['prompt'] = f'<bos> <category> {cat} <features> \
