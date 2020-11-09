@@ -48,6 +48,18 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove ${BUILD_DEPS} \
   && apt-get clean
 
+ARG FLASK_ENV="production"
+ENV FLASK_ENV="${FLASK_ENV}" \
+    FLASK_APP="perciapp.app" \
+    PYTHONUNBUFFERED="true"
+
+COPY --from=webpack /app/public /public
+
+COPY . .
+
+RUN if [ "${FLASK_ENV}" != "development" ]; then \
+  ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi
+
 # Install Google Cloud tools - Debian https://cloud.google.com/storage/docs/gsutil_install#deb
 ENV CLOUD_SDK_REPO="cloud-sdk-stretch"
 RUN echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | \
@@ -63,18 +75,6 @@ RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENT
 
 # Copy the models in
 RUN gsutil cp -r gs://perciapp-processor/models /app/perciapp
-
-ARG FLASK_ENV="production"
-ENV FLASK_ENV="${FLASK_ENV}" \
-    FLASK_APP="perciapp.app" \
-    PYTHONUNBUFFERED="true"
-
-COPY --from=webpack /app/public /public
-
-COPY . .
-
-RUN if [ "${FLASK_ENV}" != "development" ]; then \
-  ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi
 
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
