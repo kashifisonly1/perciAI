@@ -84,7 +84,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         for name in files:
             print(os.path.join(root, name))
         for name in dirs:
-            print(os.path.join(root, name)))
+            print(os.path.join(root, name))
     # bucket_name = "your-bucket-name"
     # source_blob_name = "storage-object-name"
     # destination_file_name = "local/path/to/file"
