@@ -96,9 +96,9 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         print()
         filename = blob.name
         print('download path = ')
-        print(destination_file_name + filename)
+        print(destination_file_name + '/' + filename)
         print()
-        blob.download_to_filename(destination_file_name + filename)
+        blob.download_to_filename(destination_file_name + '/' + filename)
 
     print(
         "Blob {} downloaded to {}.".format(
