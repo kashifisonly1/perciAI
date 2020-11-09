@@ -8,8 +8,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template, request
 from flask_login import current_user
-from google.cloud import storage
-import pathlib
 
 from cli import register_cli_commands
 from perciapp.blueprints.admin import admin
@@ -64,48 +62,15 @@ def create_app(settings_override=None):
     app.register_blueprint(stripe_webhook)
     app.register_blueprint(create)
     template_processors(app)
-    extensions(app)
+    exensions(app)
     authentication(app, User)
     locale(app)
     register_cli_commands(app)
 
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
-
-    download_blob('perciapp-processor','models/','/app/perciapp')
-
+    
     return app
-
-def download_blob(bucket_name, source_blob_name, destination_file_name):
-    """Downloads a blob from the bucket."""
-    import os
-    # bucket_name = "your-bucket-name"
-    # source_blob_name = "storage-object-name"
-    # destination_file_name = "local/path/to/file"
-
-    storage_client = storage.Client()
-
-    bucket = storage_client.bucket(bucket_name)
-    blobs = bucket.list_blobs(prefix='models/')
-    for blob in blobs:
-        print('blob = ')
-        print(blobs)
-        print()
-        filename = blob.name
-        print('download path = ')
-        print(destination_file_name + '/' + filename)
-        path = (destination_file_name + '/' + filename)
-        print('parent path = ')
-
-        print(os.path.dirname(path))
-        pathlib.Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
-        blob.download_to_filename(destination_file_name + '/' + filename)
-
-    print(
-        "Blob {} downloaded to {}.".format(
-            source_blob_name, destination_file_name
-        )
-    )
 
 
 def extensions(app):

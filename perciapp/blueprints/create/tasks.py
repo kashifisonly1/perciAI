@@ -30,13 +30,6 @@ def generate_sent1(description_id, label):
     """
     print()
     print('generate_sent_1 starting now')
-    print()
-    print('exploring dir structure:')
-    import os
-    for root, dirs, files in os.walk('.'):
-        for file in files:
-            if file.endswith(".bin"):
-                print(os.path.join(root, file))
 
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
