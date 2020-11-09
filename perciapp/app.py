@@ -9,7 +9,7 @@ from werkzeug.debug import DebuggedApplication
 from flask import Flask, render_template, request
 from flask_login import current_user
 from google.cloud import storage
-from pathlib import Path
+import pathlib
 
 from cli import register_cli_commands
 from perciapp.blueprints.admin import admin
@@ -79,12 +79,6 @@ def create_app(settings_override=None):
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
     import os
-    print('system os = ')
-    for root, dirs, files in os.walk("."):
-        for name in files:
-            print(os.path.join(root, name))
-        for name in dirs:
-            print(os.path.join(root, name))
     # bucket_name = "your-bucket-name"
     # source_blob_name = "storage-object-name"
     # destination_file_name = "local/path/to/file"
@@ -100,8 +94,10 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         filename = blob.name
         print('download path = ')
         print(destination_file_name + '/' + filename)
-        Path(destination_file_name + '/' + filename).mkdir(parents=True, exist_ok=True)
-        print()
+        path = (destination_file_name + '/' + filename)
+        print('parent path = ')
+        print(os.path.dirname(path))
+        os.path.dirname(path).mkdir(parents=True, exist_ok=True)
         blob.download_to_filename(destination_file_name + '/' + filename)
 
     print(
