@@ -87,34 +87,48 @@ def create_description():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_id)
 
-        for i in ['sent1', 'sent1_2']:
+        for i in first:
+            data = str(create.id)
+            data = data.encode("utf-8")
+            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+            print(future.result())
+
+        topic_id = "description-order-sent-2"
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = publisher.topic_path(project_id, topic_id)
+        
+        for i in second:
+            data = str(create.id)
+            data = data.encode("utf-8")
+            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+            print(future.result())
+        
+        topic_id = "description-order-sent-3"
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = publisher.topic_path(project_id, topic_id)
+
+        for i in third:
             data = str(create.id)
             data = data.encode("utf-8")
             future = publisher.publish(topic_path, data, label=i, id=str(create.id))
             print(future.result())
 
         print()
-        print()
-        print(f"Published messages to {topic_path}.")
-        print()
+        print(f"Published sent_gen messages to {topic_path}.")
         print()
 
-        # generate sentences
-        # for label in first:
-        #     #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
-        #     generate_sent1(create.id, label)
+        #Send edit Pub/Sub message
+        topic_id = "description-order-edit"
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = publisher.topic_path(project_id, topic_id)
+        data = str(create.id)
+        data = data.encode("utf-8")
+        future = publisher.publish(topic_path, data)
+        print(future.result())
 
-        # for label in second:
-        #     #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
-        #     generate_sent2(create.id, label)
-
-        # for label in third:
-        #     #THIS WILL BE REPLACED BY CALLS TO PUB/SUB
-        #     generate_sent3(create.id, label)
-
-        # edit_sent1(create.id)
-        # edit_sent2(create.id)
-        # edit_sent3(create.id)
+        print()
+        print(f"Published edit_sent message to {topic_path}.")
+        print()
 
         flash('Success! Your description will appear in a few seconds.',
               'success')
@@ -155,356 +169,55 @@ def history(page):
 @csrf.exempt
 def index():
     from perciapp.blueprints.create.tasks import generate_sent1
-
-    print('receiving route starting now')
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
-    print('description_id=')
-    print(description_id)
     label = message['attributes']['label']
-    print('label=')
-    print(label)
     id = generate_sent1(description_id,label)
     return ('', 204)
 
-# @create.route('/gensent1-2', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_2')
-#     return ('', 204)
+@create.route('/gensent2/', methods=['POST'])
+@csrf.exempt
+def index():
+    from perciapp.blueprints.create.tasks import generate_sent2
+    message = request.get_json()['message']
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
+    label = message['attributes']['label']
+    id = generate_sent2(description_id,label)
+    return ('', 204)
 
-# @create.route('/gensent1-3', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_3')
-#     return ('', 204)
+@create.route('/gensent3/', methods=['POST'])
+@csrf.exempt
+def index():
+    from perciapp.blueprints.create.tasks import generate_sent1
+    message = request.get_json()['message']
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
+    label = message['attributes']['label']
+    id = generate_sent3(description_id,label)
+    return ('', 204)
 
-# @create.route('/gensent1-4', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_4')
-#     return ('', 204)
+@create.route('/editsent1/', methods=['POST'])
+@csrf.exempt
+def index():
+    from perciapp.blueprints.create.tasks import edit_sent1
+    message = request.get_json()['message']
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
+    id = edit_sent1(description_id)
+    return ('', 204)
 
-# @create.route('/gensent1-5', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_5')
-#     return ('', 204)
+@create.route('/editsent2/', methods=['POST'])
+@csrf.exempt
+def index():
+    from perciapp.blueprints.create.tasks import edit_sent2
+    message = request.get_json()['message']
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
+    id = edit_sent2(description_id)
+    return ('', 204)
 
-# @create.route('/gensent1-6', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_6')
-#     return ('', 204)
-
-# @create.route('/gensent1-7', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_7')
-#     return ('', 204)
-
-# @create.route('/gensent1-8', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_8')
-#     return ('', 204)
-
-# @create.route('/gensent1-9', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_9')
-#     return ('', 204)
-
-# @create.route('/gensent1-10', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_10')
-#     return ('', 204)
-
-# @create.route('/gensent1-11', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_11')
-#     return ('', 204)
-
-# @create.route('/gensent1-12', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_12')
-#     return ('', 204)
-
-# @create.route('/gensent1-13', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_13')
-#     return ('', 204)
-
-# @create.route('/gensent1-14', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_14')
-#     return ('', 204)
-
-# @create.route('/gensent1-15', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_15')
-#     return ('', 204)
-
-# @create.route('/gensent1-16', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_16')
-#     return ('', 204)
-
-# @create.route('/gensent1-17', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_17')
-#     return ('', 204)
-
-# @create.route('/gensent1-18', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_18')
-#     return ('', 204)
-
-# @create.route('/gensent1-19', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent1(description_id,'sent1_19')
-#     return ('', 204)
-
-# @create.route('/gensent2-1', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2')
-#     return ('', 204)
-
-# @create.route('/gensent2-2', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_2')
-#     return ('', 204)
-
-# @create.route('/gensent2-3', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_3')
-#     return ('', 204)
-
-# @create.route('/gensent2-4', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_4')
-#     return ('', 204)
-
-# @create.route('/gensent2-5', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_5')
-#     return ('', 204)
-
-# @create.route('/gensent2-6', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_6')
-#     return ('', 204)
-
-# @create.route('/gensent2-7', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_7')
-#     return ('', 204)
-
-# @create.route('/gensent2-8', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_8')
-#     return ('', 204)
-
-# @create.route('/gensent2-9', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_9')
-#     return ('', 204)
-
-# @create.route('/gensent2-10', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_10')
-#     return ('', 204)
-
-# @create.route('/gensent2-11', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_11')
-#     return ('', 204)
-
-# @create.route('/gensent2-12', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_12')
-#     return ('', 204)
-
-# @create.route('/gensent2-13', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_13')
-#     return ('', 204)
-
-# @create.route('/gensent2-14', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_14')
-#     return ('', 204)
-
-# @create.route('/gensent2-15', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_15')
-#     return ('', 204)
-
-# @create.route('/gensent2-16', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_16')
-#     return ('', 204)
-
-# @create.route('/gensent2-17', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_17')
-#     return ('', 204)
-
-# @create.route('/gensent2-18', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_18')
-#     return ('', 204)
-
-# @create.route('/gensent2-19', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent2(description_id,'sent2_19')
-#     return ('', 204)
-
-# @create.route('/gensent3-1', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3')
-#     return ('', 204)
-
-# @create.route('/gensent3-2', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_2')
-#     return ('', 204)
-
-# @create.route('/gensent3-3', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_3')
-#     return ('', 204)
-
-# @create.route('/gensent3-4', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_4')
-#     return ('', 204)
-
-# @create.route('/gensent3-5', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_5')
-#     return ('', 204)
-
-# @create.route('/gensent3-6', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_6')
-#     return ('', 204)
-
-# @create.route('/gensent3-7', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_7')
-#     return ('', 204)
-
-# @create.route('/gensent3-8', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_8')
-#     return ('', 204)
-
-# @create.route('/gensent3-9', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_9')
-#     return ('', 204)
-
-# @create.route('/gensent3-10', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_10')
-#     return ('', 204)
-
-# @create.route('/gensent3-11', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_11')
-#     return ('', 204)
-
-# @create.route('/gensent3-12', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_12')
-#     return ('', 204)
-
-# @create.route('/gensent3-13', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_13')
-#     return ('', 204)
-
-# @create.route('/gensent3-14', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_14')
-#     return ('', 204)
-
-# @create.route('/gensent3-15', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_15')
-#     return ('', 204)
-
-# @create.route('/gensent3-16', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_16')
-#     return ('', 204)
-
-# @create.route('/gensent3-17', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_17')
-#     return ('', 204)
-
-# @create.route('/gensent3-18', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_18')
-#     return ('', 204)
-
-# @create.route('/gensent3-19', methods=['POST'])
-# def index():
-#     description_id = request.get_json()['description_id']
-#     generate_sent3(description_id,'sent3_19')
-#     return ('', 204)
-
-# @create.route('/editsent3')
-# def editThird(description_id):
-#     #Pick the best third sentence
-#     edit_sent3(description_id)
-#     return description_id
+@create.route('/editsent3/', methods=['POST'])
+@csrf.exempt
+def index():
+    from perciapp.blueprints.create.tasks import edit_sent3
+    message = request.get_json()['message']
+    description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
+    id = edit_sent3(description_id)
+    return ('', 204)
