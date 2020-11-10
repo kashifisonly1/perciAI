@@ -154,6 +154,11 @@ def edit_sent1(id):
     """
     Cull sent1 candidates and put best candidate back into database
     """
+    # initialize model
+    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
+    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    model.eval()
+    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     #wait until generating is done to begin
     description = Create.query.get(id)
@@ -161,18 +166,12 @@ def edit_sent1(id):
     print('description.sent1_19=')
     print(description.sent1_19)
     print()
-    while not len(description.sent1_19) > 5:
+    while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
 
     print()
     print('edit_sent1 starting now')
-
-    # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     # load in sentence candidates
     sent1 = description.sent1
@@ -273,24 +272,24 @@ def edit_sent2(id):
     """
     Cull sent2 candidates and put best candidate into database
     """
+    # initialize model
+    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
+    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    model.eval()
+    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+
     #wait until generating is done to begin
     description = Create.query.get(id)
     print()
     print('description.sent2_19=')
     print(description.sent2_19)
     print()
-    while not len(description.sent2_19) > 5:
+    while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
 
     print()
     print('edit_sent2 starting now')
-
-    # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     # load in sentence candidates
     sent1 = description.sent2
@@ -372,6 +371,11 @@ def edit_sent3(id):
     """
     Cull sent3 candidates and put best candidate back into database
     """
+    # initialize model
+    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
+    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    model.eval()
+    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
     #wait until generating is done to begin
     description = Create.query.get(id)
@@ -379,18 +383,12 @@ def edit_sent3(id):
     print('description.sent3_19=')
     print(description.sent3_19)
     print()
-    while not len(description.sent3_19) > 5:
+    while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
 
     print()
-    print('edit_sent2 starting now')
-
-    # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
-    model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+    print('edit_sent3 starting now')
 
     # load in sentence candidates
     sent1 = description.sent3
