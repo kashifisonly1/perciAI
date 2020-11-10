@@ -23,6 +23,7 @@ cloud_sql_connection_name = os.getenv("CLOUD_SQL_CONNECTION_NAME")
 db = "postgres://{0}:{1}@/{2}?host={3}/{4}".format(
          db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name)
 SQLALCHEMY_DATABASE_URI= db
+SQLALCHEMY_POOL_SIZE = 20
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask-Mail.
