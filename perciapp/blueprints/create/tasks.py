@@ -261,7 +261,7 @@ def edit_sent1(id):
                                     [candidate1, candidate2])[0]
 
     # saving the best first sentence
-    update = Create.query.filter_by(id=ids[0]).update({'sent1_winner': first_sent})
+    update = Create.query.filter_by(id).update({'sent1_winner': first_sent})
     db.session.commit()
     print()
     print('edit_sent1 complete')
@@ -359,7 +359,7 @@ def edit_sent2(id):
                                                         scores)
     sent = return_most_similar(features,[candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent2_winner': sent})
+    update = Create.query.filter_by(id).update({'sent2_winner': sent})
     db.session.commit()
     print()
     print('edit_sent2 complete')
@@ -459,11 +459,11 @@ def edit_sent3(id):
     sent = return_most_similar(features,
                                     [candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id=ids[0]).update({'sent3_winner': sent})
+    update = Create.query.filter_by(id).update({'sent3_winner': sent})
     db.session.commit()
 
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
-    update = Create.query.filter_by(id=ids[0]).update({'description':final_output})
+    update = Create.query.filter_by(id).update({'description':final_output})
     db.session.commit()
     print()
     print('edit_sent3 complete')
