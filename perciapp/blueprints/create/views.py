@@ -188,7 +188,7 @@ def routesent2():
 @create.route('/gensent3/', methods=['POST'])
 @csrf.exempt
 def routesent3():
-    from perciapp.blueprints.create.tasks import generate_sent1
+    from perciapp.blueprints.create.tasks import generate_sent3
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
