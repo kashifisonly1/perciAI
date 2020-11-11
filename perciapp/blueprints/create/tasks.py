@@ -29,7 +29,6 @@ def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-    print()
     print('generate_sent_1 starting now')
 
     # getting the description inputs
@@ -52,12 +51,7 @@ def generate_sent1(description_id, label):
 
     sent = brand_remove(generate(args)[0], title)
 
-    print()
-    print()
-    print('generation complete')
-    print(sent)
-    print()
-    print()
+    print('generation 1 complete')
 
     if len(sent) > 199:
         sent = sent[:190]
@@ -70,7 +64,6 @@ def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-    print()
     print('generate_sent_2 starting now')
 
     # getting the description inputs
@@ -96,12 +89,7 @@ def generate_sent2(description_id, label):
     if len(sent) > 199:
         sent = sent[:190]
 
-    print()
-    print()
-    print('generation complete')
-    print(sent)
-    print()
-    print()
+    print('generation 2 complete')
 
     update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
@@ -111,8 +99,6 @@ def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
-
-    print()
     print('generate_sent_3 starting now')
 
     # getting the description inputs
@@ -138,12 +124,8 @@ def generate_sent3(description_id, label):
     if len(sent) > 199:
         sent = sent[:190]
 
-    print()
-    print()
-    print('generation complete')
-    print(sent)
-    print()
-    print()
+    print('generation 3 complete')
+
 
     update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
@@ -162,15 +144,10 @@ def edit_sent1(id):
 
     #wait until generating is done to begin
     description = Create.query.get(id)
-    print()
-    print('description.sent1_19=')
-    print(description.sent1_19)
-    print()
     while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
 
-    print()
     print('edit_sent1 starting now')
 
     # load in sentence candidates
@@ -194,35 +171,15 @@ def edit_sent1(id):
     sent18 = description.sent1_18
     sent19 = description.sent1_19
 
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
     descriptions = [sent1, sent2, sent3, sent4,
                     sent5, sent6, sent7, sent8, sent9, sent10,
                     sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
+                    sent17, sent18, sent19]    
+
+    print('sentences:')
+    for sentence in descriptions:
+        print(sentence)
+    print()
 
     descriptions = remove_bad_sentences(descriptions)
 
@@ -231,19 +188,11 @@ def edit_sent1(id):
         if str(description.title) not in item:
             descriptions.remove(item)
 
-    print()
-    print()
-    print('descriptions after edit:')
-    print(descriptions)
-    print()
-    print()
-
     scores = [score(i, tokenizer, model) for i in descriptions]
 
-    print('scores:')
-    print(scores)
-    print()
-    print()
+    print('scores/descriptions after edit:')
+    for i, (description, score) in enumerate(zip(descriptions, scores)):
+    print(score, description)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -261,11 +210,10 @@ def edit_sent1(id):
                                     [candidate1, candidate2])[0]
 
     # saving the best first sentence
-    update = Create.query.filter_by(id).update({'sent1_winner': first_sent})
+    update = Create.query.filter_by(id=id).update({'sent1_winner': first_sent})
     db.session.commit()
     print()
     print('edit_sent1 complete')
-    print()
     return id
 
 def edit_sent2(id):
@@ -280,10 +228,6 @@ def edit_sent2(id):
 
     #wait until generating is done to begin
     description = Create.query.get(id)
-    print()
-    print('description.sent2_19=')
-    print(description.sent2_19)
-    print()
     while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
@@ -312,44 +256,23 @@ def edit_sent2(id):
     sent18 = description.sent2_18
     sent19 = description.sent2_19
     
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
     descriptions = [sent1, sent2, sent3, sent4,
                     sent5, sent6, sent7, sent8, sent9, sent10,
                     sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
+                    sent17, sent18, sent19]    
 
-    descriptions = remove_bad_sentences(descriptions)
-             
+    print('sentences:')
+    for sentence in descriptions:
+        print(sentence)
+    print()
+
+    descriptions = remove_bad_sentences(descriptions)        
     scores = [score(i, tokenizer, model) for i in descriptions]
 
-    print('scores:')
-    print(scores)
-    print()
-    print()
+    print('scores/descriptions after edit:')
+    for i, (description, score) in enumerate(zip(descriptions, scores)):
+    print(score, description)
+
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
@@ -359,7 +282,7 @@ def edit_sent2(id):
                                                         scores)
     sent = return_most_similar(features,[candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id).update({'sent2_winner': sent})
+    update = Create.query.filter_by(id=id).update({'sent2_winner': sent})
     db.session.commit()
     print()
     print('edit_sent2 complete')
@@ -379,10 +302,6 @@ def edit_sent3(id):
 
     #wait until generating is done to begin
     description = Create.query.get(id)
-    print()
-    print('description.sent3_19=')
-    print(description.sent3_19)
-    print()
     while description.sent3_19 == None:
         description = Create.query.get(id)
         time.sleep(1)
@@ -411,44 +330,23 @@ def edit_sent3(id):
     sent18 = description.sent3_18
     sent19 = description.sent3_19
     
-    print()
-    print()
-    print('sentences:')
-    print(sent1)
-    print(sent2)
-    print(sent3)
-    print(sent4)
-    print(sent5)
-    print(sent6)
-    print(sent7)
-    print(sent8)
-    print(sent9)
-    print(sent10)
-    print(sent11)
-    print(sent12)
-    print(sent13)
-    print(sent14)
-    print(sent15)
-    print(sent16)
-    print(sent17)
-    print(sent18)
-    print(sent19)
-    print()
-    print()
-
     descriptions = [sent1, sent2, sent3, sent4,
                     sent5, sent6, sent7, sent8, sent9, sent10,
                     sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]
+                    sent17, sent18, sent19]    
 
-    descriptions = remove_bad_sentences(descriptions)
+    print('sentences:')
+    for sentence in descriptions:
+        print(sentence)
+    print()
 
+    descriptions = remove_bad_sentences(descriptions)        
     scores = [score(i, tokenizer, model) for i in descriptions]
 
-    print('scores:')
-    print(scores)
-    print()
-    print()
+    print('scores/descriptions after edit:')
+    for i, (description, score) in enumerate(zip(descriptions, scores)):
+    print(score, description)
+
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
@@ -463,9 +361,8 @@ def edit_sent3(id):
     db.session.commit()
 
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
-    update = Create.query.filter_by(id).update({'description':final_output})
+    update = Create.query.filter_by(id=id).update({'description':final_output})
     db.session.commit()
     print()
     print('edit_sent3 complete')
-    print()
     return id

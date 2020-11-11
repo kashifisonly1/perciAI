@@ -70,11 +70,9 @@ def brand_remove(description, model):
     try:
         first, second = re.split(model, description)
     except:
-        print()
         print('split error:')
         print(str(len(re.split(model, description))))
         print(description)
-        print()
         return description
 
     if second.strip().startswith('from ') or second.strip().startswith('by '):
@@ -230,7 +228,6 @@ def generate(args):
                                     skip_special_tokens=False)
             text = text[: text.find('<eos>')]
             text_candidates.append(text)
-            print(text)
         if args['prompt']:
             break
     return text_candidates
