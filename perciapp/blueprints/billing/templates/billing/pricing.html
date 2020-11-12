@@ -16,10 +16,10 @@
             'Change plan'.
           </div>
         {% else %}
-          <h2 class="h1 text-center">Pay less per description with a subscription.</h2>
+          <h2 class="h1 text-center">Subscribe to cover regular new items.</h2>
           <h3 class="font-weight-light text-center text-muted mt-0">
             Or pay as you go by <a href="{{ url_for('billing.purchase_credits') }}"
-            >purchasing credits</a>.
+            >purchasing credits</a>, for $3 per description.
           </h3>
         {% endif %}
         {% call f.form_tag('billing.update', fid='subscription_form') %}
@@ -36,23 +36,20 @@
           <div class="row mt-5">
             {% call billing.plan(plans['0']) %}
               <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">25 descriptions each month</li>
-                <li class="list-group-item">Descriptions on demand</li>
-                <li class="list-group-item">$3 per description</li>
+                <li class="list-group-item">25 descriptions per month</li>
+                <li class="list-group-item">$2 per description</li>
               </ul>
             {% endcall %}
             {% call billing.plan(plans['1']) %}
               <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">50 descriptions each month</li>
-                <li class="list-group-item">Descriptions on demand</li>
-                <li class="list-group-item">$2.25 per description</li>
+                <li class="list-group-item">50 descriptions per month</li>
+                <li class="list-group-item">$1.80 per description</li>
               </ul>
             {% endcall %}
             {% call billing.plan(plans['2']) %}
               <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">80 descriptions each month</li>
-                <li class="list-group-item">Descriptions on demand</li>
-                <li class="list-group-item">$1.87 per description</li>
+                <li class="list-group-item">80 descriptions per month</li>
+                <li class="list-group-item">$1.50 per description</li>
               </ul>
             {% endcall %}
           </div>
