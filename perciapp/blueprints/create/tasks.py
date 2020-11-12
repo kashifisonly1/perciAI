@@ -192,7 +192,7 @@ def edit_sent1(id):
 
     print('scores/descriptions after edit:')
     for i, (description, score) in enumerate(zip(descriptions, scores)):
-    print(score, description)
+        print(score, description)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -271,7 +271,7 @@ def edit_sent2(id):
 
     print('scores/descriptions after edit:')
     for i, (description, score) in enumerate(zip(descriptions, scores)):
-    print(score, description)
+        print(score, description)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -345,7 +345,7 @@ def edit_sent3(id):
 
     print('scores/descriptions after edit:')
     for i, (description, score) in enumerate(zip(descriptions, scores)):
-    print(score, description)
+        print(score, description)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
