@@ -357,7 +357,7 @@ def edit_sent3(id):
     sent = return_most_similar(features,
                                     [candidate1, candidate2])[0]
 
-    update = Create.query.filter_by(id).update({'sent3_winner': sent})
+    update = Create.query.filter_by(id=id).update({'sent3_winner': sent})
     db.session.commit()
 
     final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
