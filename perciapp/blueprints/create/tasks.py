@@ -359,7 +359,7 @@ def edit_sent3(id):
     update = Create.query.filter_by(id=id).update({'sent3_winner': sent})
     db.session.commit()
 
-    final_output = description.sent1 + ' ' + description.sent2 + ' ' + description.sent3
+    final_output = description.sent1_winner + ' ' + description.sent2_winner + ' ' + description.sent3_winner
     update = Create.query.filter_by(id=id).update({'description':final_output})
     db.session.commit()
     print()
