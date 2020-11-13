@@ -5,7 +5,7 @@ import sqlalchemy
 from distutils.util import strtobool
 
 
-LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 SECRET_KEY = os.getenv('SECRET_KEY', None)
 
@@ -58,11 +58,10 @@ STRIPE_PLANS = {
     '0': {
         'id': 'standard',
         'name': 'Standard',
-        'amount': 7500,
+        'amount': 5000,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
-        'trial_period_days': 14,
         'statement_descriptor': 'PERCI.AI STANDARD',
         'metadata': {
             'credits': 25
@@ -71,11 +70,10 @@ STRIPE_PLANS = {
     '1': {
         'id': 'pro',
         'name': 'Pro',
-        'amount': 11000,
+        'amount': 9000,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
-        'trial_period_days': 14,
         'statement_descriptor': 'PERCI.AI PRO',
         'metadata': {
             'credits': 50,
@@ -85,11 +83,10 @@ STRIPE_PLANS = {
     '2': {
         'id': 'business',
         'name': 'Business',
-        'amount': 15000,
+        'amount': 12000,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
-        'trial_period_days': 14,
         'statement_descriptor': 'PERCI.AI BUSINESS',
         'metadata': {
             'credits': 80
@@ -99,9 +96,8 @@ STRIPE_PLANS = {
 
 CREDIT_BUNDLES = [
     {'credits': 5, 'price_in_cents': 1500, 'label': '5 for $15'},
-    {'credits': 25, 'price_in_cents': 6000, 'label': '25 for $60'},
-    {'credits': 100, 'price_in_cents': 22500, 'label': '100 for $225'},
-    {'credits': 500, 'price_in_cents': 75000, 'label': '500 for $750'},
+    {'credits': 25, 'price_in_cents': 7500, 'label': '25 for $75'},
+    {'credits': 100, 'price_in_cents': 30000, 'label': '100 for $300'},
 ]
 
 # Rate limiting.
