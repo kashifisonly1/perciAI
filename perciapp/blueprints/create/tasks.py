@@ -49,7 +49,7 @@ def generate_sent1(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<desc1> '
 
-    sent = brand_remove(generate(args)[0])
+    sent = brand_remove(generate(args)[0], title)
 
     if len(sent) > 199:
         sent = sent[:195]
