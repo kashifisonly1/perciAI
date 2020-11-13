@@ -5,7 +5,7 @@ import sqlalchemy
 from distutils.util import strtobool
 
 
-LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 SECRET_KEY = os.getenv('SECRET_KEY', None)
 

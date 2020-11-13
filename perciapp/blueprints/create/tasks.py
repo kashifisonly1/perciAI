@@ -49,12 +49,10 @@ def generate_sent1(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<desc1> '
 
-    sent = brand_remove(generate(args)[0], title)
-
-    print('generation 1 complete')
+    sent = brand_remove(generate(args)[0])
 
     if len(sent) > 199:
-        sent = sent[:190]
+        sent = sent[:195]
 
     update = Create.query.filter_by(id=description_id).update({label: sent})
     db.session.commit()
@@ -119,7 +117,7 @@ def generate_sent3(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<end> '
 
-    sent = generate(args)[0]
+    sent = brand_remove(generate(args)[0], title)
 
     if len(sent) > 199:
         sent = sent[:190]
@@ -142,39 +140,28 @@ def edit_sent1(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #wait until generating is done to begin
+    # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    while description.sent3_19 == None:
-        description = Create.query.get(id)
+    descriptions = [description.sent1, description.sent1_2, description.sent1_3,
+                        description.sent1_4, description.sent1_5, description.sent1_6,
+                        description.sent1_7, description.sent1_8, description.sent1_9,
+                        description.sent1_10, description.sent1_11, description.sent1_12,
+                        description.sent1_13, description.sent1_14, description.sent1_15,
+                        description.sent1_16, description.sent1_17, description.sent1_18,
+                        description.sent1_19]
+
+    while None in descriptions:
         time.sleep(1)
+        description = Create.query.get(id)
+        descriptions = [description.sent1, description.sent1_2, description.sent1_3,
+                        description.sent1_4, description.sent1_5, description.sent1_6,
+                        description.sent1_7, description.sent1_8, description.sent1_9,
+                        description.sent1_10, description.sent1_11, description.sent1_12,
+                        description.sent1_13, description.sent1_14, description.sent1_15,
+                        description.sent1_16, description.sent1_17, description.sent1_18,
+                        description.sent1_19]
 
     print('edit_sent1 starting now')
-
-    # load in sentence candidates
-    sent1 = description.sent1
-    sent2 = description.sent1_2
-    sent3 = description.sent1_3
-    sent4 = description.sent1_4
-    sent5 = description.sent1_5
-    sent6 = description.sent1_6
-    sent7 = description.sent1_7
-    sent8 = description.sent1_8
-    sent9 = description.sent1_9
-    sent10 = description.sent1_10
-    sent11 = description.sent1_11
-    sent12 = description.sent1_12
-    sent13 = description.sent1_13
-    sent14 = description.sent1_14
-    sent15 = description.sent1_15
-    sent16 = description.sent1_16
-    sent17 = description.sent1_17
-    sent18 = description.sent1_18
-    sent19 = description.sent1_19
-
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]    
 
     print('sentences:')
     for sentence in descriptions:
@@ -192,7 +179,7 @@ def edit_sent1(id):
 
     print('scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(scr, desc)
+        print(int(scr), desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -200,14 +187,25 @@ def edit_sent1(id):
     # pulling the best written sentence
     candidate1, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
-
-    # pulling the next best written sentence
+    print('candidate1:')
+    print(candidate1)
+    print('score:')
+    print(score)
+    
+    # pulling next best written sentence
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
-    
-    # picing the one which is most similar to the features list
+    print('candidate2:')
+    print(candidate2)
+    print('score:')
+    print(score)   
+
+    # picking the one which is most similar to the features list
     first_sent = return_most_similar(features,
                                     [candidate1, candidate2])[0]
+
+    print('winner:')
+    print(first_sent)
 
     # saving the best first sentence
     update = Create.query.filter_by(id=id).update({'sent1_winner': first_sent})
@@ -226,40 +224,29 @@ def edit_sent2(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #wait until generating is done to begin
+    # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    while description.sent3_19 == None:
-        description = Create.query.get(id)
+    descriptions = [description.sent2, description.sent2_2, description.sent2_3,
+                        description.sent2_4, description.sent2_5, description.sent2_6,
+                        description.sent2_7, description.sent2_8, description.sent2_9,
+                        description.sent2_10, description.sent2_11, description.sent2_12,
+                        description.sent2_13, description.sent2_14, description.sent2_15,
+                        description.sent2_16, description.sent2_17, description.sent2_18,
+                        description.sent2_19]
+
+    while None in descriptions:
         time.sleep(1)
+        description = Create.query.get(id)
+        descriptions = [description.sent2, description.sent2_2, description.sent2_3,
+                        description.sent2_4, description.sent2_5, description.sent2_6,
+                        description.sent2_7, description.sent2_8, description.sent2_9,
+                        description.sent2_10, description.sent2_11, description.sent2_12,
+                        description.sent2_13, description.sent2_14, description.sent2_15,
+                        description.sent2_16, description.sent2_17, description.sent2_18,
+                        description.sent2_19]
 
-    print()
-    print('edit_sent2 starting now')
-
-    # load in sentence candidates
-    sent1 = description.sent2
-    sent2 = description.sent2_2
-    sent3 = description.sent2_3
-    sent4 = description.sent2_4
-    sent5 = description.sent2_5
-    sent6 = description.sent2_6
-    sent7 = description.sent2_7
-    sent8 = description.sent2_8
-    sent9 = description.sent2_9
-    sent10 = description.sent2_10
-    sent11 = description.sent2_11
-    sent12 = description.sent2_12
-    sent13 = description.sent2_13
-    sent14 = description.sent2_14
-    sent15 = description.sent2_15
-    sent16 = description.sent2_16
-    sent17 = description.sent2_17
-    sent18 = description.sent2_18
-    sent19 = description.sent2_19
     
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]    
+    print('edit_sent2 starting now')  
 
     print('sentences:')
     for sentence in descriptions:
@@ -271,16 +258,28 @@ def edit_sent2(id):
 
     print('scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(scr, desc)
+        print(int(scr), desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
     candidate1, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
+    print('candidate1:')
+    print(candidate1)
+    print('score:')
+    print(score)
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
+    print('candidate2:')
+    print(candidate2)
+    print('score:')
+    print(score)
+
     sent = return_most_similar(features,[candidate1, candidate2])[0]
+
+    print('winner:')
+    print(sent)
 
     update = Create.query.filter_by(id=id).update({'sent2_winner': sent})
     db.session.commit()
@@ -300,40 +299,28 @@ def edit_sent3(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
-    #wait until generating is done to begin
+    # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    while description.sent3_19 == None:
-        description = Create.query.get(id)
+    descriptions = [description.sent3, description.sent3_2, description.sent3_3,
+                        description.sent3_4, description.sent3_5, description.sent3_6,
+                        description.sent3_7, description.sent3_8, description.sent3_9,
+                        description.sent3_10, description.sent3_11, description.sent3_12,
+                        description.sent3_13, description.sent3_14, description.sent3_15,
+                        description.sent3_16, description.sent3_17, description.sent3_18,
+                        description.sent3_19]
+
+    while None in descriptions:
         time.sleep(1)
+        description = Create.query.get(id)
+        descriptions = [description.sent3, description.sent3_2, description.sent3_3,
+                        description.sent3_4, description.sent3_5, description.sent3_6,
+                        description.sent3_7, description.sent3_8, description.sent3_9,
+                        description.sent3_10, description.sent3_11, description.sent3_12,
+                        description.sent3_13, description.sent3_14, description.sent3_15,
+                        description.sent3_16, description.sent3_17, description.sent3_18,
+                        description.sent3_19]
 
-    print()
     print('edit_sent3 starting now')
-
-    # load in sentence candidates
-    sent1 = description.sent3
-    sent2 = description.sent3_2
-    sent3 = description.sent3_3
-    sent4 = description.sent3_4
-    sent5 = description.sent3_5
-    sent6 = description.sent3_6
-    sent7 = description.sent3_7
-    sent8 = description.sent3_8
-    sent9 = description.sent3_9
-    sent10 = description.sent3_10
-    sent11 = description.sent3_11
-    sent12 = description.sent3_12
-    sent13 = description.sent3_13
-    sent14 = description.sent3_14
-    sent15 = description.sent3_15
-    sent16 = description.sent3_16
-    sent17 = description.sent3_17
-    sent18 = description.sent3_18
-    sent19 = description.sent3_19
-    
-    descriptions = [sent1, sent2, sent3, sent4,
-                    sent5, sent6, sent7, sent8, sent9, sent10,
-                    sent11, sent12, sent13, sent14, sent15, sent16,
-                    sent17, sent18, sent19]    
 
     print('sentences:')
     for sentence in descriptions:
@@ -345,17 +332,29 @@ def edit_sent3(id):
 
     print('scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(scr, desc)
+        print(int(scr), desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
 
     candidate1, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
+    print('candidate1:')
+    print(candidate1)
+    print('score:')
+    print(score)
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
+    print('candidate2:')
+    print(candidate2)
+    print('score:')
+    print(score)
+
     sent = return_most_similar(features,
                                     [candidate1, candidate2])[0]
+
+    print('winner:')
+    print(sent)
 
     update = Create.query.filter_by(id=id).update({'sent3_winner': sent})
     db.session.commit()

@@ -93,9 +93,7 @@ form_tag(endpoint, fid='', css_class='', method='post')
             <thead>
             <tr>
               <th>Title</th>
-              <th>Gender</th>
               <th>Category</th>
-              <th>Subcategory</th>
               <th>Description</th>
             </tr>
             </thead>
@@ -107,8 +105,6 @@ form_tag(endpoint, fid='', css_class='', method='post')
                 {% for item in recent_descriptions %}
                   <tr>
                   <td>{{ item.title }}</td>
-                  <td>{{ item.gender }}</td>
-                  <td>{{ item.category }}</td>
                   <td>{{ item.subcategory }}</td>
                   <td>{{ item.description }}</td>
                   </tr>
