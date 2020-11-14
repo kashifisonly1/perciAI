@@ -44,7 +44,7 @@ class CancelSubscriptionForm(FlaskForm):
 class PaymentForm(FlaskForm):
     stripe_key = HiddenField(_('Stripe publishable key'),
                              [DataRequired(), Length(1, 254)])
-    coin_bundles = SelectField(_('How many credits do you want?'),
+    credit_bundles = SelectField(_('How many credits do you want?'),
                                [DataRequired()],
                                choices=choices_from_credit_bundles())
     coupon_code = StringField(_('Do you have a coupon code?'),
