@@ -367,6 +367,10 @@ def edit_sent3(id):
     return id
 
 def period_check(description):
+    print('period check starting now:')
+    print('description:')
+    print(description)
+    print(type(description))
     if description.endswith('.'):
         return description
     else:
