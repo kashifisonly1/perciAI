@@ -76,7 +76,7 @@ class User(UserMixin, ResourceMixin, db.Model):
         super(User, self).__init__(**kwargs)
 
         self.password = User.encrypt_password(kwargs.get('password', ''))
-        self.credits = 20
+        self.credits = 10
 
     @classmethod
     def find_by_identity(cls, identity):
