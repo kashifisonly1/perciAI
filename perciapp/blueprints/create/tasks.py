@@ -367,7 +367,7 @@ def edit_sent3(id):
     return id
 
 def period_check(description):
-    if description[-1] == '.':
+    if description.endswith('.'):
         return description
     else:
         return description + '.'
