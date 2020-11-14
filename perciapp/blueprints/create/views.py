@@ -150,8 +150,6 @@ def subcategory(category):
 
     return jsonify(Subcategories[category])
 
-    # return jsonify({'subcategories' : subcategoryArray})
-
 
 @create.route('/history', defaults={'page': 1})
 @create.route('/history/page/<int:page>')
