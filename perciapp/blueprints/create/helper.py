@@ -74,7 +74,7 @@ def brand_remove(description, model):
     if second.strip().startswith('from ') or second.strip().startswith('by '):
         delimiters = ['.', ' is ', ' takes ', ' gives ', ' makes ',
                       ' creates ', ' features ', ' will ', ' crafted ',
-                      ' a ',' has ', ' for', ' to', ' with']
+                      ' a ',' has ', ' for', ' to', ' with', ' are']
         low = 100
         for item in delimiters:
             place = second.find(item)

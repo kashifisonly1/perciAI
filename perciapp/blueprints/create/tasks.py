@@ -40,6 +40,7 @@ def generate_sent1(description_id, label):
     if 'shoes' in cat.lower():
         model = 'perciapp/models/unisex_shoes_description_beginning'
         args['model_name_or_path'] = model
+
     elif cat.lower().startswith('men'):
         model = 'perciapp/models/mens_clothing_description_beginning'
         args['model_name_or_path'] = model
@@ -73,6 +74,8 @@ def generate_sent2(description_id, label):
     if 'shoes' in cat.lower():
         model = 'perciapp/models/unisex_shoes_description_middle'
         args['model_name_or_path'] = model
+        #give shoes model extra length in case it creates new input
+        args['length'] = 90
     elif cat.lower().startswith('men'):
         model = 'perciapp/models/mens_clothing_description_middle'
         args['model_name_or_path'] = model
@@ -85,6 +88,10 @@ def generate_sent2(description_id, label):
                         {features} <brand> <model> {title} \t<middle> '
 
     sent = generate(args)[0]
+
+    # If model has started in <features> again, cut out extra input
+    if '<brand>' and '<model>' in sent:
+        sent = sent.split('<end>')[1]
 
     if len(sent) > 199:
         sent = sent[:190]
@@ -108,6 +115,8 @@ def generate_sent3(description_id, label):
     if 'shoes' in cat.lower():
         model = 'perciapp/models/unisex_shoes_description_end'
         args['model_name_or_path'] = model
+        #give shoes model extra length in case it creates new input
+        args['length'] = 90
     elif cat.lower().startswith('men'):
         model = 'perciapp/models/mens_clothing_description_end'
         args['model_name_or_path'] = model
@@ -120,6 +129,10 @@ def generate_sent3(description_id, label):
                         {features} <brand> <model> {title} \t<end> '
 
     sent = brand_remove(generate(args)[0], title)
+
+    # If model has started in <features> again, cut out extra input
+    if '<brand>' and '<model>' in sent:
+        sent = sent.split('<end>')[1]
 
     if len(sent) > 199:
         sent = sent[:190]
