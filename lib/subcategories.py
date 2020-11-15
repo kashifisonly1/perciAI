@@ -6,7 +6,7 @@ Subcategories = {
                 ('suits & blazers', 'Suits & Blazers'), ('jumpers & cardigans', 'Sweaters'),
                 ('sleepwear', 'Sleepwear'), ('underwear & socks', 'Underwear & Socks'), ('base layers', 'Base Layers'),
                 ('lingerie', 'Lingerie'), ('jumpsuits & playsuits', 'Jumpsuits & Playsuits'), ('onesies', 'Onesies'),
-                ('tights', 'Tights')],
+                ('socks & tights', 'Socks & Tights')],
     'shoes' : [('ankle boots', 'Ankle Boots'),
         ('dress shoes', 'Dress Shoes'),
         ('boots', 'Boots'),
