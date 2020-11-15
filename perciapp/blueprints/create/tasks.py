@@ -359,7 +359,15 @@ def edit_sent3(id):
     update = Create.query.filter_by(id=id).update({'sent3_winner': sent})
     db.session.commit()
 
-    final_output = period_check(description.sent1_winner) + ' ' + period_check(description.sent2_winner) + ' ' + period_check(description.sent3_winner)
+    description = Create.query.get(id)
+    winners = [description.sent1_winner, description.sent2_winner]
+
+    while None in winners:
+        time.sleep(1)
+        description = Create.query.get(id)
+        winners = [description.sent1_winner, description.sent2_winner]
+
+    final_output = period_check(description.sent1_winner) + period_check(description.sent2_winner) + period_check(description.sent3_winner)
     update = Create.query.filter_by(id=id).update({'description':final_output})
     db.session.commit()
     print()
@@ -367,10 +375,6 @@ def edit_sent3(id):
     return id
 
 def period_check(description):
-    print('period check starting now:')
-    print('description:')
-    print(description)
-    print(type(description))
     if description.endswith('.'):
         return description
     else:
