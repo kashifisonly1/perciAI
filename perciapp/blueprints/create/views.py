@@ -130,7 +130,7 @@ def create_description():
         print(f"Published edit_sent message to {topic_path}.")
         print()
 
-        flash('Success! Your description will appear in a few seconds.',
+        flash('Success! Your description will appear in a minute or two. To go faster, submit another item and stack your requests.',
               'success')
 
         return redirect(url_for('create.create_description'))
