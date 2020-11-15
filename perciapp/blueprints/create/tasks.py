@@ -22,6 +22,8 @@ def remove_bad_sentences(descriptions):
         # feature inputs instead of sentences - possible bug causing it
         elif item.startswith('Length'):
             descriptions.remove(item)
+        elif len(item) < 15:
+            description.remove(item)
     return descriptions
 
 
@@ -151,7 +153,7 @@ def edit_sent1(id):
                         description.sent1_19]
 
     while None in descriptions:
-        time.sleep(1)
+        time.sleep(3)
         description = Create.query.get(id)
         descriptions = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
@@ -235,7 +237,7 @@ def edit_sent2(id):
                         description.sent2_19]
 
     while None in descriptions:
-        time.sleep(1)
+        time.sleep(3)
         description = Create.query.get(id)
         descriptions = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
@@ -310,7 +312,7 @@ def edit_sent3(id):
                         description.sent3_19]
 
     while None in descriptions:
-        time.sleep(1)
+        time.sleep(3)
         description = Create.query.get(id)
         descriptions = [description.sent3, description.sent3_2, description.sent3_3,
                         description.sent3_4, description.sent3_5, description.sent3_6,
@@ -363,7 +365,7 @@ def edit_sent3(id):
     winners = [description.sent1_winner, description.sent2_winner]
 
     while None in winners:
-        time.sleep(1)
+        time.sleep(3)
         description = Create.query.get(id)
         winners = [description.sent1_winner, description.sent2_winner]
 
