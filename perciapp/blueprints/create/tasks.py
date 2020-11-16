@@ -25,7 +25,7 @@ def remove_bad_sentences(descriptions):
         elif item.lower().startswith('our model'):
             descriptions.remove(item)
         elif len(item) < 15:
-            description.remove(item)
+            descriptions.remove(item)
     return descriptions
 
 
