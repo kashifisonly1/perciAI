@@ -30,10 +30,10 @@ class Create(ResourceMixin, db.Model):
         ('coats & jackets', 'Coats & Jackets'),
         ('suits & blazers', 'Suits & Blazers'),
         ('jumpsuits & playsuits', 'Jumpsuits & Playsuits'),
-        ('jumpers & cardigans', 'Sweaters & Cardigans'),
+        ('sweaters & cardigans', 'Sweaters & Cardigans'),
         ('sleepwear', 'Sleepwear'),
         ('underwear & socks', 'Underwear & Socks'),
-        ('socks & tights', 'Socks & Tights'),
+        ('tights', 'Socks & Tights'),
         ('base layers', 'Base Layers'),
         ('onesies', 'Onesies'),
 
