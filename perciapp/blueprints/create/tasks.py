@@ -22,6 +22,8 @@ def remove_bad_sentences(descriptions):
         # feature inputs instead of sentences - possible bug causing it
         elif item.startswith('Length'):
             descriptions.remove(item)
+        elif item.lower().startswith('our model'):
+            descriptions.remove(item)
         elif len(item) < 15:
             description.remove(item)
     return descriptions
@@ -90,8 +92,8 @@ def generate_sent2(description_id, label):
     sent = generate(args)[0]
 
     # If model has started in <features> again, cut out extra input
-    if '<brand>' and '<model>' in sent:
-        sent = sent.split('<end>')[1]
+    if '<middle>' in sent:
+        sent = sent.split('<middle>')[1]
 
     if len(sent) > 199:
         sent = sent[:190]
@@ -131,7 +133,7 @@ def generate_sent3(description_id, label):
     sent = brand_remove(generate(args)[0], title)
 
     # If model has started in <features> again, cut out extra input
-    if '<brand>' and '<model>' in sent:
+    if '<end>' in sent:
         sent = sent.split('<end>')[1]
 
     if len(sent) > 199:
@@ -204,16 +206,12 @@ def edit_sent1(id):
                                                         scores)
     print('candidate1:')
     print(candidate1)
-    print('score:')
-    print(score)
     
     # pulling next best written sentence
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
     print('candidate2:')
-    print(candidate2)
-    print('score:')
-    print(score)   
+    print(candidate2)   
 
     # picking the one which is most similar to the features list
     first_sent = return_most_similar(features,
