@@ -32,8 +32,13 @@ def remove_bad_sentences(descriptions):
 def generate_sent1(description_id, label):
 
     import tracemalloc
-    tracemalloc.start(5)
-    time1 = tracemalloc.take_snapshot()
+    tracemalloc.start()
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+
+    print("[ Top 10 Memory Objects ]")
+    for stat in top_stats[:10]:
+        print(stat)
 
     """
     Create description from text inputs and save description into database.
@@ -61,11 +66,6 @@ def generate_sent1(description_id, label):
 
     sent = brand_remove(generate(args)[0], title)
 
-    time2 = tracemalloc.take_snapshot()
-    stats = time2.compare_to(time1, 'lineno')
-    for stat in stats[:3]:
-        print(stat)
-
     if len(sent) > 199:
         sent = sent[:195]
 
@@ -76,8 +76,13 @@ def generate_sent1(description_id, label):
 def generate_sent2(description_id, label):
 
     import tracemalloc
-    tracemalloc.start(5)
-    time1 = tracemalloc.take_snapshot()
+    tracemalloc.start()
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+
+    print("[ Top 10 Memory Objects ]")
+    for stat in top_stats[:10]:
+        print(stat)
     """
     Create description from text inputs and save description into database.
     """
@@ -105,11 +110,6 @@ def generate_sent2(description_id, label):
 
     sent = generate(args)[0]
 
-    time2 = tracemalloc.take_snapshot()
-    stats = time2.compare_to(time1, 'lineno')
-    for stat in stats[:3]:
-        print(stat)
-
     # If model has started in <features> again, cut out extra input
     if '<middle>' in sent:
         sent = sent.split('<middle>')[1]
@@ -126,8 +126,13 @@ def generate_sent2(description_id, label):
 def generate_sent3(description_id, label):
 
     import tracemalloc
-    tracemalloc.start(5)
-    time1 = tracemalloc.take_snapshot()
+    tracemalloc.start()
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+
+    print("[ Top 10 Memory Objects ]")
+    for stat in top_stats[:10]:
+        print(stat)
 
     """
     Create description from text inputs and save description into database.
@@ -155,11 +160,6 @@ def generate_sent3(description_id, label):
                         {features} <brand> <model> {title} \t<end> '
 
     sent = brand_remove(generate(args)[0], title)
-
-    time2 = tracemalloc.take_snapshot()
-    stats = time2.compare_to(time1, 'lineno')
-    for stat in stats[:3]:
-        print(stat)
 
     # If model has started in <features> again, cut out extra input
     if '<end>' in sent:

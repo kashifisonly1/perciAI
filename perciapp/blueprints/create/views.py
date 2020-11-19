@@ -170,7 +170,8 @@ def routesent1():
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
-    id = generate_sent1(description_id,label)
+    generate_sent1(description_id,label)
+    shutdown_server()
     return ('', 204)
 
 @create.route('/gensent2/', methods=['POST'])
@@ -180,7 +181,8 @@ def routesent2():
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
-    id = generate_sent2(description_id,label)
+    generate_sent2(description_id,label)
+    shutdown_server()
     return ('', 204)
 
 @create.route('/gensent3/', methods=['POST'])
@@ -190,7 +192,8 @@ def routesent3():
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
-    id = generate_sent3(description_id,label)
+    generate_sent3(description_id,label)
+    shutdown_server()
     return ('', 204)
 
 @create.route('/editsent1/', methods=['POST'])
