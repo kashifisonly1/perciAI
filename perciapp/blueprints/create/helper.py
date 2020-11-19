@@ -1,4 +1,5 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from flask import request
 
 import torch
 import torch.nn.functional as F
@@ -18,6 +19,12 @@ args['length'] = 45
 args['no_cuda'] = True
 args['padding_text'] = ''
 
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
 
 def return_most_similar(first, secondlist):
     '''
