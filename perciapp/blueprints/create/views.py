@@ -20,6 +20,7 @@ from perciapp.blueprints.create.helper import shutdown_server
 from lib.subcategories import Subcategories
 from google.cloud import pubsub_v1
 import base64
+import requests
 
 create = Blueprint('create', __name__, template_folder='templates',
                    url_prefix='/create')
@@ -172,7 +173,7 @@ def routesent1():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
     generate_sent1(description_id,label)
-    shutdown_server()
+    res = requests.post('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
 @create.route('/gensent2/', methods=['POST'])
@@ -183,7 +184,7 @@ def routesent2():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
     generate_sent2(description_id,label)
-    shutdown_server()
+    res = requests.post('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
 @create.route('/gensent3/', methods=['POST'])
@@ -194,7 +195,7 @@ def routesent3():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     label = message['attributes']['label']
     generate_sent3(description_id,label)
-    shutdown_server()
+    res = requests.post('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
 @create.route('/editsent1/', methods=['POST'])
@@ -223,3 +224,8 @@ def routeedit3():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     id = edit_sent3(description_id)
     return ('', 204)
+
+@create.route('/shutdown', methods=['POST'])
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
