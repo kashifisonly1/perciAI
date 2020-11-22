@@ -56,7 +56,7 @@ def generate_sent1(description_id, labels):
 
     sentences = dict()
 
-    for label in labels:
+    for label in labels.split('/'):
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
         if len(sent) > 199:
@@ -95,7 +95,7 @@ def generate_sent2(description_id, labels):
 
     sentences = dict()
 
-    for label in labels:
+    for label in labels.split('/'):
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
         # If model has started in <features> again, cut out extra input
@@ -137,7 +137,7 @@ def generate_sent3(description_id, labels):
 
     sentences = dict()
 
-    for label in labels:
+    for label in labels.split('/'):
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
         # If model has started in <features> again, cut out extra input
