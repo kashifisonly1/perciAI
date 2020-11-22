@@ -57,11 +57,16 @@ def generate_sent1(description_id, labels):
     sentences = dict()
 
     for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
+
         if len(sent) > 199:
             sent = sent[:195]
         sentences[label] = sent
+    
+    print(title + ' sentences:')
+    print(sentences)
 
     update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
@@ -96,6 +101,7 @@ def generate_sent2(description_id, labels):
     sentences = dict()
 
     for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
         # If model has started in <features> again, cut out extra input
@@ -104,6 +110,9 @@ def generate_sent2(description_id, labels):
         if len(sent) > 199:
             sent = sent[:195]
         sentences[label] = sent
+
+    print(title + ' sentences:')
+    print(sentences)
 
     update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
@@ -138,6 +147,7 @@ def generate_sent3(description_id, labels):
     sentences = dict()
 
     for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
         args['seed'] = random.randint(1, 100001)
         sent = brand_remove(generate(args)[0], title)
         # If model has started in <features> again, cut out extra input
@@ -147,6 +157,9 @@ def generate_sent3(description_id, labels):
             sent = sent[:195]
         sentences[label] = sent
 
+    print(title + ' sentences:')
+    print(sentences)
+    
     update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
     return description_id
