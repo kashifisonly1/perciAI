@@ -98,7 +98,7 @@ def create_description():
         for i in firsts:
             data = str(create.id)
             data = data.encode("utf-8")
-            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+            future = publisher.publish(topic_path, data, labels=i, id=str(create.id))
             print(future.result())
 
         topic_id = "description-order-sent-2"
@@ -108,7 +108,7 @@ def create_description():
         for i in seconds:
             data = str(create.id)
             data = data.encode("utf-8")
-            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+            future = publisher.publish(topic_path, data, labels=i, id=str(create.id))
             print(future.result())
         
         topic_id = "description-order-sent-3"
@@ -118,7 +118,7 @@ def create_description():
         for i in thirds:
             data = str(create.id)
             data = data.encode("utf-8")
-            future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+            future = publisher.publish(topic_path, data, labels=i, id=str(create.id))
             print(future.result())
 
         print()
