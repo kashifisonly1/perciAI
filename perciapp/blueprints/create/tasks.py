@@ -30,16 +30,6 @@ def remove_bad_sentences(descriptions):
 
 
 def generate_sent1(description_id, label):
-
-    import tracemalloc
-    tracemalloc.start()
-    snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics('lineno')
-
-    print("[ Top 10 Memory Objects ]")
-    for stat in top_stats[:10]:
-        print(stat)
-
     """
     Create description from text inputs and save description into database.
     """
@@ -74,15 +64,6 @@ def generate_sent1(description_id, label):
     return description_id
 
 def generate_sent2(description_id, label):
-
-    import tracemalloc
-    tracemalloc.start()
-    snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics('lineno')
-
-    print("[ Top 10 Memory Objects ]")
-    for stat in top_stats[:10]:
-        print(stat)
     """
     Create description from text inputs and save description into database.
     """
@@ -124,16 +105,6 @@ def generate_sent2(description_id, label):
     return description_id
 
 def generate_sent3(description_id, label):
-
-    import tracemalloc
-    tracemalloc.start()
-    snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics('lineno')
-
-    print("[ Top 10 Memory Objects ]")
-    for stat in top_stats[:10]:
-        print(stat)
-
     """
     Create description from text inputs and save description into database.
     """
@@ -186,6 +157,9 @@ def edit_sent1(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
+    import time
+    start = time.time()
+
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
     descriptions = [description.sent1, description.sent1_2, description.sent1_3,
@@ -197,7 +171,7 @@ def edit_sent1(id):
                         description.sent1_19]
 
     while None in descriptions:
-        time.sleep(3)
+        time.sleep(5)
         description = Create.query.get(id)
         descriptions = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
@@ -206,6 +180,11 @@ def edit_sent1(id):
                         description.sent1_13, description.sent1_14, description.sent1_15,
                         description.sent1_16, description.sent1_17, description.sent1_18,
                         description.sent1_19]
+        print(description.title + ' edit_sent3:')
+        print('None number: ' descriptions.count(None))
+        now = time.time()
+        if now - start > 240:
+            break
 
     print('edit_sent1 starting now')
 
@@ -266,6 +245,9 @@ def edit_sent2(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
+    import time
+    start = time.time()
+
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
     descriptions = [description.sent2, description.sent2_2, description.sent2_3,
@@ -277,7 +259,7 @@ def edit_sent2(id):
                         description.sent2_19]
 
     while None in descriptions:
-        time.sleep(3)
+        time.sleep(5)
         description = Create.query.get(id)
         descriptions = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
@@ -286,6 +268,11 @@ def edit_sent2(id):
                         description.sent2_13, description.sent2_14, description.sent2_15,
                         description.sent2_16, description.sent2_17, description.sent2_18,
                         description.sent2_19]
+        print(description.title + ' edit_sent2:')
+        print('None number: ' descriptions.count(None))
+        now = time.time()
+        if now - start > 240:
+            break
 
     
     print('edit_sent2 starting now')  
@@ -341,6 +328,9 @@ def edit_sent3(id):
     model.eval()
     tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 
+    import time
+    start = time.time()
+
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
     descriptions = [description.sent3, description.sent3_2, description.sent3_3,
@@ -352,7 +342,7 @@ def edit_sent3(id):
                         description.sent3_19]
 
     while None in descriptions:
-        time.sleep(3)
+        time.sleep(5)
         description = Create.query.get(id)
         descriptions = [description.sent3, description.sent3_2, description.sent3_3,
                         description.sent3_4, description.sent3_5, description.sent3_6,
@@ -361,6 +351,13 @@ def edit_sent3(id):
                         description.sent3_13, description.sent3_14, description.sent3_15,
                         description.sent3_16, description.sent3_17, description.sent3_18,
                         description.sent3_19]
+        print(description.title + ' edit_sent3:')
+        print('None number: ' descriptions.count(None))
+        now = time.time()
+        if now - start > 240:
+            break
+
+
 
     print('edit_sent3 starting now')
 
