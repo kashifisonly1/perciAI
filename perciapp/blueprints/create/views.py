@@ -115,7 +115,7 @@ def create_description():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_id)
 
-        for i in third:
+        for i in thirds:
             data = str(create.id)
             data = data.encode("utf-8")
             future = publisher.publish(topic_path, data, label=i, id=str(create.id))
