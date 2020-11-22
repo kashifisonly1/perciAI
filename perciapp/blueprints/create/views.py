@@ -70,18 +70,24 @@ def create_description():
         create = Create(**params)
         create.save_and_update_user(current_user)
 
-        first = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5',
-                 'sent1_6', 'sent1_7', 'sent1_8', 'sent1_9', 'sent1_10',
-                 'sent1_11', 'sent1_12', 'sent1_13', 'sent1_14', 'sent1_15',
-                 'sent1_16', 'sent1_17', 'sent1_18', 'sent1_19']
-        second = ['sent2', 'sent2_2', 'sent2_3', 'sent2_4', 'sent2_5',
-                  'sent2_6', 'sent2_7', 'sent2_8', 'sent2_9', 'sent2_10',
-                  'sent2_11', 'sent2_12', 'sent2_13', 'sent2_14', 'sent2_15',
-                  'sent2_16', 'sent2_17', 'sent2_18', 'sent2_19']
-        third = ['sent3', 'sent3_2', 'sent3_3', 'sent3_4', 'sent3_5',
-                 'sent3_6', 'sent3_7', 'sent3_8', 'sent3_9', 'sent3_10',
-                 'sent3_11', 'sent3_12', 'sent3_13', 'sent3_14', 'sent3_15',
-                 'sent3_16', 'sent3_17', 'sent3_18', 'sent3_19']
+        first1 = ['sent1', 'sent1_2', 'sent1_3', 'sent1_4', 'sent1_5']
+        first2 = ['sent1_6', 'sent1_7', 'sent1_8', 'sent1_9', 'sent1_10']
+        first3 = ['sent1_11', 'sent1_12', 'sent1_13', 'sent1_14', 'sent1_15']
+        first4 = ['sent1_16', 'sent1_17', 'sent1_18', 'sent1_19']
+        firsts = [first1, first2, first3, first4]
+
+        second1 = ['sent2', 'sent2_2', 'sent2_3', 'sent2_4', 'sent2_5']
+        second2 = ['sent2_6', 'sent2_7', 'sent2_8', 'sent2_9', 'sent2_10']
+        second3 = ['sent2_11', 'sent2_12', 'sent2_13', 'sent2_14', 'sent2_15']
+        second4 = ['sent2_16', 'sent2_17', 'sent2_18', 'sent2_19']
+        seconds = [second1, second2, second3, second4]
+
+
+        third1 = ['sent3', 'sent3_2', 'sent3_3', 'sent3_4', 'sent3_5']
+        third2 = ['sent3_6', 'sent3_7', 'sent3_8', 'sent3_9', 'sent3_10']
+        third3 = ['sent3_11', 'sent3_12', 'sent3_13', 'sent3_14', 'sent3_15']
+        third4 = ['sent3_16', 'sent3_17', 'sent3_18', 'sent3_19']
+        thirds = [third1, third2, third3, third4]
 
         project_id = "perciapp"
         topic_id = "description-order"
@@ -89,7 +95,7 @@ def create_description():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_id)
 
-        for i in first:
+        for i in firsts:
             data = str(create.id)
             data = data.encode("utf-8")
             future = publisher.publish(topic_path, data, label=i, id=str(create.id))
@@ -99,7 +105,7 @@ def create_description():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_id)
         
-        for i in second:
+        for i in seconds:
             data = str(create.id)
             data = data.encode("utf-8")
             future = publisher.publish(topic_path, data, label=i, id=str(create.id))
@@ -171,8 +177,8 @@ def routesent1():
     from perciapp.blueprints.create.tasks import generate_sent1
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
-    label = message['attributes']['label']
-    generate_sent1(description_id,label)
+    labels = message['attributes']['labels']
+    generate_sent1(description_id,labels)
     res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
@@ -182,8 +188,8 @@ def routesent2():
     from perciapp.blueprints.create.tasks import generate_sent2
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
-    label = message['attributes']['label']
-    generate_sent2(description_id,label)
+    labels = message['attributes']['labels']
+    generate_sent2(description_id,labels)
     res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
@@ -193,8 +199,8 @@ def routesent3():
     from perciapp.blueprints.create.tasks import generate_sent3
     message = request.get_json()['message']
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
-    label = message['attributes']['label']
-    generate_sent3(description_id,label)
+    labels = message['attributes']['labels']
+    generate_sent3(description_id,labels)
     res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
     return ('', 204)
 
