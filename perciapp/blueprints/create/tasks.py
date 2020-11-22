@@ -181,7 +181,7 @@ def edit_sent1(id):
                         description.sent1_16, description.sent1_17, description.sent1_18,
                         description.sent1_19]
         print(description.title + ' edit_sent3:')
-        print('None number: ' descriptions.count(None))
+        print('None number: ' + descriptions.count(None))
         now = time.time()
         if now - start > 240:
             break
@@ -269,7 +269,7 @@ def edit_sent2(id):
                         description.sent2_16, description.sent2_17, description.sent2_18,
                         description.sent2_19]
         print(description.title + ' edit_sent2:')
-        print('None number: ' descriptions.count(None))
+        print('None number: ' + descriptions.count(None))
         now = time.time()
         if now - start > 240:
             break
@@ -352,7 +352,7 @@ def edit_sent3(id):
                         description.sent3_16, description.sent3_17, description.sent3_18,
                         description.sent3_19]
         print(description.title + ' edit_sent3:')
-        print('None number: ' descriptions.count(None))
+        print('None number: ' + descriptions.count(None))
         now = time.time()
         if now - start > 240:
             break
