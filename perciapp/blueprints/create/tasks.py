@@ -375,7 +375,7 @@ def edit_sent3(id):
                         description.sent3_16, description.sent3_17, description.sent3_18,
                         description.sent3_19]
         now = time.time()
-        print(description.title + ' edit_sent3:' + str(int(now-start))))
+        print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
 
     print(description.title + ' edit_sent3 starting now')
