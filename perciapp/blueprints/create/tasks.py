@@ -68,7 +68,7 @@ def generate_sent1(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
 
-    update = Create.query.get(id=description_id)
+    update = Create.query.filter_by(id=description_id)
     for key, value in sentences.iteritems():
         setattr(update, key, value)
 
@@ -118,7 +118,7 @@ def generate_sent2(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
 
-    update = Create.query.get(id=description_id)
+    update = Create.query.filter_by(id=description_id)
     for key, value in sentences.iteritems():
         setattr(update, key, value)
     
@@ -166,7 +166,7 @@ def generate_sent3(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
     
-    update = Create.query.get(id=description_id)
+    update = Create.query.filter_by(id=description_id)
     for key, value in sentences.iteritems():
         setattr(update, key, value)
     
@@ -210,6 +210,8 @@ def edit_sent1(id):
         print(description.title + ' edit_sent1:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
         now = time.time()
+        if now - start > 900:
+            break
 
     print(description.title + ' edit_sent1 starting now')
 
@@ -296,6 +298,8 @@ def edit_sent2(id):
         now = time.time()
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
+        if now - start > 900:
+            break
         
     
     print(description.title + ' edit_sent2 starting now')  
@@ -377,6 +381,8 @@ def edit_sent3(id):
         now = time.time()
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
+        if now - start > 900:
+            break
 
     print(description.title + ' edit_sent3 starting now')
 
