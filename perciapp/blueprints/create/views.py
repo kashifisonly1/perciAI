@@ -21,6 +21,8 @@ from lib.subcategories import Subcategories
 from google.cloud import pubsub_v1
 import base64
 import requests
+import os
+import signal
 
 create = Blueprint('create', __name__, template_folder='templates',
                    url_prefix='/create')
@@ -179,7 +181,8 @@ def routesent1():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     labels = message['attributes']['labels']
     generate_sent1(description_id,labels)
-    res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    os.kill(os.getpid(), signal.SIGTERM)
     return ('', 204)
 
 @create.route('/gensent2/', methods=['POST'])
@@ -190,7 +193,8 @@ def routesent2():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     labels = message['attributes']['labels']
     generate_sent2(description_id,labels)
-    res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    os.kill(os.getpid(), signal.SIGTERM)
     return ('', 204)
 
 @create.route('/gensent3/', methods=['POST'])
@@ -201,7 +205,8 @@ def routesent3():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     labels = message['attributes']['labels']
     generate_sent3(description_id,labels)
-    res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
+    os.kill(os.getpid(), signal.SIGTERM)
     return ('', 204)
 
 @create.route('/editsent1/', methods=['POST'])

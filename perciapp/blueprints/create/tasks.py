@@ -189,7 +189,7 @@ def edit_sent1(id):
                         description.sent1_19]
 
     while None in descriptions:
-        time.sleep(5)
+        time.sleep(10)
         description = Create.query.get(id)
         descriptions = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
@@ -198,15 +198,14 @@ def edit_sent1(id):
                         description.sent1_13, description.sent1_14, description.sent1_15,
                         description.sent1_16, description.sent1_17, description.sent1_18,
                         description.sent1_19]
-        print(description.title + ' edit_sent3:')
+        now = time.time()
+        print(description.title + ' edit_sent1:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
         now = time.time()
-        if now - start > 240:
-            break
 
-    print('edit_sent1 starting now')
+    print(description.title + ' edit_sent1 starting now')
 
-    print('sentences:')
+    print(description.title + ' sentences:')
     for sentence in descriptions:
         print(sentence)
     print()
@@ -220,7 +219,7 @@ def edit_sent1(id):
 
     scores = [score(i, tokenizer, model) for i in descriptions]
 
-    print('scores/descriptions after edit:')
+    print(description.title + ' scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
         print(int(scr), desc)
 
@@ -250,7 +249,7 @@ def edit_sent1(id):
     update = Create.query.filter_by(id=id).update({'sent1_winner': first_sent})
     db.session.commit()
     print()
-    print('edit_sent1 complete')
+    print(description.title + ' edit_sent1 complete')
     return id
 
 def edit_sent2(id):
@@ -277,7 +276,7 @@ def edit_sent2(id):
                         description.sent2_19]
 
     while None in descriptions:
-        time.sleep(5)
+        time.sleep(10)
         description = Create.query.get(id)
         descriptions = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
@@ -286,16 +285,14 @@ def edit_sent2(id):
                         description.sent2_13, description.sent2_14, description.sent2_15,
                         description.sent2_16, description.sent2_17, description.sent2_18,
                         description.sent2_19]
-        print(description.title + ' edit_sent2:')
-        print('None number: ' + str(descriptions.count(None)))
         now = time.time()
-        if now - start > 240:
-            break
-
+        print(description.title + ' edit_sent2:' + str(int(now-start)))
+        print('None number: ' + str(descriptions.count(None)))
+        
     
-    print('edit_sent2 starting now')  
+    print(description.title + ' edit_sent2 starting now')  
 
-    print('sentences:')
+    print(description.title + ' sentences:')
     for sentence in descriptions:
         print(sentence)
     print()
@@ -331,7 +328,7 @@ def edit_sent2(id):
     update = Create.query.filter_by(id=id).update({'sent2_winner': sent})
     db.session.commit()
     print()
-    print('edit_sent2 complete')
+    print(description.title + ' edit_sent2 complete')
     print()
     return id
 
@@ -369,17 +366,13 @@ def edit_sent3(id):
                         description.sent3_13, description.sent3_14, description.sent3_15,
                         description.sent3_16, description.sent3_17, description.sent3_18,
                         description.sent3_19]
-        print(description.title + ' edit_sent3:')
-        print('None number: ' + str(descriptions.count(None)))
         now = time.time()
-        if now - start > 240:
-            break
+        print(description.title + ' edit_sent3:' + str(int(now-start))))
+        print('None number: ' + str(descriptions.count(None)))
 
+    print(description.title + ' edit_sent3 starting now')
 
-
-    print('edit_sent3 starting now')
-
-    print('sentences:')
+    print(description.title + ' sentences:')
     for sentence in descriptions:
         print(sentence)
     print()
@@ -420,7 +413,7 @@ def edit_sent3(id):
     winners = [description.sent1_winner, description.sent2_winner]
 
     while None in winners:
-        time.sleep(3)
+        time.sleep(5)
         description = Create.query.get(id)
         winners = [description.sent1_winner, description.sent2_winner]
 
@@ -428,7 +421,7 @@ def edit_sent3(id):
     update = Create.query.filter_by(id=id).update({'description':final_output})
     db.session.commit()
     print()
-    print('edit_sent3 complete')
+    print(description.title + ' edit_sent3 complete')
     return id
 
 def period_check(description):
