@@ -68,8 +68,12 @@ def generate_sent1(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
 
-    update = Create.query.filter_by(id=description_id).update(sentences)
-    db.session.commit()
+    update = Create.query.get(id=description_id)
+    for key, value in sentences.iteritems():
+        setattr(update, key, value)
+
+    # update = Create.query.filter_by(id=description_id).update(sentences)
+    # db.session.commit()
     return description_id
 
 def generate_sent2(description_id, labels):
@@ -114,8 +118,10 @@ def generate_sent2(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
 
-    update = Create.query.filter_by(id=description_id).update(sentences)
-    db.session.commit()
+    update = Create.query.get(id=description_id)
+    for key, value in sentences.iteritems():
+        setattr(update, key, value)
+    
     return description_id
 
 def generate_sent3(description_id, labels):
@@ -160,8 +166,10 @@ def generate_sent3(description_id, labels):
     print(title + ' sentences:')
     print(sentences)
     
-    update = Create.query.filter_by(id=description_id).update(sentences)
-    db.session.commit()
+    update = Create.query.get(id=description_id)
+    for key, value in sentences.iteritems():
+        setattr(update, key, value)
+    
     return description_id
 
 
@@ -325,7 +333,7 @@ def edit_sent2(id):
     print('winner:')
     print(sent)
 
-    update = Create.query.filter_by(id=id).update({'sent2_winner': sent})
+    update = Create.query.get(id=id).update({'sent2_winner': sent})
     db.session.commit()
     print()
     print(description.title + ' edit_sent2 complete')
