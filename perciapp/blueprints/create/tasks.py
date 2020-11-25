@@ -69,7 +69,7 @@ def generate_sent1(description_id, labels):
     print(sentences)
 
     update = Create.query.filter_by(id=description_id)
-    for key, value in sentences.iteritems():
+    for key, value in sentences.items():
         setattr(update, key, value)
 
     # update = Create.query.filter_by(id=description_id).update(sentences)
@@ -119,7 +119,7 @@ def generate_sent2(description_id, labels):
     print(sentences)
 
     update = Create.query.filter_by(id=description_id)
-    for key, value in sentences.iteritems():
+    for key, value in sentences.items():
         setattr(update, key, value)
     
     return description_id
@@ -167,7 +167,7 @@ def generate_sent3(description_id, labels):
     print(sentences)
     
     update = Create.query.filter_by(id=description_id)
-    for key, value in sentences.iteritems():
+    for key, value in sentences.items():
         setattr(update, key, value)
     
     return description_id
