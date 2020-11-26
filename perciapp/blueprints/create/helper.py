@@ -233,4 +233,5 @@ def generate(args):
             text_candidates.append(text)
         if args['prompt']:
             break
+    del model
     return text_candidates
