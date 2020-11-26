@@ -29,7 +29,7 @@ def remove_bad_sentences(descriptions):
     return descriptions
 
 
-def generate_sent1(description_id, labels):
+def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -54,25 +54,17 @@ def generate_sent1(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<desc1> '
 
-    sentences = dict()
+    args['seed'] = random.randint(1, 100001)
+    sent = brand_remove(generate(args)[0], title)
 
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = brand_remove(generate(args)[0], title)
+    if len(sent) > 199:
+        sent = sent[:195]
 
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
-    
-    print(title + ' sentences:')
-    print(sentences)
-
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     return description_id
 
-def generate_sent2(description_id, labels):
+def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -98,28 +90,20 @@ def generate_sent2(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<middle> '
 
-    sentences = dict()
+    args['seed'] = random.randint(1, 100001)
+    sent = brand_remove(generate(args)[0], title)
+    # If model has started in <features> again, cut out extra input
+    if '<middle>' in sent:
+        sent = sent.split('<middle>')[1]
+    if len(sent) > 199:
+        sent = sent[:195]
 
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = brand_remove(generate(args)[0], title)
-        # If model has started in <features> again, cut out extra input
-        if '<middle>' in sent:
-            sent = sent.split('<middle>')[1]
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
-
-    print(title + ' sentences:')
-    print(sentences)
-
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     
     return description_id
 
-def generate_sent3(description_id, labels):
+def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -145,23 +129,16 @@ def generate_sent3(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<end> '
 
-    sentences = dict()
 
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = brand_remove(generate(args)[0], title)
-        # If model has started in <features> again, cut out extra input
-        if '<end>' in sent:
-            sent = sent.split('<end>')[1]
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
-
-    print(title + ' sentences:')
-    print(sentences)
+    args['seed'] = random.randint(1, 100001)
+    sent = brand_remove(generate(args)[0], title)
+    # If model has started in <features> again, cut out extra input
+    if '<end>' in sent:
+        sent = sent.split('<end>')[1]
+    if len(sent) > 199:
+        sent = sent[:195]
     
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     return description_id
 
@@ -202,6 +179,7 @@ def edit_sent1(id):
         now = time.time()
         print(description.title + ' edit_sent1:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
+        print(descriptions)
         now = time.time()
         if now - start > 900:
             break
@@ -291,6 +269,7 @@ def edit_sent2(id):
         now = time.time()
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
+        print(descriptions)
         if now - start > 900:
             break
         
@@ -374,6 +353,7 @@ def edit_sent3(id):
         now = time.time()
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
+        print(descriptions)
         if now - start > 900:
             break
 
