@@ -24,7 +24,7 @@ db = "postgres://{0}:{1}@/{2}?host={3}/{4}".format(
          db_user,db_pass,db_name,db_socket_dir,cloud_sql_connection_name)
 SQLALCHEMY_DATABASE_URI= db
 SQLALCHEMY_POOL_SIZE = 20
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Flask-Mail.
 MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
