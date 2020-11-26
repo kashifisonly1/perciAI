@@ -182,7 +182,7 @@ def routesent1():
     label = message['attributes']['label']
     generate_sent1(description_id,label)
     # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
-    os.kill(os.getppid() , signal.TERM)
+    os.kill(os.getppid() , signal.SIGTERM)
     return ('', 204)
 
 @create.route('/gensent2/', methods=['POST'])
@@ -194,7 +194,7 @@ def routesent2():
     label = message['attributes']['label']
     generate_sent2(description_id,label)
     # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
-    os.kill(os.getppid() , signal.TERM)
+    os.kill(os.getppid() , signal.SIGTERM)
     return ('', 204)
 
 @create.route('/gensent3/', methods=['POST'])
@@ -206,7 +206,7 @@ def routesent3():
     label = message['attributes']['label']
     generate_sent3(description_id,label)
     # res = requests.get('https://perciappprocessor-4v6rgmnwrq-uc.a.run.app/create/shutdown')
-    os.kill(os.getppid() , signal.TERM)
+    os.kill(os.getppid() , signal.SIGTERM)
     return ('', 204)
 
 @create.route('/editsent1/', methods=['POST'])
