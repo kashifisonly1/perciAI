@@ -168,6 +168,7 @@ def edit_sent1(id):
 
     while None in descriptions:
         time.sleep(10)
+        db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
@@ -181,7 +182,7 @@ def edit_sent1(id):
         print('None number: ' + str(descriptions.count(None)))
         print(descriptions)
         now = time.time()
-        if now - start > 900:
+        if now - start > 300:
             break
 
     print(description.title + ' edit_sent1 starting now')
@@ -258,6 +259,7 @@ def edit_sent2(id):
 
     while None in descriptions:
         time.sleep(10)
+        db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
@@ -270,7 +272,7 @@ def edit_sent2(id):
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
         print(descriptions)
-        if now - start > 900:
+        if now - start > 300:
             break
         
     
@@ -341,7 +343,8 @@ def edit_sent3(id):
                         description.sent3_19]
 
     while None in descriptions:
-        time.sleep(5)
+        time.sleep(10)
+        db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent3, description.sent3_2, description.sent3_3,
                         description.sent3_4, description.sent3_5, description.sent3_6,
@@ -354,7 +357,7 @@ def edit_sent3(id):
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(descriptions.count(None)))
         print(descriptions)
-        if now - start > 900:
+        if now - start > 300:
             break
 
     print(description.title + ' edit_sent3 starting now')
