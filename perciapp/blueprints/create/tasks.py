@@ -167,7 +167,7 @@ def edit_sent1(id):
                         description.sent1_19]
 
     while None in descriptions:
-        time.sleep(10)
+        time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent1, description.sent1_2, description.sent1_3,
@@ -258,7 +258,7 @@ def edit_sent2(id):
                         description.sent2_19]
 
     while None in descriptions:
-        time.sleep(10)
+        time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent2, description.sent2_2, description.sent2_3,
@@ -311,7 +311,7 @@ def edit_sent2(id):
     print('winner:')
     print(sent)
 
-    update = Create.query.get(id=id).update({'sent2_winner': sent})
+    update = Create.query.filter_by(id=id).update({'sent2_winner': sent})
     db.session.commit()
     print()
     print(description.title + ' edit_sent2 complete')
@@ -343,7 +343,7 @@ def edit_sent3(id):
                         description.sent3_19]
 
     while None in descriptions:
-        time.sleep(10)
+        time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
         descriptions = [description.sent3, description.sent3_2, description.sent3_3,
@@ -404,6 +404,7 @@ def edit_sent3(id):
 
     while None in winners:
         time.sleep(5)
+        db.session.commit()
         description = Create.query.get(id)
         winners = [description.sent1_winner, description.sent2_winner]
 
