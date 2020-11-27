@@ -20,12 +20,6 @@ args['no_cuda'] = True
 args['padding_text'] = ''
 
 
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
 def return_most_similar(first, secondlist):
     '''
     returns ordered list of secondlist, with most similar
