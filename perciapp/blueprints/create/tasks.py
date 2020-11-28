@@ -140,16 +140,16 @@ def generate_sent3(description_id, labels):
 
     sentences = dict()
 
-        for label in labels.split('/'):
-            print(title + ' ' + label + 'generating now')
-            args['seed'] = random.randint(1, 100001)
-            sent = brand_remove(generate(args)[0], title)
-            # If model has started in <features> again, cut out extra input
-            if '<end>' in sent:
-                sent = sent.split('<end>')[1]
-            if len(sent) > 199:
-                sent = sent[:195]
-            sentences[label] = sent
+    for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
+        args['seed'] = random.randint(1, 100001)
+        sent = brand_remove(generate(args)[0], title)
+        # If model has started in <features> again, cut out extra input
+        if '<end>' in sent:
+            sent = sent.split('<end>')[1]
+        if len(sent) > 199:
+            sent = sent[:195]
+        sentences[label] = sent
     
     update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
