@@ -29,11 +29,10 @@ def remove_bad_sentences(descriptions):
     return descriptions
 
 
-def generate_sent1(description_id, label):
+def generate_sent1(description_id, labels):
     """
     Create description from text inputs and save description into database.
     """
-    print('generate_sent_1 starting now')
 
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
@@ -54,21 +53,27 @@ def generate_sent1(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<desc1> '
 
-    args['seed'] = random.randint(1, 100001)
-    sent = brand_remove(generate(args)[0], title)
+    sentences = dict()
+
+    for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
+        args['seed'] = random.randint(1, 100001)
+        sent = brand_remove(generate(args)[0], title
+        if len(sent) > 199:
+            sent = sent[:195]
+        sentences[label] = sent
 
     if len(sent) > 199:
         sent = sent[:195]
 
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
     return description_id
 
-def generate_sent2(description_id, label):
+def generate_sent2(description_id, labels):
     """
     Create description from text inputs and save description into database.
     """
-    print('generate_sent_2 starting now')
 
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
@@ -90,24 +95,28 @@ def generate_sent2(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<middle> '
 
-    args['seed'] = random.randint(1, 100001)
-    sent = brand_remove(generate(args)[0], title)
-    # If model has started in <features> again, cut out extra input
-    if '<middle>' in sent:
-        sent = sent.split('<middle>')[1]
-    if len(sent) > 199:
-        sent = sent[:195]
+    sentences = dict()
 
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    for label in labels.split('/'):
+        print(title + ' ' + label + 'generating now')
+        args['seed'] = random.randint(1, 100001)
+        sent = generate(args)[0]
+        # If model has started in <features> again, cut out extra input
+        if '<middle>' in sent:
+            sent = sent.split('<middle>')[1]
+        if len(sent) > 199:
+            sent = sent[:195]
+        sentences[label] = sent
+
+    update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
     
     return description_id
 
-def generate_sent3(description_id, label):
+def generate_sent3(description_id, labels):
     """
     Create description from text inputs and save description into database.
     """
-    print('generate_sent_3 starting now')
 
     # getting the description inputs
     title, cat, features = format_inputs(Create.query.get(description_id))
@@ -129,16 +138,20 @@ def generate_sent3(description_id, label):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<end> '
 
+    sentences = dict()
 
-    args['seed'] = random.randint(1, 100001)
-    sent = brand_remove(generate(args)[0], title)
-    # If model has started in <features> again, cut out extra input
-    if '<end>' in sent:
-        sent = sent.split('<end>')[1]
-    if len(sent) > 199:
-        sent = sent[:195]
+        for label in labels.split('/'):
+            print(title + ' ' + label + 'generating now')
+            args['seed'] = random.randint(1, 100001)
+            sent = generate(args)[0]
+            # If model has started in <features> again, cut out extra input
+            if '<end>' in sent:
+                sent = sent.split('<end>')[1]
+            if len(sent) > 199:
+                sent = sent[:195]
+            sentences[label] = sent
     
-    update = Create.query.filter_by(id=description_id).update({label:sent})
+    update = Create.query.filter_by(id=description_id).update(sentences)
     db.session.commit()
     return description_id
 
@@ -158,7 +171,7 @@ def edit_sent1(id):
 
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    descriptions = [description.sent1, description.sent1_2, description.sent1_3,
+    candidates = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
@@ -166,11 +179,11 @@ def edit_sent1(id):
                         description.sent1_16, description.sent1_17, description.sent1_18,
                         description.sent1_19]
 
-    while None in descriptions:
+    while None in candidates:
         time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
-        descriptions = [description.sent1, description.sent1_2, description.sent1_3,
+        candidates = [description.sent1, description.sent1_2, description.sent1_3,
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
@@ -179,11 +192,14 @@ def edit_sent1(id):
                         description.sent1_19]
         now = time.time()
         print(description.title + ' edit_sent1:' + str(int(now-start)))
-        print('None number: ' + str(descriptions.count(None)))
-        print(descriptions)
+        print('None number: ' + str(candidates.count(None)))
+        print(candidates)
         now = time.time()
-        if now - start > 300:
+        if now - start > 120:
             break
+
+    #remove Nones from candidate list
+    descriptions = list(filter(None, candidates))
 
     print(description.title + ' edit_sent1 starting now')
 
@@ -249,7 +265,7 @@ def edit_sent2(id):
 
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    descriptions = [description.sent2, description.sent2_2, description.sent2_3,
+    candidates = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
@@ -257,11 +273,11 @@ def edit_sent2(id):
                         description.sent2_16, description.sent2_17, description.sent2_18,
                         description.sent2_19]
 
-    while None in descriptions:
+    while None in candidates:
         time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
-        descriptions = [description.sent2, description.sent2_2, description.sent2_3,
+        candidates = [description.sent2, description.sent2_2, description.sent2_3,
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
@@ -270,12 +286,14 @@ def edit_sent2(id):
                         description.sent2_19]
         now = time.time()
         print(description.title + ' edit_sent2:' + str(int(now-start)))
-        print('None number: ' + str(descriptions.count(None)))
-        print(descriptions)
-        if now - start > 300:
+        print('None number: ' + str(candidates.count(None)))
+        print(candidates)
+        if now - start > 120:
             break
-        
-    
+
+    #remove Nones from candidate list
+    descriptions = list(filter(None, candidates))
+
     print(description.title + ' edit_sent2 starting now')  
 
     print(description.title + ' sentences:')
@@ -334,7 +352,7 @@ def edit_sent3(id):
 
     # repeatedly pull candidates until all have been generated
     description = Create.query.get(id)
-    descriptions = [description.sent3, description.sent3_2, description.sent3_3,
+    candidates = [description.sent3, description.sent3_2, description.sent3_3,
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
@@ -342,11 +360,11 @@ def edit_sent3(id):
                         description.sent3_16, description.sent3_17, description.sent3_18,
                         description.sent3_19]
 
-    while None in descriptions:
+    while None in candidates:
         time.sleep(5)
         db.session.commit()
         description = Create.query.get(id)
-        descriptions = [description.sent3, description.sent3_2, description.sent3_3,
+        candidates = [description.sent3, description.sent3_2, description.sent3_3,
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
@@ -355,10 +373,13 @@ def edit_sent3(id):
                         description.sent3_19]
         now = time.time()
         print(description.title + ' edit_sent3:' + str(int(now-start)))
-        print('None number: ' + str(descriptions.count(None)))
-        print(descriptions)
-        if now - start > 300:
+        print('None number: ' + str(candidates.count(None)))
+        print(candidates)
+        if now - start > 120:
             break
+
+    #remove Nones from candidate list
+    descriptions = list(filter(None, candidates)) 
 
     print(description.title + ' edit_sent3 starting now')
 
