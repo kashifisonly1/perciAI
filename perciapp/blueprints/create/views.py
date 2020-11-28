@@ -71,7 +71,7 @@ def create_description():
         create = Create(**params)
         create.save_and_update_user(current_user)
 
-first1 = 'sent1/sent1_2/sent1_3'
+        first1 = 'sent1/sent1_2/sent1_3'
         first2 = 'sent1_4/sent1_5/sent1_6'
         first3 = 'sent1_7/sent1_8/sent1_9'
         first4 = 'sent1_16/sent1_17/sent1_18'
@@ -88,7 +88,6 @@ first1 = 'sent1/sent1_2/sent1_3'
         second6 = 'sent2_13/sent2_14'
         second7 = 'sent2_15/sent2_19'
         seconds = [second1, second2, second3, second4, second5, second6, second7]
-
 
         third1 = 'sent3/sent3_2/sent3_3'
         third2 = 'sent3_4/sent3_5/sent3_6'
