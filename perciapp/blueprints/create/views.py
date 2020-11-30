@@ -147,7 +147,7 @@ def create_description():
         print(f"Published edit_sent message to {topic_path}.")
         print()
 
-        flash('Success! Your description will appear in about five minutes when you refresh the page. You can request many descriptions at the same time, so submit more items in the meantime.',
+        flash('Huzzah! Your description will appear in about a minute when you refresh the page. Perci can do lots at once, so submit a few more items in the meantime.',
               'success')
 
         return redirect(url_for('create.create_description'))
