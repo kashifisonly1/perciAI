@@ -20,9 +20,9 @@ def remove_bad_sentences(descriptions):
             descriptions.remove(item)
         # remove shitty generations that are
         # feature inputs instead of sentences - possible bug causing it
-        elif item.strip.lower().startswith('length'):
+        elif item.strip().lower().startswith('length'):
             descriptions.remove(item)
-        elif item.strip.lower().startswith('our model'):
+        elif item.strip().lower().startswith('our model'):
             descriptions.remove(item)
         elif len(item) < 15:
             descriptions.remove(item)
