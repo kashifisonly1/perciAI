@@ -29,7 +29,7 @@ def remove_bad_sentences(descriptions):
     return descriptions
 
 
-def generate_sent1(description_id, labels):
+def generate_sent1(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -53,24 +53,16 @@ def generate_sent1(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<desc1> '
 
-    sentences = dict()
-
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = brand_remove(generate(args)[0], title)
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
-
+    print(title + ' ' + label + 'generating now')
+    sent = brand_remove(generate(args)[0], title)
     if len(sent) > 199:
         sent = sent[:195]
 
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     return description_id
 
-def generate_sent2(description_id, labels):
+def generate_sent2(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -95,25 +87,21 @@ def generate_sent2(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<middle> '
 
-    sentences = dict()
+    
+    print(title + ' ' + label + 'generating now')
+    sent = generate(args)[0]
+    # If model has started in <features> again, cut out extra input
+    if '<middle>' in sent:
+        sent = sent.split('<middle>')[1]
+    if len(sent) > 199:
+        sent = sent[:195]
 
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = generate(args)[0]
-        # If model has started in <features> again, cut out extra input
-        if '<middle>' in sent:
-            sent = sent.split('<middle>')[1]
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
-
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     
     return description_id
 
-def generate_sent3(description_id, labels):
+def generate_sent3(description_id, label):
     """
     Create description from text inputs and save description into database.
     """
@@ -138,20 +126,16 @@ def generate_sent3(description_id, labels):
     args['prompt'] = f'<bos> <category> {cat} <features> \
                         {features} <brand> <model> {title} \t<end> '
 
-    sentences = dict()
-
-    for label in labels.split('/'):
-        print(title + ' ' + label + 'generating now')
-        args['seed'] = random.randint(1, 100001)
-        sent = brand_remove(generate(args)[0], title)
-        # If model has started in <features> again, cut out extra input
-        if '<end>' in sent:
-            sent = sent.split('<end>')[1]
-        if len(sent) > 199:
-            sent = sent[:195]
-        sentences[label] = sent
     
-    update = Create.query.filter_by(id=description_id).update(sentences)
+    print(title + ' ' + label + 'generating now')
+    sent = brand_remove(generate(args)[0], title)
+    # If model has started in <features> again, cut out extra input
+    if '<end>' in sent:
+        sent = sent.split('<end>')[1]
+    if len(sent) > 199:
+        sent = sent[:195]
+    
+    update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
     return description_id
 
