@@ -71,7 +71,7 @@ class Create(ResourceMixin, db.Model):
     user = db.relationship('User')
 
     # Create details
-    title = db.Column(db.String(50))
+    title = db.Column(db.String(100))
     gender = db.Column(db.Enum(*GENDER, name='gender', native_enum=False),
                        index=True, nullable=False)
     category = db.Column(db.Enum(*CATEGORY, name='category',

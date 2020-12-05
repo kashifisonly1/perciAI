@@ -118,7 +118,7 @@ def users_bulk_delete():
         # Prevent circular imports.
         from perciapp.blueprints.billing.tasks import delete_users
 
-        delete_users.delay(ids)
+        delete_users(ids)
 
         flash('{0} user(s) were scheduled to be deleted.'.format(len(ids)),
               'success')
@@ -207,7 +207,7 @@ def coupons_bulk_delete():
         # Prevent circular imports.
         from perciapp.blueprints.billing.tasks import delete_coupons
 
-        delete_coupons.delay(ids)
+        delete_coupons(ids)
 
         flash('{0} coupons(s) were scheduled to be deleted.'.format(len(ids)),
               'success')

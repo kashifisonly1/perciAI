@@ -77,7 +77,7 @@ class TestCoupon(object):
         """ Random coupon code is created. """
         from perciapp.blueprints.billing.tasks import expire_old_coupons
 
-        expire_old_coupons.delay()
+        expire_old_coupons()
 
         random_coupon = Coupon.random_coupon_code()
         assert len(random_coupon) == 14

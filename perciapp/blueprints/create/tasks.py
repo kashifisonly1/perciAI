@@ -20,9 +20,9 @@ def remove_bad_sentences(descriptions):
             descriptions.remove(item)
         # remove shitty generations that are
         # feature inputs instead of sentences - possible bug causing it
-        elif item.startswith('Length'):
+        elif item.strip.lower().startswith('length'):
             descriptions.remove(item)
-        elif item.lower().startswith('our model'):
+        elif item.strip.lower().startswith('our model'):
             descriptions.remove(item)
         elif len(item) < 15:
             descriptions.remove(item)
@@ -195,7 +195,7 @@ def edit_sent1(id):
         print('None number: ' + str(candidates.count(None)))
         print(candidates)
         now = time.time()
-        if now - start > 120:
+        if now - start > 240:
             break
 
     #remove Nones from candidate list
@@ -219,7 +219,12 @@ def edit_sent1(id):
 
     print(description.title + ' scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(int(scr), desc)
+        try:
+            print(int(scr), desc)
+        except ValueError:
+            print('ValueError!')
+            print(scr)
+            print(desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -288,7 +293,7 @@ def edit_sent2(id):
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
         print(candidates)
-        if now - start > 120:
+        if now - start > 240:
             break
 
     #remove Nones from candidate list
@@ -306,7 +311,12 @@ def edit_sent2(id):
 
     print('scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(int(scr), desc)
+        try:
+            print(int(scr), desc)
+        except ValueError:
+            print('ValueError!')
+            print(scr)
+            print(desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)
@@ -375,7 +385,7 @@ def edit_sent3(id):
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
         print(candidates)
-        if now - start > 120:
+        if now - start > 240:
             break
 
     #remove Nones from candidate list
@@ -393,7 +403,12 @@ def edit_sent3(id):
 
     print('scores/descriptions after edit:')
     for i, (desc, scr) in enumerate(zip(descriptions, scores)):
-        print(int(scr), desc)
+        try:
+            print(int(scr), desc)
+        except ValueError:
+            print('ValueError!')
+            print(scr)
+            print(desc)
 
     # getting the description inputs
     title, cat, features = format_inputs(description)

@@ -141,7 +141,7 @@ class User(UserMixin, ResourceMixin, db.Model):
         # This prevents circular imports.
         from perciapp.blueprints.user.tasks import (
             deliver_password_reset_email)
-        deliver_password_reset_email.delay(u.id, reset_token)
+        deliver_password_reset_email(u.id, reset_token)
 
         return u
 
