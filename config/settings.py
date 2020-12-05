@@ -103,6 +103,3 @@ CREDIT_BUNDLES = [
 # Rate limiting.
 RATELIMIT_STRATEGY = 'fixed-window-elastic-expiry'
 RATELIMIT_HEADERS_ENABLED = True
-
-# Google Analytics.
-ANALYTICS_GOOGLE_UA = os.getenv('ANALYTICS_GOOGLE_UA', None)

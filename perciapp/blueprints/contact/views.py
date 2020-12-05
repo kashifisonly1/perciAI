@@ -21,7 +21,7 @@ def index():
         # This prevents circular imports.
         from perciapp.blueprints.contact.tasks import deliver_contact_email
 
-        deliver_contact_email.delay(request.form.get('email'),
+        deliver_contact_email(request.form.get('email'),
                                     request.form.get('message'))
 
         flash('Thanks, you will hear back shortly.', 'success')
