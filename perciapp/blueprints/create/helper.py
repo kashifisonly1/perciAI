@@ -65,7 +65,7 @@ def brand_remove(description, model):
     Removes the brand from a model-generated sentence.
     '''
     try:
-        first, second = re.split(model, description)
+        first, second = re.split('(?i)' + model, description)
     except:
         print('split error:')
         print(str(len(re.split(model, description))))
