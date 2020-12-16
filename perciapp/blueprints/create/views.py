@@ -48,8 +48,8 @@ def create_description():
         detail5 = request.form.get('detail5')
 
         if current_user.credits < 1:
-            error = 'You need more credits.'
-            return render_json(400, {'error': error})
+            flash('You need more credits.','error')
+            return redirect(url_for('create.create_description'))
 
         params = {
           'user_id': current_user.id,
@@ -73,22 +73,19 @@ def create_description():
 
         firsts = ['sent1','sent1_2', 'sent1_3', 'sent1_4',
                   'sent1_5', 'sent1_6', 'sent1_7', 'sent1_8',
-                  'sent1_9','sent1_16', 'sent1_17', 'sent1_18',
-                  'sent1_10', 'sent1_11', 'sent1_12','sent1_13', 'sent1_14',
-                  'sent1_15', 'sent1_19']
+                  'sent1_9','sent1_10', 'sent1_11', 'sent1_12',
+                  'sent1_13']
 
         seconds = ['sent2','sent2_2', 'sent2_3', 'sent2_4',
                   'sent2_5', 'sent2_6', 'sent2_7', 'sent2_8',
-                  'sent2_9','sent2_16', 'sent2_17', 'sent2_18',
-                  'sent2_10', 'sent2_11', 'sent2_12','sent2_13', 'sent2_14',
-                  'sent2_15', 'sent2_19']
+                  'sent2_9','sent2_10', 'sent2_11', 'sent2_12',
+                  'sent2_13']
 
 
         thirds = ['sent3','sent3_2', 'sent3_3', 'sent3_4',
                   'sent3_5', 'sent3_6', 'sent3_7', 'sent3_8',
-                  'sent3_9','sent3_16', 'sent3_17', 'sent3_18',
-                  'sent3_10', 'sent3_11', 'sent3_12','sent3_13', 'sent3_14',
-                  'sent3_15', 'sent3_19']
+                  'sent3_9', 'sent3_10', 'sent3_11', 'sent3_12',
+                  'sent3_13']
 
         project_id = "perciapp"
         topic_id = "description-order"
@@ -139,7 +136,7 @@ def create_description():
         print(f"Published edit_sent message to {topic_path}.")
         print()
 
-        flash('Huzzah! Your description will appear in about a minute when you refresh the page. Perci can do lots at once, so submit a few more items in the meantime.',
+        flash('Huzzah! Your description will appear in about a minute when you refresh the page. Submit more items in the meantime.',
               'success')
 
         return redirect(url_for('create.create_description'))
