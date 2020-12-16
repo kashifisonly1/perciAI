@@ -1,4 +1,5 @@
 import random as random
+import language_tool_python
 import time
 from sets import Set
 from perciapp.extensions import db
@@ -9,7 +10,8 @@ from perciapp.blueprints.create.helper import (
     brand_remove,
     score,
     pop_best_sentence,
-    return_most_similar)
+    return_most_similar,
+    clean_up_sent)
 
 from perciapp.blueprints.create.models.create import Create
 
@@ -58,8 +60,8 @@ def generate_sent1(description_id, label):
 
     print(title + ' ' + label + 'generating now')
     sent = brand_remove(generate(args)[0], title)
-    if len(sent) > 199:
-        sent = sent[:195]
+    
+    sent = clean_up_sent(sent)
 
     update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
@@ -96,8 +98,8 @@ def generate_sent2(description_id, label):
     # If model has started in <features> again, cut out extra input
     if '<middle>' in sent:
         sent = sent.split('<middle>')[1]
-    if len(sent) > 199:
-        sent = sent[:195]
+    
+    sent = clean_up_sent(sent)
 
     update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
@@ -135,8 +137,8 @@ def generate_sent3(description_id, label):
     # If model has started in <features> again, cut out extra input
     if '<end>' in sent:
         sent = sent.split('<end>')[1]
-    if len(sent) > 199:
-        sent = sent[:195]
+    
+    sent = clean_up_sent(sent)
     
     update = Create.query.filter_by(id=description_id).update({label:sent})
     db.session.commit()
