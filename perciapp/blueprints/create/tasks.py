@@ -1,7 +1,6 @@
 import random as random
 import language_tool_python
 import time
-from sets import Set
 from perciapp.extensions import db
 from perciapp.blueprints.create.helper import (
     generate,
@@ -22,7 +21,7 @@ def remove_bad_sentences(descriptions):
         if type(item) != str:
             descriptions.remove(item)
         # remove shitty generations that are just a period
-        elif Set(item).issubset(Set(' .')):
+        elif set(item).issubset(set(' .')):
             descriptions.remove(item)
         # remove shitty generations that are feature inputs instead of sentences
         elif item.strip().lower().startswith('length'):

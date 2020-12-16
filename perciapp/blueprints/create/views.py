@@ -28,7 +28,6 @@ create = Blueprint('create', __name__, template_folder='templates',
 
 
 @create.route('/', methods=['GET', 'POST'])
-@credits_required
 @login_required
 @limiter.limit('3/second')
 def create_description():
@@ -167,7 +166,7 @@ def history(page):
         .paginate(page, 50, True)
 
     return render_template('create/history.html',
-                           descriptions=paginated_descriptions)
+                           recent_descriptions=paginated_descriptions)
 
 @create.route('/gensent1/', methods=['POST'])
 @csrf.exempt
