@@ -19,6 +19,17 @@ args['length'] = 45
 args['no_cuda'] = True
 args['padding_text'] = ''
 
+def clean_up_sent(sent):
+    '''
+    returns a spell-checked, grammar-checked, length-checked and otherwise polished sentence
+    '''
+    if sent.endswith(("<eos>", "<eos", "<eo", "<e", "<")):
+        sent = sent[:sent.rfind('<')]
+    tool = language_tool_python.LanguageTool('en-US')
+    sent = tool.correct(sent)
+    if len(sent) > 199:
+        sent = sent[:198]
+    return sent
 
 def return_most_similar(first, secondlist):
     '''
