@@ -57,6 +57,16 @@ COPY --from=webpack /app/public /public
 
 COPY . .
 
+#Install java.
+RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
+
+RUN apt-get update && \
+apt-get install -y --no-install-recommends \
+        openjdk-11-jre
+
+# Prints installed java version, just for checking
+RUN java --version
+
 RUN if [ "${FLASK_ENV}" != "development" ]; then \
   ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi
 
