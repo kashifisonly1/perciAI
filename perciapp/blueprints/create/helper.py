@@ -7,7 +7,6 @@ import numpy as np
 import math
 import re
 import language_tool_python
-import LanguageTool
 import pandas as pd
 
 MAX_LENGTH = int(10000)  # Hardcoded max length to avoid infinite loop
