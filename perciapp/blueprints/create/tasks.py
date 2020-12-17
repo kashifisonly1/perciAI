@@ -162,9 +162,7 @@ def edit_sent1(id):
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
-                        description.sent1_13, description.sent1_14, description.sent1_15,
-                        description.sent1_16, description.sent1_17, description.sent1_18,
-                        description.sent1_19]
+                        description.sent1_13]
 
     while None in candidates:
         time.sleep(5)
@@ -174,9 +172,7 @@ def edit_sent1(id):
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
-                        description.sent1_13, description.sent1_14, description.sent1_15,
-                        description.sent1_16, description.sent1_17, description.sent1_18,
-                        description.sent1_19]
+                        description.sent1_13]
         now = time.time()
         print(description.title + ' edit_sent1:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
@@ -261,9 +257,7 @@ def edit_sent2(id):
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
-                        description.sent2_13, description.sent2_14, description.sent2_15,
-                        description.sent2_16, description.sent2_17, description.sent2_18,
-                        description.sent2_19]
+                        description.sent2_13]
 
     while None in candidates:
         time.sleep(5)
@@ -273,9 +267,7 @@ def edit_sent2(id):
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
-                        description.sent2_13, description.sent2_14, description.sent2_15,
-                        description.sent2_16, description.sent2_17, description.sent2_18,
-                        description.sent2_19]
+                        description.sent2_13]
         now = time.time()
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
@@ -353,9 +345,7 @@ def edit_sent3(id):
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
-                        description.sent3_13, description.sent3_14, description.sent3_15,
-                        description.sent3_16, description.sent3_17, description.sent3_18,
-                        description.sent3_19]
+                        description.sent3_13]
 
     while None in candidates:
         time.sleep(5)
@@ -365,9 +355,7 @@ def edit_sent3(id):
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
-                        description.sent3_13, description.sent3_14, description.sent3_15,
-                        description.sent3_16, description.sent3_17, description.sent3_18,
-                        description.sent3_19]
+                        description.sent3_13]
         now = time.time()
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
