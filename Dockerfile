@@ -70,6 +70,7 @@ RUN java --version
 #Install
 ENV VERSION 5.0
 RUN apt-get install -y wget && \
+  apt-get update && apt-get install -y unzip && \
   wget https://www.languagetool.org/download/LanguageTool-$VERSION.zip && \
   unzip LanguageTool-$VERSION.zip && \
   rm LanguageTool-$VERSION.zip
