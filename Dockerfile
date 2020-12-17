@@ -67,11 +67,6 @@ apt-get install -y --no-install-recommends \
 # Prints installed java version, just for checking
 RUN java --version
 
-# Download language_tool_python
-RUN curl https://www.languagetool.org/download/LanguageTool-stable.zip -O /home/.cache/language_tool_python \
-    && unzip /home/.cache/language_tool_python/LanguageTool-stable.zip -d /home/.cache/language_tool_python \
-    && rm /home/.cache/language_tool_python/LanguageTool-stable.zip
-
 RUN if [ "${FLASK_ENV}" != "development" ]; then \
   ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi
 
@@ -91,6 +86,9 @@ RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENT
 # Copy the models in
 RUN gsutil -m cp -r gs://perciapp-processor/models /app/perciapp
 RUN python -m spacy download en_core_web_md
+
+# Copy language_tool_python model
+RUN gsutil -m cp -r gs://perciapp-processor/languagetool /home/.cache/language_tool_python
 
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
