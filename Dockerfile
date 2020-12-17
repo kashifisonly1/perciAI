@@ -69,9 +69,10 @@ RUN java --version
 
 #Install
 ENV VERSION 5.0
-RUN wget https://www.languagetool.org/download/LanguageTool-$VERSION.zip && \
-    unzip LanguageTool-$VERSION.zip && \
-    rm LanguageTool-$VERSION.zip
+RUN apt-get install -y wget && \
+  wget https://www.languagetool.org/download/LanguageTool-$VERSION.zip && \
+  unzip LanguageTool-$VERSION.zip && \
+  rm LanguageTool-$VERSION.zip
 
 RUN if [ "${FLASK_ENV}" != "development" ]; then \
   ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi
