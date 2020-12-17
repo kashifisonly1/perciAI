@@ -88,7 +88,8 @@ RUN gsutil -m cp -r gs://perciapp-processor/models /app/perciapp
 RUN python -m spacy download en_core_web_md
 
 # Copy language_tool_python model
-RUN gsutil -m cp -r gs://perciapp-processor/languagetool /home/.cache/language_tool_python
+RUN mkdir -p /home/.cache/language_tool_python \
+  && gsutil -m cp -r gs://perciapp-processor/languagetool /home/.cache/language_tool_python
 
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
