@@ -160,13 +160,13 @@ def subcategory(category):
 @create.route('/history/page/<int:page>')
 @login_required
 def history(page):
-    paginated_descriptions = Create.query \
+    descriptions = Create.query \
         .filter(Create.user_id == current_user.id) \
         .order_by(Create.created_on.desc()) \
         .paginate(page, 50, True)
 
     return render_template('create/history.html',
-                           recent_descriptions=paginated_descriptions)
+                           descriptions=descriptions)
 
 @create.route('/gensent1/', methods=['POST'])
 @csrf.exempt
