@@ -15,7 +15,10 @@ from perciapp.blueprints.create.models.create import Create
 
 
 def remove_bad_sentences(descriptions):
-    # remove empty sentence from killed processes in the description list
+    '''
+    removing: empty sentences from killed processes in the description list
+    as well as other undesirable artifacts from the original dataset that are creeping into
+    generated descriptions'''
     for item in descriptions:
         if type(item) != str:
             descriptions.remove(item)
@@ -26,6 +29,8 @@ def remove_bad_sentences(descriptions):
         elif item.strip().lower().startswith('length'):
             descriptions.remove(item)
         elif item.strip().lower().startswith('our model'):
+            descriptions.remove(item)
+        elif 'UNABLE TO SHIP THIS PRODUCT' in item:
             descriptions.remove(item)
         elif len(item) < 15:
             descriptions.remove(item)
@@ -148,10 +153,10 @@ def edit_sent1(id):
     Cull sent1 candidates and put best candidate back into database
     """
     # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    from transformers import GPT2Tokenizer, GPT2LMHeadModel
+    model = GPT2LMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
     import time
     start = time.time()
@@ -162,7 +167,7 @@ def edit_sent1(id):
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
-                        description.sent1_13]
+                        description.sent1_13, description.sent1_14, description.sent1_15]
 
     while None in candidates:
         time.sleep(5)
@@ -172,7 +177,7 @@ def edit_sent1(id):
                         description.sent1_4, description.sent1_5, description.sent1_6,
                         description.sent1_7, description.sent1_8, description.sent1_9,
                         description.sent1_10, description.sent1_11, description.sent1_12,
-                        description.sent1_13]
+                        description.sent1_13, description.sent1_14, description.sent1_15]
         now = time.time()
         print(description.title + ' edit_sent1:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
@@ -243,10 +248,10 @@ def edit_sent2(id):
     Cull sent2 candidates and put best candidate into database
     """
     # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    from transformers import GPT2Tokenizer, GPT2LMHeadModel
+    model = GPT2LMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
     import time
     start = time.time()
@@ -257,7 +262,7 @@ def edit_sent2(id):
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
-                        description.sent2_13]
+                        description.sent2_13, description.sent2_14, description.sent2_15]
 
     while None in candidates:
         time.sleep(5)
@@ -267,7 +272,7 @@ def edit_sent2(id):
                         description.sent2_4, description.sent2_5, description.sent2_6,
                         description.sent2_7, description.sent2_8, description.sent2_9,
                         description.sent2_10, description.sent2_11, description.sent2_12,
-                        description.sent2_13]
+                        description.sent2_13, description.sent2_14, description.sent2_15]
         now = time.time()
         print(description.title + ' edit_sent2:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
@@ -331,10 +336,10 @@ def edit_sent3(id):
     Cull sent3 candidates and put best candidate back into database
     """
     # initialize model
-    from transformers import OpenAIGPTTokenizer, OpenAIGPTLMHeadModel
-    model = OpenAIGPTLMHeadModel.from_pretrained('perciapp/models/openai_gpt')
+    from transformers import GPT2Tokenizer, GPT2LMHeadModel
+    model = GPT2LMHeadModel.from_pretrained('perciapp/models/openai_gpt')
     model.eval()
-    tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
     import time
     start = time.time()
@@ -345,7 +350,7 @@ def edit_sent3(id):
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
-                        description.sent3_13]
+                        description.sent3_13, description.sent3_14, description.sent3_15]
 
     while None in candidates:
         time.sleep(5)
@@ -355,7 +360,7 @@ def edit_sent3(id):
                         description.sent3_4, description.sent3_5, description.sent3_6,
                         description.sent3_7, description.sent3_8, description.sent3_9,
                         description.sent3_10, description.sent3_11, description.sent3_12,
-                        description.sent3_13]
+                        description.sent3_13, description.sent3_14, description.sent3_15]
         now = time.time()
         print(description.title + ' edit_sent3:' + str(int(now-start)))
         print('None number: ' + str(candidates.count(None)))
