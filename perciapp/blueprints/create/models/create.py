@@ -81,7 +81,7 @@ class Create(ResourceMixin, db.Model):
                                     name='subcategory',
                                     native_enum=False),
                             index=True, nullable=False)
-    detail1 = db.Column(db.String(200))
+    detail1 = db.Column(db.String(500))
     detail2 = db.Column(db.String(200))
     detail3 = db.Column(db.String(200))
     detail4 = db.Column(db.String(200))
