@@ -61,9 +61,6 @@ def create_description():
           'detail3': detail3,
           'detail4': detail4,
           'detail5': detail5,
-          'sent1': 'coming soon',
-          'sent2': 'coming soon',
-          'sent3': 'coming soon',
           'description': 'coming soon'
         }
 
@@ -73,18 +70,17 @@ def create_description():
         firsts = ['sent1','sent1_2', 'sent1_3', 'sent1_4',
                   'sent1_5', 'sent1_6', 'sent1_7', 'sent1_8',
                   'sent1_9','sent1_10', 'sent1_11', 'sent1_12',
-                  'sent1_13']
+                  'sent1_13', 'sent1_14', 'sent1_15']
 
         seconds = ['sent2','sent2_2', 'sent2_3', 'sent2_4',
                   'sent2_5', 'sent2_6', 'sent2_7', 'sent2_8',
                   'sent2_9','sent2_10', 'sent2_11', 'sent2_12',
-                  'sent2_13']
-
+                  'sent2_13', 'sent2_14', 'sent2_15']
 
         thirds = ['sent3','sent3_2', 'sent3_3', 'sent3_4',
                   'sent3_5', 'sent3_6', 'sent3_7', 'sent3_8',
                   'sent3_9', 'sent3_10', 'sent3_11', 'sent3_12',
-                  'sent3_13']
+                  'sent3_13', 'sent3_14', 'sent3_15']
 
         project_id = "perciapp"
         topic_id = "description-order"
@@ -227,3 +223,124 @@ def routeedit3():
     description_id = int(base64.b64decode(message['data']).decode('utf-8').strip())
     id = edit_sent3(description_id)
     return ('', 204)
+
+@create.route('/bulkprocess/', methods=['POST'])
+def bulkprocess():
+    data = request.get_json()
+    print('bulk POST request received:')
+    print()
+    print(data)
+    print()
+
+    title = data['title']
+    gender = data['gender']
+    category = data['category']
+    subcategory = data'subcategory']
+    detail1 = data['detail1']
+    detail2 = data['detail2']
+    detail3 = data['detail3']
+    detail4 = data['detail4']
+    detail5 = data'detail5']
+
+    params = {
+        'user_id': current_user.id,
+        'title': title,
+        'gender': gender,
+        'category': category,
+        'subcategory': subcategory,
+        'detail1': detail1,
+        'detail2': detail2,
+        'detail3': detail3,
+        'detail4': detail4,
+        'detail5': detail5,
+        'description': 'coming soon'
+    }
+
+    create = Create(**params)
+    create.save_and_update_user(current_user)
+
+    firsts = ['sent1','sent1_2', 'sent1_3', 'sent1_4',
+              'sent1_5', 'sent1_6', 'sent1_7', 'sent1_8',
+              'sent1_9','sent1_10', 'sent1_11', 'sent1_12',
+              'sent1_13', 'sent1_14', 'sent1_15']
+
+    seconds = ['sent2','sent2_2', 'sent2_3', 'sent2_4',
+               'sent2_5', 'sent2_6', 'sent2_7', 'sent2_8',
+               'sent2_9','sent2_10', 'sent2_11', 'sent2_12',
+               'sent2_13', 'sent2_14', 'sent2_15']
+
+    thirds = ['sent3','sent3_2', 'sent3_3', 'sent3_4',
+              'sent3_5', 'sent3_6', 'sent3_7', 'sent3_8',
+              'sent3_9', 'sent3_10', 'sent3_11', 'sent3_12',
+              'sent3_13', 'sent3_14', 'sent3_15']
+
+    project_id = "perciapp"
+    topic_id = "description-order"
+
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
+
+    for i in firsts:
+        data = str(create.id)
+        data = data.encode("utf-8")
+        future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+        print(future.result())
+
+    topic_id = "description-order-sent-2"
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
+    
+    for i in seconds:
+        data = str(create.id)
+        data = data.encode("utf-8")
+        future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+        print(future.result())
+    
+    topic_id = "description-order-sent-3"
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
+
+    for i in thirds:
+        data = str(create.id)
+        data = data.encode("utf-8")
+        future = publisher.publish(topic_path, data, label=i, id=str(create.id))
+        print(future.result())
+
+    print()
+    print(f"Published sent_gen messages to {topic_path}.")
+    print()
+
+    #Send edit Pub/Sub message
+    topic_id = "description-order-edit"
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
+    data = str(create.id)
+    data = data.encode("utf-8")
+    future = publisher.publish(topic_path, data)
+    print(future.result())
+
+    print()
+    print(f"Published edit_sent message to {topic_path}.")
+    print()
+
+    #wait for 
+    import time
+    start = time.time()
+
+    # repeatedly pull description until it has generated
+    description = Create.query.get(create.id)
+    output = [description.description]
+
+    while output == 'coming soon':
+        time.sleep(10)
+        db.session.commit()
+        description = Create.query.get(create.id)
+        output = [description.description]
+        now = time.time()
+        print(description.title + ' bulk process waiting:' + str(int(now-start)))
+        now = time.time()
+        if now - start > 300:
+            break
+    
+    from flask import jsonify
+    return jsonify(title=title,description=output)
