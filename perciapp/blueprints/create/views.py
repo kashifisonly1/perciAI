@@ -225,6 +225,7 @@ def routeedit3():
     return ('', 204)
 
 @create.route('/bulkprocess/', methods=['POST'])
+@csrf.exempt
 def bulkprocess():
     data = request.get_json()
     print('bulk POST request received:')
