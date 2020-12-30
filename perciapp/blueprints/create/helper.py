@@ -95,6 +95,11 @@ def brand_remove(description, model):
                 low = place
         result = first + model + second[low:]
         return result
+    
+
+    elif first.strip().endswith("'s"):
+        result = first.strip().rsplit(' ', 1)[0] + ' ' + model + second
+        return result
 
     else:
         return description
