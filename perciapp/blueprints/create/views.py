@@ -16,6 +16,7 @@ from perciapp.extensions import limiter
 from perciapp.blueprints.create.decorators import credits_required
 from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
+from perciapp.blueprints.user.models import User
 from lib.subcategories import Subcategories
 from google.cloud import pubsub_v1
 import base64
@@ -243,8 +244,10 @@ def bulkprocess():
     detail4 = data['detail4']
     detail5 = data['detail5']
 
+    user = User.find_by_identity('dev@local.host')
+
     params = {
-        'user_id': current_user.id,
+        'user_id': user.id,
         'title': title,
         'gender': gender,
         'category': category,
@@ -258,7 +261,7 @@ def bulkprocess():
     }
 
     create = Create(**params)
-    create.save_and_update_user(current_user)
+    create.save_and_update_user(user)
 
     firsts = ['sent1','sent1_2', 'sent1_3', 'sent1_4',
               'sent1_5', 'sent1_6', 'sent1_7', 'sent1_8',
