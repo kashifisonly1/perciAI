@@ -235,12 +235,12 @@ def bulkprocess():
     title = data['title']
     gender = data['gender']
     category = data['category']
-    subcategory = data'subcategory']
+    subcategory = data['subcategory']
     detail1 = data['detail1']
     detail2 = data['detail2']
     detail3 = data['detail3']
     detail4 = data['detail4']
-    detail5 = data'detail5']
+    detail5 = data['detail5']
 
     params = {
         'user_id': current_user.id,
