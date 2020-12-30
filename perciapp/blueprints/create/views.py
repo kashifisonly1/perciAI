@@ -16,7 +16,6 @@ from perciapp.extensions import limiter
 from perciapp.blueprints.create.decorators import credits_required
 from perciapp.blueprints.create.forms import CreateForm
 from perciapp.blueprints.create.models.create import Create
-from perciapp.blueprints.user.models import User
 from lib.subcategories import Subcategories
 from google.cloud import pubsub_v1
 import base64
@@ -228,6 +227,9 @@ def routeedit3():
 @create.route('/bulkprocess/', methods=['POST'])
 @csrf.exempt
 def bulkprocess():
+    
+    from perciapp.blueprints.user.models import User
+
     data = request.get_json()
     print('bulk POST request received:')
     print()
