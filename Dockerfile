@@ -67,13 +67,13 @@ apt-get install -y --no-install-recommends \
 # Prints installed java version, just for checking
 RUN java --version
 
-# #Install language_tool
-# ENV VERSION 5.0
-# RUN apt-get install -y wget && \
-#   apt-get update && apt-get install -y unzip && \
-#   wget https://www.languagetool.org/download/LanguageTool-$VERSION.zip && \
-#   unzip LanguageTool-$VERSION.zip && \
-#   rm LanguageTool-$VERSION.zip
+# Install language_tool
+ENV VERSION 5.0
+RUN apt-get install -y wget && \
+  apt-get update && apt-get install -y unzip && \
+  wget https://www.languagetool.org/download/LanguageTool-$VERSION.zip && \
+  unzip LanguageTool-$VERSION.zip -d ~/.cache/language_tool_python && \
+  rm LanguageTool-$VERSION.zip
 
 RUN if [ "${FLASK_ENV}" != "development" ]; then \
   ln -s /public /app/public && flask digest compile && rm -rf /app/public; fi

@@ -47,6 +47,13 @@ def login():
             if login_user(u, remember=True):
                 u.update_activity_tracking(request.remote_addr)
 
+                <script>
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                'event': 'login'
+                });
+                </script>
+
                 # Handle optionally redirecting to the next URL safely.
                 next_url = request.form.get('next')
                 if next_url:
@@ -118,6 +125,12 @@ def signup():
         u.save()
 
         if login_user(u):
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                'event': 'sign_up'
+                });
+            </script>
             flash('Awesome, thanks for signing up!', 'success')
             return redirect(url_for('user.welcome'))
 
