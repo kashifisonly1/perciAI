@@ -234,6 +234,13 @@ def purchase_credits():
                                      token=request.form.get('stripe_token'))
 
             if created:
+                <script>
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                'event': 'purchase',
+                'value': bundle.get('price_in_cents')
+                });
+                </script>
                 flash(_('%(amount)s credits have been added to your account.',
                         amount=credit_bundles_form), 'success')
             else:
