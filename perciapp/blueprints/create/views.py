@@ -50,13 +50,6 @@ def create_description():
             flash('You need more credits.','error')
             return redirect(url_for('create.create_description'))
 
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-            'event': 'spend_virtual_currency'
-            });
-        </script>
-
         params = {
           'user_id': current_user.id,
           'title': title,

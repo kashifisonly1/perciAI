@@ -284,7 +284,8 @@
       </div>
     </div>
   </div>
-  <button type="submit" class="btn btn-primary btn-block mb-5">
+  <button type="submit" class="btn btn-primary btn-block mb-5"
+          onclick="window.dataLayer = window.dataLayer || [];window.dataLayer.push({'event': 'purchase'});">
     <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
          class="spinner"
          width="16" height="11" alt="Spinner"/>
