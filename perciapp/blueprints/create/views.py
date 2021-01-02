@@ -8,6 +8,7 @@ from flask import (
     url_for)
 
 from perciapp.extensions import csrf
+from perciapp.extensions import db
 
 from flask_login import current_user, login_required
 
