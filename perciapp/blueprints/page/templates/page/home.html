@@ -34,7 +34,9 @@ Harness the power of AI writing for unique, optimized descriptions that are prov
     <div class="row text-center pb-5">
       <p class="text-muted">Sign up for a free trial.</p>
       <p>
-        <a href="{{ url_for('user.signup') }}" class="btn btn-outline-primary">Get started</a>
+        <a href="{{ url_for('user.signup') }}" class="btn btn-outline-primary"
+           onclick="window.dataLayer = window.dataLayer || [];
+           window.dataLayer.push({'event': 'get_started'});">Get started</a>
       </p>   
     </div>
   </div>
