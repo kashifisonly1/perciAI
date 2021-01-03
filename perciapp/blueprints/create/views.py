@@ -350,4 +350,4 @@ def bulkprocess():
             break
     
     from flask import jsonify
-    return jsonify(title=title,description=output)
+    return jsonify(title=title,description=output), 201

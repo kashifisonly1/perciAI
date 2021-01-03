@@ -26,8 +26,8 @@ def clean_up_sent(sent):
     '''
     if sent.endswith(("<eos>", "<eos", "<eo", "<e", "<")):
         sent = sent[:sent.rfind('<')]
-    # tool = language_tool_python.LanguageTool('en-US')
-    # sent = tool.correct(sent)
+    tool = language_tool_python.LanguageTool('en-US')
+    sent = tool.correct(sent)
     if len(sent) > 199:
         sent = sent[:198]
     return sent

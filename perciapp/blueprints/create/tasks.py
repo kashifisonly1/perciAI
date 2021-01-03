@@ -229,9 +229,15 @@ def edit_sent1(id):
     print('candidate2:')
     print(candidate2)   
 
+    candidate3, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    print('candidate3:')
+    print(candidate3)
+
+
     # picking the one which is most similar to the features list
     first_sent = return_most_similar(features,
-                                    [candidate1, candidate2])[0]
+                                    [candidate1, candidate2, candidate3])[0]
 
     print('winner:')
     print(first_sent)
@@ -309,16 +315,18 @@ def edit_sent2(id):
                                                         scores)
     print('candidate1:')
     print(candidate1)
-    print('score:')
-    print(score)
+
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
     print('candidate2:')
     print(candidate2)
-    print('score:')
-    print(score)
 
-    sent = return_most_similar(features,[candidate1, candidate2])[0]
+    candidate3, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    print('candidate3:')
+    print(candidate3)
+
+    sent = return_most_similar(features,[candidate1, candidate2, candidate3])[0]
 
     print('winner:')
     print(sent)
@@ -397,17 +405,19 @@ def edit_sent3(id):
                                                         scores)
     print('candidate1:')
     print(candidate1)
-    print('score:')
-    print(score)
+
     candidate2, descriptions, scores = pop_best_sentence(descriptions,
                                                         scores)
     print('candidate2:')
     print(candidate2)
-    print('score:')
-    print(score)
+
+    candidate3, descriptions, scores = pop_best_sentence(descriptions,
+                                                        scores)
+    print('candidate3:')
+    print(candidate3)
 
     sent = return_most_similar(features,
-                                    [candidate1, candidate2])[0]
+                                    [candidate1, candidate2, candidate3])[0]
 
     print('winner:')
     print(sent)
