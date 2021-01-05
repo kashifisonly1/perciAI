@@ -71,7 +71,7 @@ form_tag(endpoint, fid='', css_class='', method='post')
             <img src="{{ static_url_for('static', filename='images/spinner.gif') }}"
                  class="spinner"
                  width="16" height="11" alt="Spinner"/>
-            Create description
+            Generate
           </button>
 
           <noscript>
@@ -85,6 +85,14 @@ form_tag(endpoint, fid='', css_class='', method='post')
           <div class="text-center">
             <a href="{{ url_for('billing.purchase_credits') }}"
               class="btn btn-outline-primary">Buy credits</a>
+          </div>
+
+          <div class="row text-center pb-5">
+            <h3 class="font-weight-light text-center text-muted mt-0">
+              Want bulk descriptions? <a href="{{ url_for('contact.index') }}"
+              >Get in touch</a>
+            </h3>
+     
           </div>
         {% endcall %}
       </div>

@@ -95,9 +95,9 @@ STRIPE_PLANS = {
 }
 
 CREDIT_BUNDLES = [
-    {'credits': 5, 'price_in_cents': 1500, 'label': '5 for $15'},
-    {'credits': 25, 'price_in_cents': 7500, 'label': '25 for $75'},
-    {'credits': 100, 'price_in_cents': 30000, 'label': '100 for $300'},
+    {'credits': 5, 'price_in_cents': 500, 'label': '5 for $5'},
+    {'credits': 25, 'price_in_cents': 2500, 'label': '25 for $25'},
+    {'credits': 100, 'price_in_cents': 10000, 'label': '100 for $100'},
 ]
 
 # Rate limiting.

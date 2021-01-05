@@ -3,57 +3,21 @@
 {% import 'billing/macros/billing.html' as billing with context %}
 
 {% block title %}Ready to start selling?{% endblock %}
-{% block meta_description %}Sign up now to begin creating your own custom descriptions.{% endblock %}
+{% block meta_description %}Buy credits to start generating your own descriptions.{% endblock %}
 
 {% block body %}
   <div class="container">
     <div class="row">
       <div class="col-md-12 mb-4">
-        {% if current_user.subscription %}
-          <h2 class="h1 text-center">You're about to change plans</h2>
-          <div class="alert alert-warning text-center mb-3">
-            Your plan will change <strong>immediately</strong> after clicking
-            'Change plan'.
-          </div>
-        {% else %}
-          <h2 class="h1 text-center">Subscribe to cover regular new items.</h2>
-          <h3 class="font-weight-light text-center text-muted mt-0">
-            Or pay as you go by <a href="{{ url_for('billing.purchase_credits') }}"
-            >purchasing credits</a>, for $3 per description.
-          </h3>
-        {% endif %}
-        {% call f.form_tag('billing.update', fid='subscription_form') %}
-          {% if current_user.subscription %}
-            <div class="row">
-              <div class="col-md-4 offset-md-4">
-                {{ form.coupon_code.label }}
-                {{ f.field(form.coupon_code, css_class='text-uppercase') }}
-                <div id="coupon_code_status" class="small alert alert-success mt-1">
-                </div>
-              </div>
-            </div>
-          {% endif %}
-          <div class="row mt-5">
-            {% call billing.plan(plans['0']) %}
-              <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">25 descriptions per month</li>
-                <li class="list-group-item">$2 per description</li>
-              </ul>
-            {% endcall %}
-            {% call billing.plan(plans['1']) %}
-              <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">50 descriptions per month</li>
-                <li class="list-group-item">$1.80 per description</li>
-              </ul>
-            {% endcall %}
-            {% call billing.plan(plans['2']) %}
-              <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">80 descriptions per month</li>
-                <li class="list-group-item">$1.50 per description</li>
-              </ul>
-            {% endcall %}
-          </div>
-        {% endcall %}
+        <h2 class="h1 text-center">$1 per description.</h2>
+        <h3 class="font-weight-light text-center text-muted mt-0">
+          Pay for what you need, when you need it. Easy.
+        </h3>
+        <div class="row text-center pb-5">
+          <p>
+            <a href="{{ url_for('billing.purchase_credits') }}" class="btn btn-outline-primary">Buy credits</a>
+          </p>   
+        </div>
       </div>
     </div>
   </div>
