@@ -118,12 +118,6 @@ def signup():
         u.save()
 
         if login_user(u):
-            <script>
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({
-                'event': 'sign_up'
-                });
-            </script>
             flash("Awesome, you're good to go!", 'success')
             return redirect(url_for('create.create_description'))
 
