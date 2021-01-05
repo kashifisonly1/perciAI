@@ -137,7 +137,7 @@ def welcome():
         current_user.username = request.form.get('username')
         current_user.save()
 
-        flash('Sign up is complete, congrats.', 'success')
+        flash("You're all signed up.", 'success')
         return redirect(url_for('user.settings'))
 
     return render_template('user/welcome.html', form=form)
