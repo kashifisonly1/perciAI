@@ -17,17 +17,6 @@
              class="list-group-item list-group-item-action">
             Update language
           </a>
-          {% if current_user.username %}
-            <span class="list-group-item text-muted">
-              Your username is
-              <strong>{{ current_user.username }}</strong>
-            </span>
-          {% else %}
-            <a href="{{ url_for('user.welcome') }}"
-               class="list-group-item list-group-item-action">
-              Pick a username
-            </a>
-          {% endif %}
         </div>
         <h2 class="mt-5">Descriptions</h2>
         <h5 class="text-warning">
@@ -43,17 +32,8 @@
           class="btn btn-primary mt-3">Buy more credits</a>
       </div>
       <div class="col-md-5 offset-md-2">
-        {% if current_user.subscription %}
-          <h2>
-            {{ current_user.subscription.plan | title }}
-            subscription
-          </h2>
-          <h5 class="text-muted">
-            {{ current_user.credit_card.brand }}
-            {{ current_user.credit_card.last4 }}
-            ({{ current_user.credit_card.exp_date.strftime('%m/%Y') }})
-          </h5>
-
+        {% if current_user.invoices %}
+          <h2 class="mt-5 mb-4">Info</h2>
           <div class="list-group">
             <a class="list-group-item list-group-item-action"
                href="{{ url_for('billing.update_payment_method') }}">
@@ -63,35 +43,8 @@
                href="{{ url_for('billing.billing_details') }}">
               Billing details
             </a>
-            <a class="list-group-item list-group-item-action"
-               href="{{ url_for('billing.update') }}">
-              Change plan
-            </a>
-            <a class="list-group-item list-group-item-action"
-               href="{{ url_for('billing.cancel') }}">
-              <span class="text-muted">Cancel subscription</span>
-            </a>
           </div>
-        {% else %}
-          <h2>Subscribe today</h2>
-          <h5 class="text-muted">Hey buddy, why aren't you subscribed?</h5>
-          <p>
-            Now that you've created an account, unlock everything by 
-            subscribing now.
-          </p>
-          <a href="{{ url_for('billing.pricing') }}" class="btn btn-primary">
-            Learn more
-          </a>
-          {% if current_user.invoices %}
-            <h2 class="mt-5 mb-4">Previous subscription info</h2>
-            <div class="list-group">
-              <a class="list-group-item list-group-item-action"
-                 href="{{ url_for('billing.billing_details') }}">
-                Billing details
-              </a>
-            </div>
-          {% endif %}
-        {% endif %}
+        {% endif %} 
       </div>
     </div>
   </div>

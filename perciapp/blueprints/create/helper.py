@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import numpy as np
 import math
 import re
-import language_tool_python
+
 import pandas as pd
 
 MAX_LENGTH = int(10000)  # Hardcoded max length to avoid infinite loop
@@ -26,6 +26,7 @@ def clean_up_sent(sent):
     '''
     if sent.endswith(("<eos>", "<eos", "<eo", "<e", "<")):
         sent = sent[:sent.rfind('<')]
+    import language_tool_python
     tool = language_tool_python.LanguageTool('en-US')
     sent = tool.correct(sent)
     if len(sent) > 199:

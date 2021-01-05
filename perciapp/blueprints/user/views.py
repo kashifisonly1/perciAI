@@ -59,7 +59,7 @@ def login():
                 if next_url:
                     return redirect(safe_next_url(next_url))
 
-                return redirect(url_for('user.settings'))
+                return redirect(url_for('create.create_description'))
         else:
             flash('Identity or password is incorrect.', 'error')
 
@@ -131,8 +131,8 @@ def signup():
                 'event': 'sign_up'
                 });
             </script>
-            flash('Awesome, thanks for signing up!', 'success')
-            return redirect(url_for('user.welcome'))
+            flash("Awesome, you're good to go!", 'success')
+            return redirect(url_for('create.create_description'))
 
     return render_template('user/signup.html', form=form)
 
